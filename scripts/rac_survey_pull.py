@@ -65,8 +65,8 @@ from datetime import datetime
 from typing   import Optional
 
 from rac_common import (cfg, log, err, record_failure, run, notif_insert,
-                        UTC_TZ, set_script_name, script_name, secret,
-                        send_html_email, SECRETS_IMPORT_ERROR)
+                        UTC_TZ, set_script_name, script_name, private_value,
+                        send_html_email, OPTIONAL_CONFIG_IMPORT_ERROR)
 
 set_script_name("rac_survey_pull.py")
 
@@ -75,7 +75,7 @@ set_script_name("rac_survey_pull.py")
 # AGOL service-account password from rac_secrets.py. If the secrets file is
 # missing or the value is empty, main() records the failure and stops before
 # touching AGOL.
-AGOL_PASSWORD = secret("GIS_SERVICE_PASSWORD")
+AGOL_PASSWORD = private_value("GIS_SERVICE_PASSWORD")
 
 # Max responses to pull per run.
 MAX_BATCH = cfg.SURVEY_MAX_BATCH
@@ -87,7 +87,7 @@ MAX_BATCH = cfg.SURVEY_MAX_BATCH
 # Portal account that can see members' email addresses. When they are empty
 # the Portal lookup is skipped and follow-ups route to the assigned
 # department's routing email instead.
-PORTAL_PASSWORD = secret("PORTAL_PASSWORD")
+PORTAL_PASSWORD = private_value("PORTAL_PASSWORD")
 
 # Recipient resolution order for a follow-up: (1) the resolver's Portal email,
 # (2) the ticket's assigned-department routing email, (3) FOLLOWUP_FALLBACK_EMAIL
@@ -758,7 +758,7 @@ def main() -> None:
         record_failure(
             f"AGOL password unavailable: GIS_SERVICE_PASSWORD is empty or "
             f"rac_secrets.py could not be imported"
-            + (f" ({SECRETS_IMPORT_ERROR})" if SECRETS_IMPORT_ERROR else "")
+            + (f" ({OPTIONAL_CONFIG_IMPORT_ERROR})" if OPTIONAL_CONFIG_IMPORT_ERROR else "")
         )
         return
 

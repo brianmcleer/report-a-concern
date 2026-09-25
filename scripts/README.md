@@ -41,7 +41,7 @@ Everything the scripts have in common lives here, so a script is only its own lo
 | `resolve_recipient(addr)` | Applies `TESTING_MODE`. |
 | `write_notification_log(...)`, `notif_insert(cols, vals)`, `notif_scalar(sql)` | Audit table writes and reads by direct SQL. |
 | `to_local`, `utc_naive_to_local_naive`, `local_now_naive` | Timezone helpers using `cfg.LOCAL_TIMEZONE`. |
-| `secret(name)` | Value from `rac_secrets.py`, empty string if the file is missing. |
+| `private_value(name)` | Value from `rac_secrets.py`, empty string if the file is missing. |
 
 ## Design notes worth knowing
 

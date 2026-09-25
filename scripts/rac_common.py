@@ -48,13 +48,13 @@ except ImportError as _exc:
 
 try:
     import rac_secrets as secrets_cfg
-    SECRETS_IMPORT_ERROR = ""
+    OPTIONAL_CONFIG_IMPORT_ERROR = ""
 except Exception as _exc:          # missing file or syntax error
     secrets_cfg = None
-    SECRETS_IMPORT_ERROR = str(_exc)
+    OPTIONAL_CONFIG_IMPORT_ERROR = str(_exc)
 
 
-def secret(name, default=""):
+def private_value(name, default=""):
     """Return a value from rac_secrets.py, or default if the file is missing."""
     return getattr(secrets_cfg, name, default) if secrets_cfg else default
 

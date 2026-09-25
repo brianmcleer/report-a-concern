@@ -401,6 +401,25 @@ def add_attachment(oid: int):
 
     ip = get_client_ip()
 
+    # The object id is the only client-supplied part of the upstream URL. Flask's
+    # <int:oid> converter already rejects non-digits; this narrows it to a positive
+    # 32-bit ObjectID and rebuilds the path segment from the validated integer so
+    # nothing else from the request can reach the FeatureServer URL.
+    try:
+        oid = int(oid)
+    except (TypeError, ValueError):
+        oid = -1
+    if oid < 1 or oid > 2_147_483_647:
+        write_notification_log(
+            ticket_id=NO_TICKET_GUID,
+            client_ip=ip,
+            event_type="addAttachment:INVALID_OID",
+            send_status="REJECTED",
+            error_msg=f"oid out of range: {oid}",
+        )
+        return jsonify({"error": {"code": 400, "message": "Invalid object id."}}), 400
+    oid_segment = "%d" % oid
+
     if "attachment" not in request.files:
         write_notification_log(
             ticket_id=NO_TICKET_GUID,
@@ -452,7 +471,7 @@ def add_attachment(oid: int):
 
     try:
         fs_response = requests.post(
-            f"{pc.FEATURE_SERVER_BASE}/{oid}/addAttachment",
+            f"{pc.FEATURE_SERVER_BASE}/{oid_segment}/addAttachment",
             data={"f": "json"},
             files={
                 "attachment": (
