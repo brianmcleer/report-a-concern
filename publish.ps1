@@ -126,7 +126,9 @@ try {
     $prevEap = $ErrorActionPreference; $ErrorActionPreference = "Continue"
     $hits = & git grep --cached -i -n -E $ForbiddenPattern -- . ":(exclude)publish.ps1" 2>$null
     $ErrorActionPreference = $prevEap
-    if ($LASTEXITCODE -eq 0 -and $hits) {
+    # The copyright holder is the City; that line is allowed everywhere. Everything else is not.
+    $hits = @($hits | Where-Object { $_ -notmatch "Copyright 2026 City of Grand Junction" })
+    if ($hits.Count -gt 0) {
         git reset -q
         throw "Refusing to publish, organization-specific strings found:`n" + ($hits -join "`n")
     }

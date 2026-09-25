@@ -95,4 +95,4 @@ Open an issue on the [report-a-concern](https://github.com/brianmcleer/report-a-
 
 ## License
 
-Apache-2.0. Copyright 2026 Brian McLeer.
+Apache-2.0. Copyright 2026 City of Grand Junction, CO.

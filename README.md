@@ -73,4 +73,4 @@ powershell -ExecutionPolicy Bypass -File .\publish.ps1 -CommitMessage "Subject" 
 
 ## License
 
-Apache License 2.0. See [LICENSE](LICENSE).
+Apache License 2.0. Copyright 2026 City of Grand Junction, CO. See [LICENSE](LICENSE).
