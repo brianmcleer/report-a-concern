@@ -2,15 +2,24 @@ import { React, AllWidgetProps, getAppStore } from "jimu-core";
 import ReactDOM from "react-dom";
 import { JimuMapViewComponent, JimuMapView } from "jimu-arcgis";
 import { Button, TextInput, TextArea, Select, Option } from "jimu-ui";
+import { CalciteIcon } from "calcite-components";
 import { beacon } from '../shared/beacon';
 import type { BeaconHandle } from '../shared/beacon';
+import { useTokens, type Tokens } from "./theme";
+import HelpPopup from "./components/HelpPopup";
+import FirstRunHint from "./components/FirstRunHint";
+import { buildHelpSections, type HelpFeatures } from "./helpSections";
+import defaultMessages from "./translations/default";
+import { fmt, ago, agoFull, agoDate, ymd, fmtDay, matchAll, nameTokens } from "./lib/format";
+import { S, P, C, CT, statusLabel as statusLabelOf, priorityLabel, categoryLabel, toggleVal } from "./lib/labels";
 // ExcelJS is loaded from CDN at export time to avoid webpack/Node
 // compatibility issues with the npm package in browser builds.
 
 // ── Constants ────────────────────────────────────────────────
-const S: Record<number, string> = { 1: "Open", 2: "Received", 3: "In Progress", 4: "Resolved", 5: "Closed" };
-const P: Record<number, string> = { 1: "Low", 2: "Medium", 3: "High", 4: "Critical" };
-const C: Record<number, string> = { 1: "Water", 2: "Sewer", 3: "Roads & Pavement", 4: "Signs & Signals", 5: "Parks & Recreation", 6: "Trees & Vegetation", 7: "Drainage & Stormwater", 8: "Graffiti", 9: "Illegal Dumping", 10: "Sidewalks & Curbs", 11: "Street Lighting", 12: "Other", 13: "Code Enforcement" };
+// S, P, C (status, priority, category labels) and CT (comment types) live in
+// ./lib/labels so the node tests can load them without the widget.
+// Status and priority chip colors. Brand colors with no theme token; the
+// label text always sits beside them, so nothing relies on the color alone.
 const SC: Record<number, string> = { 1: "#2563eb", 2: "#7c3aed", 3: "#d97706", 4: "#16a34a", 5: "#6b7280" };
 const PC: Record<number, string> = { 1: "#6b7280", 2: "#2563eb", 3: "#d97706", 4: "#dc2626" };
 const PG = 50;
@@ -58,14 +67,6 @@ const COL_FLOOR_WIDTH: Record<string, number> = {
     modified_date: 88,
     resolved_date: 88,
     badges: 60,
-};
-
-// Comment type coded values
-const CT: Record<string, string> = {
-    "INTERNAL": "Internal Note",
-    "STATUS": "Status Update",
-    "ASSIGN": "Assignment Change",
-    "PUBLIC": "Public Response",
 };
 
 // Sort options exposed in the list toolbar.
@@ -230,10 +231,47 @@ function integrityWarning(
     return null;
 }
 
+// ── Theme tokens ─────────────────────────────────────────────
+// theme.ts is the shared useTokens() hook (Section 11.2, byte copy across
+// widgets). A class component cannot call a hook, so render() wraps the tree
+// in <Themed>, a tiny function component that reads the tokens and hands them
+// to the class through this.tk before the rest of the tree is built.
+function Themed({ children }: { children: (tk: Tokens) => React.ReactNode }) {
+    const tk = useTokens();
+    return <React.Fragment>{children(tk)}</React.Fragment>;
+}
+// Same fallbacks theme.ts uses when no Experience theme is present. Only read
+// before the first <Themed> render (never in practice), kept so this.tk is
+// never undefined.
+const DEFAULT_TOKENS: Tokens = {
+    primary: "#0079c1", primaryText: "#ffffff", surface: "#ffffff", background: "#f7f8fa",
+    text: "#1b1f24", textSecondary: "#5a6572", divider: "#e1e5e9", danger: "#d64545",
+    warning: "#8a6100", warningBg: "#ffffff", info: "#0079c1", infoBg: "#ffffff",
+    radius: "4px", radiusLg: "8px", shadow: "0 1px 3px rgba(0,0,0,0.10)", shadowHover: "0 6px 16px rgba(0,0,0,0.14)"
+};
+
+// ── Help guide (Section 10) ──────────────────────────────────
+// Strings come from translations/default.ts. This is a class component, so
+// it reads defaultMessages directly (the Print Advanced pattern) instead of
+// useIntl(); {token} values are filled in by hand.
+const t = (id: string, values?: Record<string, string>): string => {
+    let s = String((defaultMessages as any)[id] ?? id);
+    if (values) for (const k of Object.keys(values)) s = s.split(`{${k}}`).join(values[k]);
+    return s;
+};
+// First-run hint dismissal, per browser and per widget id so two copies of
+// the widget in one app do not share it. try/catch: private browsing throws.
+const HELP_HINT_KEY = "racManager.helpHintDismissed";
+const readHelpHint = (id: string): boolean => { try { return window.localStorage.getItem(`${HELP_HINT_KEY}.${id}`) === "1"; } catch (e) { return false; } };
+const writeHelpHint = (id: string): void => { try { window.localStorage.setItem(`${HELP_HINT_KEY}.${id}`, "1"); } catch (e) { /* private browsing */ } };
+
 // ── Style helpers ────────────────────────────────────────────
-const HDR: React.CSSProperties = { fontSize: 10, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.08em", color: "#9ca3af", marginBottom: 8, paddingBottom: 6, borderBottom: "1px solid #f3f4f6" };
-const LBL: React.CSSProperties = { display: "block", fontSize: 11, fontWeight: 600, color: "#6b7280", marginBottom: 3, textTransform: "uppercase" as const, letterSpacing: "0.05em" };
+const hdr = (tk: Tokens): React.CSSProperties => ({ fontSize: 10, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.08em", color: tk.textSecondary, marginBottom: 8, paddingBottom: 6, borderBottom: `1px solid ${tk.divider}` });
+const lbl = (tk: Tokens): React.CSSProperties => ({ display: "block", fontSize: 11, fontWeight: 600, color: tk.textSecondary, marginBottom: 3, textTransform: "uppercase" as const, letterSpacing: "0.05em" });
 const FOCUS_RING = "0 0 0 3px rgba(37,99,235,0.25)";
+// Root class so the injected stylesheet can switch animations and transitions
+// off for people who asked their system for reduced motion.
+const ROOT_CLASS = "rac-manager-root";
 
 // Shimmer gradient used by skeleton cards
 const SHIMMER: React.CSSProperties = {
@@ -243,19 +281,19 @@ const SHIMMER: React.CSSProperties = {
     borderRadius: 4,
 };
 
-function row(l: string, v: string) {
+function row(tk: Tokens, l: string, v: string) {
     return (
-        <div style={{ display: "flex", padding: "5px 0", fontSize: 13, borderBottom: "1px solid #f9fafb" }}>
-            <span style={{ width: 100, flexShrink: 0, color: "#6b7280", fontSize: 12 }}>{l}</span>
-            <span style={{ color: "#111827", fontWeight: 500 }}>{v}</span>
+        <div style={{ display: "flex", padding: "5px 0", fontSize: 13, borderBottom: `1px solid ${tk.background}` }}>
+            <span style={{ width: 100, flexShrink: 0, color: tk.textSecondary, fontSize: 12 }}>{l}</span>
+            <span style={{ color: tk.text, fontWeight: 500 }}>{v}</span>
         </div>
     );
 }
 
 // ── Skeleton card — shown while tickets are loading ──────────
-function SkeletonCard() {
+function SkeletonCard({ tk }: { tk: Tokens }) {
     return (
-        <div style={{ padding: "10px 12px", marginBottom: 6, border: "1px solid #e5e7eb", borderLeft: "3px solid #e5e7eb", borderRadius: 6, background: "#fff" }} aria-hidden="true">
+        <div style={{ padding: "10px 12px", marginBottom: 6, border: `1px solid ${tk.divider}`, borderLeft: `3px solid ${tk.divider}`, borderRadius: 6, background: tk.surface }} aria-hidden="true">
             <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
                 <div style={{ ...SHIMMER, width: 52, height: 18, borderRadius: 99 }} />
                 <div style={{ ...SHIMMER, width: 48, height: 18, borderRadius: 99 }} />
@@ -269,16 +307,9 @@ function SkeletonCard() {
 }
 
 // ── Utilities ────────────────────────────────────────────────
-function fmt(e: number) { if (!e) return "\u2014"; return new Date(e).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }) }
-function ago(e: number) { if (!e) return ""; const d = Date.now() - e, m = Math.floor(d / 60000); if (m < 60) return m + "m ago"; const h = Math.floor(m / 60); if (h < 24) return h + "h ago"; return fmt(e); }
-function agoFull(e: number) { if (!e) return ""; const d = Date.now() - e, m = Math.floor(d / 60000); if (m < 60) return m + " minutes ago"; const h = Math.floor(m / 60); if (h < 24) return h + " hours ago"; const dy = Math.floor(h / 24); return dy < 30 ? dy + " days ago" : fmt(e) }
-function agoDate(e: number) { if (!e) return ""; const d = Date.now() - e, m = Math.floor(d / 60000); if (m < 60) return m + "m ago"; const h = Math.floor(m / 60); if (h < 24) return h + "h ago"; return new Date(e).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }); }
+// fmt, ago, agoFull, agoDate, ymd, fmtDay and matchAll live in ./lib/format
+// (pure, covered by tests/format.test.js).
 function uid() { return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => { const r = Math.random() * 16 | 0; return (c === "x" ? r : (r & 0x3) | 0x8).toString(16) }) }
-// Local YYYY-MM-DD for a given epoch ms (or today if omitted). Used for the
-// editable resolved-date input, which is date-only and local to the manager.
-function ymd(e?: number) { const d = e ? new Date(e) : new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }
-function fmtDay(e: number) { if (!e) return "\u2014"; return new Date(e).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }); }
-function matchAll(haystack: string, tokens: string[]): boolean { const h = haystack.toLowerCase().replace(/_/g, " "); return tokens.every(t => h.includes(t)); }
 
 /**
  * Get an AGOL token for the given URL from the ArcGIS JS API IdentityManager.
@@ -1017,17 +1048,17 @@ async function validateMediaFile(
     return { valid: true, error: "" };
 }
 
-function toggleVal(arr: number[], val: number): number[] { return arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val]; }
+// toggleVal lives in ./lib/labels (pure, covered by tests/labels.test.js).
 
-function stars(rating: number | null, max = 5) {
-    if (rating == null) return <span style={{ color: "#555", fontSize: 12 }}>No rating</span>;
+function stars(tk: Tokens, rating: number | null, max = 5) {
+    if (rating == null) return <span style={{ color: tk.textSecondary, fontSize: 12 }}>No rating</span>;
     const filled = Math.min(Math.max(Math.round(rating), 0), max);
     return (
         <span role="img" aria-label={`${rating} out of ${max} stars`} style={{ fontSize: 16, letterSpacing: 2 }}>
             {Array.from({ length: max }, (_, i) => (
-                <span key={i} aria-hidden="true" style={{ color: i < filled ? "#b5650f" : "#ccc" }}>{"\u2605"}</span>
+                <span key={i} aria-hidden="true" style={{ color: i < filled ? "#b5650f" : tk.divider }}>{"\u2605"}</span>
             ))}
-            <span style={{ fontSize: 12, color: "#444", marginLeft: 6 }}>{rating}/{max}</span>
+            <span style={{ fontSize: 12, color: tk.text, marginLeft: 6 }}>{rating}/{max}</span>
         </span>
     );
 }
@@ -1095,6 +1126,9 @@ interface St {
     // it would revert to neutral as soon as the mouse drifts off the
     // 8px hit zone, which makes the affordance feel jumpy).
     colResizing: string | null;
+    // Help guide (Section 10): the guide is open; the first-run hint was dismissed.
+    helpOpen: boolean;
+    hintDismissed: boolean;
 }
 
 export default class Widget extends React.PureComponent<AllWidgetProps<any>, St> {
@@ -1168,10 +1202,19 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
         openColFilter: null,
         tableColWidths: {},
         colResizing: null,
+        helpOpen: false,
+        hintDismissed: true,
     };
+    // Theme tokens for the current render, set by <Themed> in render() before
+    // any render* method runs. Never read them outside a render path.
+    tk: Tokens = DEFAULT_TOKENS;
+    // Element that had focus when the photo viewer opened, so closing it puts
+    // focus back on the thumbnail instead of dropping it on the page body.
+    private lightboxReturnFocus: HTMLElement | null = null;
 
     componentDidMount() {
         this.beacon = beacon.init(this.props);
+        this.setState({ hintDismissed: readHelpHint(this.props.id) });
         document.addEventListener("mousedown", this.handleClickOutside);
         document.addEventListener("keydown", this.handleEsc);
 
@@ -1225,7 +1268,8 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
         if (!document.getElementById("rac-shimmer-style")) {
             const style = document.createElement("style");
             style.id = "rac-shimmer-style";
-            style.textContent = `@keyframes rac-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }`;
+            style.textContent = `@keyframes rac-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .${ROOT_CLASS} *, .${ROOT_CLASS} *::before, .${ROOT_CLASS} *::after { animation: none !important; transition: none !important; } }`;
             document.head.appendChild(style);
         }
 
@@ -1556,6 +1600,35 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
         this._sidebarDragActive = false;
     };
 
+    // ── Help guide ─────────────────────────────────────────────
+    // Opening the guide counts as answering the first-run hint, so both dismiss it.
+    openHelp = () => {
+        if (!this.state.hintDismissed) writeHelpHint(this.props.id);
+        this.setState({ helpOpen: true, hintDismissed: true });
+    };
+    closeHelp = () => { this.setState({ helpOpen: false }); };
+    dismissHint = () => { writeHelpHint(this.props.id); this.setState({ hintDismissed: true }); };
+    // Flags for the guide, computed from the same checks the UI itself uses
+    // (Section 10.6) so the guide never describes a control that is not shown.
+    helpFeatures = (): HelpFeatures => ({
+        mapConnected: !!this.props.config?.useMapWidgetIds?.[0],
+        comments: !!this.state.commentsTable,
+        survey: !!this.state.surveyTable,
+        sidebar: !!this._sidebarEl,
+    });
+    helpEnabled = (): boolean => this.props.config?.showHelp !== false;
+
+    // ── Photo viewer (lightbox) ────────────────────────────────
+    openLightbox = (idx: number) => {
+        this.lightboxReturnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        this.setState({ lightboxIndex: idx });
+    };
+    closeLightbox = () => {
+        const back = this.lightboxReturnFocus;
+        this.lightboxReturnFocus = null;
+        this.setState({ lightboxIndex: null }, () => { try { back?.focus(); } catch (e) { /* element gone */ } });
+    };
+
     handleClickOutside = (e: MouseEvent) => {
         if (this.state.openFilter !== "none" && this.filterRef.current && !this.filterRef.current.contains(e.target as Node)) {
             this.setState({ openFilter: "none" });
@@ -1732,9 +1805,9 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
 
             const cfg = this.props.config || {};
             const tTitle = cfg.ticketsLayerTitle || "Tickets";
-            const cTokens = (cfg.commentsTableName || "Ticket Comments").toLowerCase().replace(/_/g, " ").split(/\s+/);
-            const pTokens = (cfg.photosTableName || "Ticket Photos").toLowerCase().replace(/_/g, " ").split(/\s+/);
-            const sTokens = (cfg.surveyTableName || "Survey Responses").toLowerCase().replace(/_/g, " ").split(/\s+/);
+            const cTokens = nameTokens(cfg.commentsTableName || "Ticket Comments");
+            const pTokens = nameTokens(cfg.photosTableName || "Ticket Photos");
+            const sTokens = nameTokens(cfg.surveyTableName || "Survey Responses");
 
             const ticketsLayer = allLayers.find((l: any) => l.title === tTitle && l.type === "feature");
             if (!ticketsLayer) {
@@ -3271,14 +3344,16 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
 
     // ── Render: status announcements ───────────────────────────
     renderMsg() {
+        const tk = this.tk;
         const { err, ok } = this.state;
-        if (err) return <div role="alert" style={{ padding: "7px 12px", margin: "4px 8px", background: "#fff5f5", border: "1px solid #fecaca", borderLeft: "3px solid #dc2626", color: "#7f1d1d", borderRadius: 6, fontSize: 12, fontWeight: 500 }}>{err}</div>;
+        if (err) return <div role="alert" style={{ padding: "7px 12px", margin: "4px 8px", background: "#fff5f5", border: "1px solid #fecaca", borderLeft: `3px solid ${tk.danger}`, color: tk.danger, borderRadius: 6, fontSize: 12, fontWeight: 500 }}>{err}</div>;
         if (ok) return <div role="status" style={{ padding: "7px 12px", margin: "4px 8px", background: "#f0fdf4", border: "1px solid #bbf7d0", borderLeft: "3px solid #16a34a", color: "#14532d", borderRadius: 6, fontSize: 12, fontWeight: 500 }}>{ok}</div>;
         return null;
     }
 
     // ── Render: filter checkbox panel ──────────────────────────
     renderFilterButton(label: string, panel: FilterPanel, selected: number[], lookup: Record<number, string>, colors?: Record<number, string>) {
+        const tk = this.tk;
         const { openFilter } = this.state;
         const isOpen = openFilter === panel;
         const count = selected.length;
@@ -3298,9 +3373,9 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                     onKeyDown={(e: any) => { if (e.key === "Escape") this.setState({ openFilter: "none" }); }}
                     style={{
                         width: "100%", padding: "4px 10px", fontSize: 12, fontWeight: 600,
-                        border: count > 0 ? "1.5px solid #2563eb" : "1px solid #d1d5db",
-                        background: count > 0 ? "#eff6ff" : "#fff",
-                        color: count > 0 ? "#1d4ed8" : "#374151",
+                        border: count > 0 ? `1.5px solid ${tk.primary}` : `1px solid ${tk.divider}`,
+                        background: count > 0 ? tk.infoBg : tk.surface,
+                        color: count > 0 ? tk.primary : tk.text,
                         borderRadius: 99, cursor: "pointer", textAlign: "left", outline: "none",
                         transition: "border-color 0.15s, background 0.15s",
                     }}
@@ -3309,7 +3384,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                 >
                     {label}
                     {count > 0 && (
-                        <span aria-hidden="true" style={{ background: "#2563eb", color: "#fff", borderRadius: 99, padding: "0 5px", fontSize: 10, marginLeft: 4 }}>
+                        <span aria-hidden="true" style={{ background: tk.primary, color: tk.primaryText, borderRadius: 99, padding: "0 5px", fontSize: 10, marginLeft: 4 }}>
                             {count}
                         </span>
                     )}
@@ -3322,7 +3397,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                         aria-label={`${label} filter options`}
                         style={{
                             position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, zIndex: 100,
-                            background: "#fff", border: "1px solid #e5e7eb", borderRadius: 8,
+                            background: tk.surface, border: `1px solid ${tk.divider}`, borderRadius: 8,
                             boxShadow: "0 4px 12px rgba(0,0,0,0.12)", maxHeight: 220,
                             overflowY: "auto",
                         }}
@@ -3332,27 +3407,27 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                             const checked = selected.includes(code);
                             const cbId = `rac-cb-${panel}-${k}`;
                             return (
-                                <div key={k} style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 10px", background: checked ? "#eff6ff" : "transparent" }}>
+                                <div key={k} style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 10px", background: checked ? tk.infoBg : "transparent" }}>
                                     <input
                                         type="checkbox" id={cbId} checked={checked}
                                         onChange={() => this.toggleFilter(field, code)}
                                         aria-label={`${v}${checked ? " (selected)" : ""}`}
-                                        style={{ width: 15, height: 15, cursor: "pointer", accentColor: "#2563eb" }}
+                                        style={{ width: 15, height: 15, cursor: "pointer", accentColor: tk.primary }}
                                     />
                                     {colors && (
-                                        <span aria-hidden="true" style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: colors[code] || "#9ca3af", flexShrink: 0 }} />
+                                        <span aria-hidden="true" style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: colors[code] || tk.textSecondary, flexShrink: 0 }} />
                                     )}
-                                    <label htmlFor={cbId} style={{ fontSize: 12, color: "#1f2937", cursor: "pointer", flex: 1 }}>{v}</label>
+                                    <label htmlFor={cbId} style={{ fontSize: 12, color: tk.text, cursor: "pointer", flex: 1 }}>{v}</label>
                                 </div>
                             );
                         })}
                         {count > 0 && (
-                            <div style={{ borderTop: "1px solid #f3f4f6", padding: "5px 10px" }}>
+                            <div style={{ borderTop: `1px solid ${tk.divider}`, padding: "5px 10px" }}>
                                 <button
                                     type="button"
                                     onClick={() => this.setState({ [field]: [] } as any, () => { this.load(0); this.persistFilters(); })}
                                     aria-label={`Clear all ${label.toLowerCase()} filters`}
-                                    style={{ fontSize: 11, color: "#2563eb", cursor: "pointer", background: "none", border: "none", padding: 0, textDecoration: "underline", outline: "none" }}
+                                    style={{ fontSize: 11, color: tk.primary, cursor: "pointer", background: "none", border: "none", padding: 0, textDecoration: "underline", outline: "none" }}
                                     onFocus={(e: any) => { e.currentTarget.style.boxShadow = FOCUS_RING; }}
                                     onBlur={(e: any) => { e.currentTarget.style.boxShadow = "none"; }}
                                 >
@@ -3372,6 +3447,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
     // source the column-header Assigned filter and the reassign dropdown
     // use, so toolbar and column selections intersect cleanly.
     renderAssignedFilterButton() {
+        const tk = this.tk;
         const { openFilter, fA, deptOptions } = this.state;
         const panel: FilterPanel = "assigned";
         const isOpen = openFilter === panel;
@@ -3391,9 +3467,9 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                     onKeyDown={(e: any) => { if (e.key === "Escape") this.setState({ openFilter: "none" }); }}
                     style={{
                         width: "100%", padding: "4px 10px", fontSize: 12, fontWeight: 600,
-                        border: count > 0 ? "1.5px solid #2563eb" : "1px solid #d1d5db",
-                        background: count > 0 ? "#eff6ff" : "#fff",
-                        color: count > 0 ? "#1d4ed8" : "#374151",
+                        border: count > 0 ? `1.5px solid ${tk.primary}` : `1px solid ${tk.divider}`,
+                        background: count > 0 ? tk.infoBg : tk.surface,
+                        color: count > 0 ? tk.primary : tk.text,
                         borderRadius: 99, cursor: "pointer", textAlign: "left", outline: "none",
                         transition: "border-color 0.15s, background 0.15s",
                     }}
@@ -3402,7 +3478,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                 >
                     Assigned
                     {count > 0 && (
-                        <span aria-hidden="true" style={{ background: "#2563eb", color: "#fff", borderRadius: 99, padding: "0 5px", fontSize: 10, marginLeft: 4 }}>
+                        <span aria-hidden="true" style={{ background: tk.primary, color: tk.primaryText, borderRadius: 99, padding: "0 5px", fontSize: 10, marginLeft: 4 }}>
                             {count}
                         </span>
                     )}
@@ -3415,36 +3491,36 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                         aria-label="Assigned filter options"
                         style={{
                             position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, zIndex: 100,
-                            background: "#fff", border: "1px solid #e5e7eb", borderRadius: 8,
+                            background: tk.surface, border: `1px solid ${tk.divider}`, borderRadius: 8,
                             boxShadow: "0 4px 12px rgba(0,0,0,0.12)", maxHeight: 220,
                             overflowY: "auto",
                         }}
                     >
                         {(deptOptions || []).filter(Boolean).length === 0 && (
-                            <div style={{ padding: "8px 10px", fontSize: 12, color: "#9ca3af" }}>No departments available</div>
+                            <div style={{ padding: "8px 10px", fontSize: 12, color: tk.textSecondary }}>No departments available</div>
                         )}
                         {(deptOptions || []).filter(Boolean).map((name: string) => {
                             const checked = fA.includes(name);
                             const cbId = `rac-cb-assigned-${name.replace(/[^a-zA-Z0-9]/g, "_")}`;
                             return (
-                                <div key={name} style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 10px", background: checked ? "#eff6ff" : "transparent" }}>
+                                <div key={name} style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 10px", background: checked ? tk.infoBg : "transparent" }}>
                                     <input
                                         type="checkbox" id={cbId} checked={checked}
                                         onChange={() => this.toggleAssignedFilter(name)}
                                         aria-label={`${name}${checked ? " (selected)" : ""}`}
-                                        style={{ width: 15, height: 15, cursor: "pointer", accentColor: "#2563eb" }}
+                                        style={{ width: 15, height: 15, cursor: "pointer", accentColor: tk.primary }}
                                     />
-                                    <label htmlFor={cbId} style={{ fontSize: 12, color: "#1f2937", cursor: "pointer", flex: 1 }}>{name}</label>
+                                    <label htmlFor={cbId} style={{ fontSize: 12, color: tk.text, cursor: "pointer", flex: 1 }}>{name}</label>
                                 </div>
                             );
                         })}
                         {count > 0 && (
-                            <div style={{ borderTop: "1px solid #f3f4f6", padding: "5px 10px" }}>
+                            <div style={{ borderTop: `1px solid ${tk.divider}`, padding: "5px 10px" }}>
                                 <button
                                     type="button"
                                     onClick={() => this.setState({ fA: [], off: 0 } as any, () => { this.load(0); this.persistFilters(); })}
                                     aria-label="Clear all assigned filters"
-                                    style={{ fontSize: 11, color: "#2563eb", cursor: "pointer", background: "none", border: "none", padding: 0, textDecoration: "underline", outline: "none" }}
+                                    style={{ fontSize: 11, color: tk.primary, cursor: "pointer", background: "none", border: "none", padding: 0, textDecoration: "underline", outline: "none" }}
                                     onFocus={(e: any) => { e.currentTarget.style.boxShadow = FOCUS_RING; }}
                                     onBlur={(e: any) => { e.currentTarget.style.boxShadow = "none"; }}
                                 >
@@ -3565,6 +3641,15 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
         }
     };
 
+    // Keyboard resize: same clamp as the drag, committed straight to state.
+    nudgeColWidth = (colKey: string, delta: number) => {
+        this.setState((p: St) => {
+            const cur = p.tableColWidths[colKey] || COL_DEFAULT_WIDTH[colKey] || 100;
+            const next = Math.min(COL_MAX_WIDTH, Math.max(COL_MIN_WIDTH, cur + delta));
+            return { tableColWidths: { ...p.tableColWidths, [colKey]: next } };
+        }, () => this.persistFilters());
+    };
+
     resetColWidth = (colKey: string) => {
         this.setState((p: St) => {
             const next = { ...p.tableColWidths };
@@ -3582,6 +3667,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
     //              uses badge-flag strings)
     //   • "date" — single-day date picker (Created column)
     renderColFilterPopover(colKey: string, kind: "text" | "list" | "date") {
+        const tk = this.tk;
         const cf = this.state.tableColFilters;
 
         // The Activity column uses key="badges" in the columns array
@@ -3624,8 +3710,8 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
             top: "100%",
             left: 0,
             marginTop: 2,
-            background: "#fff",
-            border: "1px solid #d1d5db",
+            background: tk.surface,
+            border: `1px solid ${tk.divider}`,
             borderRadius: 6,
             boxShadow: "0 6px 16px rgba(0, 0, 0, 0.12)",
             padding: 8,
@@ -3633,7 +3719,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
             maxWidth: 280,
             zIndex: 50,
             fontSize: 12,
-            color: "#1f2937",
+            color: tk.text,
             textTransform: "none",        // override th's uppercase
             letterSpacing: "normal",
             fontWeight: 400,
@@ -3664,7 +3750,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                         }}
                         style={{
                             width: "100%", fontSize: 12, padding: "5px 8px",
-                            border: "1px solid #d1d5db", borderRadius: 4,
+                            border: `1px solid ${tk.divider}`, borderRadius: 4,
                             outline: "none", boxSizing: "border-box",
                             fontFamily: "monospace",
                         }}
@@ -3676,13 +3762,13 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                 onClick={() => this.setState((p: St) => ({
                                     tableColFilters: { ...p.tableColFilters, [colKey]: "" } as any,
                                 }))}
-                                style={{ fontSize: 11, padding: "3px 8px", border: "1px solid #fecaca", background: "#fef2f2", color: "#b91c1c", borderRadius: 4, cursor: "pointer", fontWeight: 600 }}
+                                style={{ fontSize: 11, padding: "3px 8px", border: "1px solid #fecaca", background: "#fef2f2", color: tk.danger, borderRadius: 4, cursor: "pointer", fontWeight: 600 }}
                             >Clear</button>
                         )}
                         <button
                             type="button"
                             onClick={close}
-                            style={{ fontSize: 11, padding: "3px 10px", border: "1px solid #2563eb", background: "#2563eb", color: "#fff", borderRadius: 4, cursor: "pointer", fontWeight: 600 }}
+                            style={{ fontSize: 11, padding: "3px 10px", border: `1px solid ${tk.primary}`, background: tk.primary, color: tk.primaryText, borderRadius: 4, cursor: "pointer", fontWeight: 600 }}
                         >Done</button>
                     </div>
                 </div>
@@ -3698,7 +3784,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
             })();
             return (
                 <div role="dialog" aria-label="Filter by date" style={popoverStyle} onClick={stop} onMouseDown={stop}>
-                    <div style={{ fontSize: 11, color: "#6b7280", marginBottom: 4 }}>
+                    <div style={{ fontSize: 11, color: tk.textSecondary, marginBottom: 4 }}>
                         Show tickets {colKey === "modified_date" ? "updated" : colKey === "resolved_date" ? "resolved" : "created"} on:
                     </div>
                     <input
@@ -3715,7 +3801,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                         }}
                         style={{
                             width: "100%", fontSize: 12, padding: "5px 8px",
-                            border: "1px solid #d1d5db", borderRadius: 4,
+                            border: `1px solid ${tk.divider}`, borderRadius: 4,
                             outline: "none", boxSizing: "border-box",
                             colorScheme: "light",
                         }}
@@ -3730,28 +3816,28 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                             disabled={value === todayISO}
                             style={{
                                 fontSize: 11, padding: "3px 8px",
-                                border: "1px solid", borderColor: value === todayISO ? "#e5e7eb" : "#d1d5db",
-                                background: value === todayISO ? "#f9fafb" : "#fff",
-                                color: value === todayISO ? "#9ca3af" : "#1f2937",
+                                border: "1px solid", borderColor: value === todayISO ? tk.divider : tk.divider,
+                                background: value === todayISO ? tk.background : tk.surface,
+                                color: value === todayISO ? tk.textSecondary : tk.text,
                                 borderRadius: 4,
                                 cursor: value === todayISO ? "not-allowed" : "pointer",
                             }}
                         >Today</button>
                     </div>
-                    <div style={{ display: "flex", gap: 6, marginTop: 8, justifyContent: "flex-end", borderTop: "1px solid #f3f4f6", paddingTop: 8 }}>
+                    <div style={{ display: "flex", gap: 6, marginTop: 8, justifyContent: "flex-end", borderTop: `1px solid ${tk.divider}`, paddingTop: 8 }}>
                         {value && (
                             <button
                                 type="button"
                                 onClick={() => this.setState((p: St) => ({
                                     tableColFilters: { ...p.tableColFilters, [colKey]: "" } as any,
                                 }))}
-                                style={{ fontSize: 11, padding: "3px 8px", border: "1px solid #fecaca", background: "#fef2f2", color: "#b91c1c", borderRadius: 4, cursor: "pointer", fontWeight: 600 }}
+                                style={{ fontSize: 11, padding: "3px 8px", border: "1px solid #fecaca", background: "#fef2f2", color: tk.danger, borderRadius: 4, cursor: "pointer", fontWeight: 600 }}
                             >Clear</button>
                         )}
                         <button
                             type="button"
                             onClick={close}
-                            style={{ fontSize: 11, padding: "3px 10px", border: "1px solid #2563eb", background: "#2563eb", color: "#fff", borderRadius: 4, cursor: "pointer", fontWeight: 600 }}
+                            style={{ fontSize: 11, padding: "3px 10px", border: `1px solid ${tk.primary}`, background: tk.primary, color: tk.primaryText, borderRadius: 4, cursor: "pointer", fontWeight: 600 }}
                         >Done</button>
                     </div>
                 </div>
@@ -3781,7 +3867,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                 onKeyDown={(e: any) => { if (e.key === "Escape") { e.stopPropagation(); close(); } }}>
                 <div style={{ maxHeight: 240, overflowY: "auto", padding: "2px 0" }}>
                     {listEntries.length === 0 && (
-                        <div style={{ padding: "8px 6px", color: "#9ca3af", fontSize: 11, fontStyle: "italic" }}>
+                        <div style={{ padding: "8px 6px", color: tk.textSecondary, fontSize: 11, fontStyle: "italic" }}>
                             No values available.
                         </div>
                     )}
@@ -3793,16 +3879,16 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                 style={{
                                     display: "flex", alignItems: "center", gap: 6,
                                     padding: "4px 6px", borderRadius: 4, cursor: "pointer",
-                                    background: checked ? "#eff6ff" : "transparent",
+                                    background: checked ? tk.infoBg : "transparent",
                                 }}
-                                onMouseEnter={(e: any) => { if (!checked) e.currentTarget.style.background = "#f3f4f6"; }}
+                                onMouseEnter={(e: any) => { if (!checked) e.currentTarget.style.background = tk.background; }}
                                 onMouseLeave={(e: any) => { if (!checked) e.currentTarget.style.background = "transparent"; }}
                             >
                                 <input
                                     type="checkbox"
                                     checked={checked}
                                     onChange={() => toggle(value)}
-                                    style={{ width: 14, height: 14, accentColor: "#2563eb", cursor: "pointer" }}
+                                    style={{ width: 14, height: 14, accentColor: tk.primary, cursor: "pointer" }}
                                 />
                                 {/* Column-specific row styling. Status / Priority
                                     re-use their table chip styles so the filter
@@ -3810,19 +3896,19 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                     rows below; Category and Assigned use plain
                                     text since they have no chip treatment. */}
                                 {colKey === "status" && (
-                                    <span style={{ fontSize: 10, color: "#fff", padding: "1px 6px", borderRadius: 99, fontWeight: 600, background: SC[value as number] || "#9ca3af" }}>{label}</span>
+                                    <span style={{ fontSize: 10, color: "#fff", padding: "1px 6px", borderRadius: 99, fontWeight: 600, background: SC[value as number] || tk.textSecondary }}>{label}</span>
                                 )}
                                 {colKey === "priority" && (
-                                    <span style={{ fontSize: 10, padding: "1px 6px", border: `1.5px solid ${PC[value as number] || "#9ca3af"}`, borderRadius: 99, fontWeight: 600, color: PC[value as number] || "#9ca3af" }}>{label}</span>
+                                    <span style={{ fontSize: 10, padding: "1px 6px", border: `1.5px solid ${PC[value as number] || tk.textSecondary}`, borderRadius: 99, fontWeight: 600, color: PC[value as number] || tk.textSecondary }}>{label}</span>
                                 )}
                                 {colKey === "category" && (
                                     <span style={{ fontSize: 12 }}>{label}</span>
                                 )}
                                 {colKey === "assigned_to" && (
-                                    <span style={{ fontSize: 12, color: "#1f2937" }}>{label}</span>
+                                    <span style={{ fontSize: 12, color: tk.text }}>{label}</span>
                                 )}
                                 {colKey === "badges" && (
-                                    <span style={{ fontSize: 12, color: "#1f2937", display: "inline-flex", alignItems: "center", gap: 5 }}>
+                                    <span style={{ fontSize: 12, color: tk.text, display: "inline-flex", alignItems: "center", gap: 5 }}>
                                         {/* Small icon matching the column's emoji
                                             so the row reads at a glance. */}
                                         {value === "comments" && <span aria-hidden="true">💬</span>}
@@ -3835,16 +3921,16 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                         );
                     })}
                 </div>
-                <div style={{ display: "flex", gap: 6, marginTop: 8, justifyContent: "space-between", borderTop: "1px solid #f3f4f6", paddingTop: 8 }}>
+                <div style={{ display: "flex", gap: 6, marginTop: 8, justifyContent: "space-between", borderTop: `1px solid ${tk.divider}`, paddingTop: 8 }}>
                     <button
                         type="button"
                         onClick={clearAll}
                         disabled={selected.length === 0}
                         style={{
                             fontSize: 11, padding: "3px 8px",
-                            border: "1px solid", borderColor: selected.length === 0 ? "#e5e7eb" : "#fecaca",
-                            background: selected.length === 0 ? "#f9fafb" : "#fef2f2",
-                            color: selected.length === 0 ? "#9ca3af" : "#b91c1c",
+                            border: "1px solid", borderColor: selected.length === 0 ? tk.divider : "#fecaca",
+                            background: selected.length === 0 ? tk.background : "#fef2f2",
+                            color: selected.length === 0 ? tk.textSecondary : tk.danger,
                             borderRadius: 4,
                             cursor: selected.length === 0 ? "not-allowed" : "pointer",
                             fontWeight: 600,
@@ -3853,7 +3939,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                     <button
                         type="button"
                         onClick={close}
-                        style={{ fontSize: 11, padding: "3px 10px", border: "1px solid #2563eb", background: "#2563eb", color: "#fff", borderRadius: 4, cursor: "pointer", fontWeight: 600 }}
+                        style={{ fontSize: 11, padding: "3px 10px", border: `1px solid ${tk.primary}`, background: tk.primary, color: tk.primaryText, borderRadius: 4, cursor: "pointer", fontWeight: 600 }}
                     >Done</button>
                 </div>
             </div>
@@ -3872,6 +3958,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
     // sort consistent with the dropdown rather than diverging into a
     // separate client-side-only sort that breaks across pages.
     renderTicketTable(visibleTickets: any[], loading: boolean) {
+        const tk = this.tk;
         const { sortOrder, commentsTable, surveyTable, tableColFilters } = this.state;
 
         // ─── Per-column quick filters ───────────────────────────
@@ -3940,12 +4027,12 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
 
         const headerCellStyle: React.CSSProperties = {
             position: "sticky", top: 0, zIndex: 2,
-            background: "#f3f4f6",
-            borderBottom: "2px solid #e5e7eb",
+            background: tk.background,
+            borderBottom: `2px solid ${tk.divider}`,
             padding: "8px 10px",
             fontSize: 10,
             fontWeight: 700,
-            color: "#374151",
+            color: tk.text,
             letterSpacing: "0.06em",
             textTransform: "uppercase",
             textAlign: "left",
@@ -3971,7 +4058,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                 style={{
                     flex: 1,
                     overflow: "auto",
-                    background: "#fff",
+                    background: tk.surface,
                     // min-width: 0 lets this flex item shrink below its
                     // content's intrinsic width (default for flex items
                     // is min-content). Without this, the table's column
@@ -3988,7 +4075,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                 onClick={() => { this.setState({ openFilter: "none" }); this.clearHoverHl(); }}
             >
                 <style>{`
-                    .rac-ttbl th, .rac-ttbl td { border-right: 1px solid #e8eaed; }
+                    .rac-ttbl th, .rac-ttbl td { border-right: 1px solid ${tk.divider}; }
                     .rac-ttbl th:last-child, .rac-ttbl td:last-child { border-right: none; }
                 `}</style>
                 <table
@@ -4180,10 +4267,10 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                                         alignItems: "center",
                                                         flexShrink: 0,
                                                         opacity: isFiltered ? 1 : 0.45,
-                                                        color: isFiltered ? "#2563eb" : "#6b7280",
+                                                        color: isFiltered ? tk.primary : tk.textSecondary,
                                                         outline: "none",
                                                     }}
-                                                    onMouseEnter={(e: any) => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.background = "#e5e7eb"; }}
+                                                    onMouseEnter={(e: any) => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.background = tk.divider; }}
                                                     onMouseLeave={(e: any) => { e.currentTarget.style.opacity = isFiltered ? "1" : "0.45"; e.currentTarget.style.background = "transparent"; }}
                                                     onFocus={(e: any) => { e.currentTarget.style.boxShadow = "0 0 0 2px #93c5fd"; }}
                                                     onBlur={(e: any) => { e.currentTarget.style.boxShadow = "none"; }}
@@ -4217,12 +4304,26 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                                     role="separator"
                                                     aria-orientation="vertical"
                                                     aria-label={`Resize ${col.label} column`}
-                                                    title="Drag to resize · double-click to reset"
+                                                    aria-valuenow={this.state.tableColWidths[col.key] || COL_DEFAULT_WIDTH[col.key] || 100}
+                                                    aria-valuemin={COL_MIN_WIDTH}
+                                                    aria-valuemax={COL_MAX_WIDTH}
+                                                    title="Drag to resize · double-click to reset · arrow keys with the keyboard"
+                                                    tabIndex={0}
                                                     onMouseDown={(e: any) => this.startColResize(e, col.key)}
                                                     onDoubleClick={(e: any) => {
                                                         e.stopPropagation();
                                                         this.resetColWidth(col.key);
                                                     }}
+                                                    // Keyboard: left and right arrows change the width by 10px,
+                                                    // Home puts the default back (Section 11.4, custom controls).
+                                                    onKeyDown={(e: any) => {
+                                                        if (e.key !== "ArrowLeft" && e.key !== "ArrowRight" && e.key !== "Home") return;
+                                                        e.preventDefault(); e.stopPropagation();
+                                                        if (e.key === "Home") { this.resetColWidth(col.key); return; }
+                                                        this.nudgeColWidth(col.key, e.key === "ArrowLeft" ? -10 : 10);
+                                                    }}
+                                                    onFocus={(e: any) => { e.currentTarget.style.outline = `2px solid ${tk.primary}`; e.currentTarget.style.outlineOffset = "-2px"; }}
+                                                    onBlur={(e: any) => { e.currentTarget.style.outline = "none"; }}
                                                     style={{
                                                         position: "absolute",
                                                         top: 0,
@@ -4236,12 +4337,12 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                                     }}
                                                     onMouseEnter={(e: any) => {
                                                         const bar = e.currentTarget.firstChild as HTMLElement;
-                                                        if (bar) { bar.style.background = "#2563eb"; bar.style.width = "3px"; }
+                                                        if (bar) { bar.style.background = tk.primary; bar.style.width = "3px"; }
                                                     }}
                                                     onMouseLeave={(e: any) => {
                                                         if (isBeingDragged) return;
                                                         const bar = e.currentTarget.firstChild as HTMLElement;
-                                                        if (bar) { bar.style.background = "#9ca3af"; bar.style.width = "2px"; }
+                                                        if (bar) { bar.style.background = tk.textSecondary; bar.style.width = "2px"; }
                                                     }}
                                                 >
                                                     {/* The visible bar — pinned to the right
@@ -4256,7 +4357,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                                             top: 0,
                                                             bottom: 0,
                                                             width: isBeingDragged ? 3 : 2,
-                                                            background: isBeingDragged ? "#2563eb" : "#9ca3af",
+                                                            background: isBeingDragged ? tk.primary : tk.textSecondary,
                                                             pointerEvents: "none",
                                                             transition: "background 80ms, width 80ms",
                                                         }}
@@ -4279,7 +4380,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                             ? Array.from({ length: 8 }, (_, i) => (
                                 <tr key={i}>
                                     {columns.map(col => (
-                                        <td key={col.key} style={{ padding: "10px", borderBottom: "1px solid #f3f4f6" }}>
+                                        <td key={col.key} style={{ padding: "10px", borderBottom: `1px solid ${tk.divider}` }}>
                                             <span style={{
                                                 display: "block",
                                                 height: 12,
@@ -4291,21 +4392,21 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                         </td>
                                     ))}
                                     {/* Spacer cell — matches header spacer */}
-                                    <td aria-hidden="true" style={{ borderBottom: "1px solid #f3f4f6" }} />
+                                    <td aria-hidden="true" style={{ borderBottom: `1px solid ${tk.divider}` }} />
                                 </tr>
                             ))
                             : filteredTickets.length === 0
                                 ? (
                                     <tr>
-                                        <td colSpan={columns.length + 1} style={{ padding: 30, textAlign: "center", color: "#9ca3af", fontStyle: "italic" }}>
+                                        <td colSpan={columns.length + 1} style={{ padding: 30, textAlign: "center", color: tk.textSecondary, fontStyle: "italic" }}>
                                             No tickets match the current filters.
                                         </td>
                                     </tr>
                                 )
                                 : filteredTickets.map((t: any) => {
-                                    const statusLabel = S[t.status] || "Unknown";
-                                    const catLabel = C[t.category] || "Unknown";
-                                    const priLabel = P[t.priority] || "Unknown";
+                                    const statusLabel = statusLabelOf(t.status);
+                                    const catLabel = categoryLabel(t.category);
+                                    const priLabel = priorityLabel(t.priority);
                                     const scLabel = this.subcatLabel(t.subcategory);
                                     const fullCat = catLabel + (scLabel ? ` — ${scLabel}` : "");
                                     const badge = this.state.badges[t.ticket_id];
@@ -4319,80 +4420,80 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                             onClick={(e: any) => { e.stopPropagation(); this.clearHoverHl(); this.select(t); }}
                                             onKeyDown={(e: any) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); this.clearHoverHl(); this.select(t); } }}
                                             onMouseEnter={(e: any) => {
-                                                e.currentTarget.style.background = "#f9fafb";
+                                                e.currentTarget.style.background = tk.background;
                                                 this.hoverHighlight(t.OBJECTID);
                                             }}
                                             onMouseLeave={(e: any) => {
-                                                if (document.activeElement !== e.currentTarget) e.currentTarget.style.background = "#fff";
+                                                if (document.activeElement !== e.currentTarget) e.currentTarget.style.background = tk.surface;
                                                 this.clearHoverHl();
                                             }}
-                                            onFocus={(e: any) => { e.currentTarget.style.background = "#eff6ff"; e.currentTarget.style.outline = "2px solid #93c5fd"; e.currentTarget.style.outlineOffset = "-2px"; }}
-                                            onBlur={(e: any) => { e.currentTarget.style.background = "#fff"; e.currentTarget.style.outline = "none"; }}
-                                            style={{ cursor: "pointer", background: "#fff", transition: "background 0.12s" }}
+                                            onFocus={(e: any) => { e.currentTarget.style.background = tk.infoBg; e.currentTarget.style.outline = "2px solid #93c5fd"; e.currentTarget.style.outlineOffset = "-2px"; }}
+                                            onBlur={(e: any) => { e.currentTarget.style.background = tk.surface; e.currentTarget.style.outline = "none"; }}
+                                            style={{ cursor: "pointer", background: tk.surface, transition: "background 0.12s" }}
                                         >
                                             {/* # */}
-                                            <td style={{ padding: "8px 10px", borderBottom: "1px solid #f3f4f6", borderLeft: `3px solid ${SC[t.status] || "#e5e7eb"}` }}>
+                                            <td style={{ padding: "8px 10px", borderBottom: `1px solid ${tk.divider}`, borderLeft: `3px solid ${SC[t.status] || tk.divider}` }}>
                                                 {t.ticket_number != null ? (
-                                                    <span style={{ fontFamily: "monospace", fontSize: 12, color: "#2563eb", fontWeight: 700 }}>#{t.ticket_number}</span>
+                                                    <span style={{ fontFamily: "monospace", fontSize: 12, color: tk.primary, fontWeight: 700 }}>#{t.ticket_number}</span>
                                                 ) : (
-                                                    <span style={{ color: "#9ca3af", fontSize: 11 }}>—</span>
+                                                    <span style={{ color: tk.textSecondary, fontSize: 11 }}>—</span>
                                                 )}
                                             </td>
                                             {/* Status chip */}
-                                            <td style={{ padding: "8px 10px", borderBottom: "1px solid #f3f4f6" }}>
-                                                <span style={{ display: "inline-block", fontSize: 10, color: "#fff", padding: "2px 7px", borderRadius: 99, fontWeight: 600, background: SC[t.status] || "#9ca3af", letterSpacing: "0.02em", whiteSpace: "normal" }}>{statusLabel}</span>
+                                            <td style={{ padding: "8px 10px", borderBottom: `1px solid ${tk.divider}` }}>
+                                                <span style={{ display: "inline-block", fontSize: 10, color: "#fff", padding: "2px 7px", borderRadius: 99, fontWeight: 600, background: SC[t.status] || tk.textSecondary, letterSpacing: "0.02em", whiteSpace: "normal" }}>{statusLabel}</span>
                                             </td>
                                             {/* Priority chip */}
-                                            <td style={{ padding: "8px 10px", borderBottom: "1px solid #f3f4f6" }}>
-                                                <span style={{ display: "inline-block", fontSize: 10, padding: "1px 6px", border: `1.5px solid ${PC[t.priority] || "#9ca3af"}`, borderRadius: 99, fontWeight: 600, color: PC[t.priority] || "#9ca3af", whiteSpace: "normal" }}>{priLabel}</span>
+                                            <td style={{ padding: "8px 10px", borderBottom: `1px solid ${tk.divider}` }}>
+                                                <span style={{ display: "inline-block", fontSize: 10, padding: "1px 6px", border: `1.5px solid ${PC[t.priority] || tk.textSecondary}`, borderRadius: 99, fontWeight: 600, color: PC[t.priority] || tk.textSecondary, whiteSpace: "normal" }}>{priLabel}</span>
                                             </td>
                                             {/* Category */}
-                                            <td style={{ padding: "8px 10px", borderBottom: "1px solid #f3f4f6", color: "#111827", verticalAlign: "top" }} title={fullCat}>
+                                            <td style={{ padding: "8px 10px", borderBottom: `1px solid ${tk.divider}`, color: tk.text, verticalAlign: "top" }} title={fullCat}>
                                                 <div style={{ fontWeight: 600, fontSize: 12, lineHeight: 1.3, whiteSpace: "normal", overflowWrap: "break-word" }}>{catLabel}</div>
-                                                {scLabel && <div style={{ fontSize: 11, color: "#6b7280", whiteSpace: "normal", overflowWrap: "break-word" }}>{scLabel}</div>}
+                                                {scLabel && <div style={{ fontSize: 11, color: tk.textSecondary, whiteSpace: "normal", overflowWrap: "break-word" }}>{scLabel}</div>}
                                             </td>
                                             {/* Assigned to */}
-                                            <td style={{ padding: "8px 10px", borderBottom: "1px solid #f3f4f6", verticalAlign: "top" }} title={t.assigned_to || undefined}>
+                                            <td style={{ padding: "8px 10px", borderBottom: `1px solid ${tk.divider}`, verticalAlign: "top" }} title={t.assigned_to || undefined}>
                                                 {t.assigned_to ? (
-                                                    <span style={{ fontSize: 12, color: "#2563eb", fontWeight: 600, whiteSpace: "normal", overflowWrap: "break-word" }}>{t.assigned_to}</span>
+                                                    <span style={{ fontSize: 12, color: tk.primary, fontWeight: 600, whiteSpace: "normal", overflowWrap: "break-word" }}>{t.assigned_to}</span>
                                                 ) : (
-                                                    <span style={{ color: "#9ca3af", fontSize: 11 }}>—</span>
+                                                    <span style={{ color: tk.textSecondary, fontSize: 11 }}>—</span>
                                                 )}
                                             </td>
                                             {/* Created date */}
-                                            <td style={{ padding: "8px 10px", borderBottom: "1px solid #f3f4f6", color: "#6b7280", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={fmt(t.created_date)}>
+                                            <td style={{ padding: "8px 10px", borderBottom: `1px solid ${tk.divider}`, color: tk.textSecondary, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={fmt(t.created_date)}>
                                                 {agoDate(t.created_date)}
                                             </td>
                                             {/* Updated date */}
-                                            <td style={{ padding: "8px 10px", borderBottom: "1px solid #f3f4f6", color: "#6b7280", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={fmt(t.modified_date)}>
-                                                {t.modified_date ? agoDate(t.modified_date) : <span style={{ color: "#d1d5db" }}>—</span>}
+                                            <td style={{ padding: "8px 10px", borderBottom: `1px solid ${tk.divider}`, color: tk.textSecondary, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={fmt(t.modified_date)}>
+                                                {t.modified_date ? agoDate(t.modified_date) : <span style={{ color: tk.divider }}>—</span>}
                                             </td>
                                             {/* Resolved date */}
-                                            <td style={{ padding: "8px 10px", borderBottom: "1px solid #f3f4f6", color: "#6b7280", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={fmt(t.resolved_date)}>
-                                                {t.resolved_date ? agoDate(t.resolved_date) : <span style={{ color: "#d1d5db" }}>—</span>}
+                                            <td style={{ padding: "8px 10px", borderBottom: `1px solid ${tk.divider}`, color: tk.textSecondary, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={fmt(t.resolved_date)}>
+                                                {t.resolved_date ? agoDate(t.resolved_date) : <span style={{ color: tk.divider }}>—</span>}
                                             </td>
                                             {/* Badges */}
-                                            <td style={{ padding: "8px 10px", borderBottom: "1px solid #f3f4f6", textAlign: "center" }}>
+                                            <td style={{ padding: "8px 10px", borderBottom: `1px solid ${tk.divider}`, textAlign: "center" }}>
                                                 {badge && (badge.comments > 0 || badge.photos > 0 || badge.survey) ? (
                                                     <div style={{ display: "flex", flexWrap: "wrap", gap: 4, alignItems: "center", justifyContent: "center" }}>
                                                         {badge.comments > 0 && (
-                                                            <span title={`${badge.comments} comment${badge.comments !== 1 ? "s" : ""}`} style={{ fontSize: 10, background: "#eff6ff", color: "#1d4ed8", borderRadius: 99, padding: "1px 6px", fontWeight: 600, border: "1px solid #bfdbfe" }}>💬 {badge.comments}</span>
+                                                            <span title={`${badge.comments} comment${badge.comments !== 1 ? "s" : ""}`} style={{ fontSize: 10, background: tk.infoBg, color: tk.primary, borderRadius: 99, padding: "1px 6px", fontWeight: 600, border: "1px solid #bfdbfe" }}>💬 {badge.comments}</span>
                                                         )}
                                                         {badge.photos > 0 && (
-                                                            <span title={`${badge.photos} photo${badge.photos !== 1 ? "s" : ""}`} style={{ fontSize: 10, background: "#fffbeb", color: "#92400e", borderRadius: 99, padding: "1px 6px", fontWeight: 600, border: "1px solid #fde68a" }}>📷 {badge.photos}</span>
+                                                            <span title={`${badge.photos} photo${badge.photos !== 1 ? "s" : ""}`} style={{ fontSize: 10, background: tk.warningBg, color: tk.warning, borderRadius: 99, padding: "1px 6px", fontWeight: 600, border: "1px solid #fde68a" }}>📷 {badge.photos}</span>
                                                         )}
                                                         {badge.survey && (
                                                             <span title="Survey response received" style={{ fontSize: 10, background: "#f0fdf4", color: "#15803d", borderRadius: 99, padding: "1px 6px", fontWeight: 600, border: "1px solid #bbf7d0" }}>⭐</span>
                                                         )}
                                                     </div>
                                                 ) : (
-                                                    <span style={{ color: "#d1d5db", fontSize: 11 }}>—</span>
+                                                    <span style={{ color: tk.divider, fontSize: 11 }}>—</span>
                                                 )}
                                             </td>
                                             {/* Spacer cell — absorbs slack
                                                 when container > column sum,
                                                 stays 0 otherwise. */}
-                                            <td aria-hidden="true" style={{ borderBottom: "1px solid #f3f4f6" }} />
+                                            <td aria-hidden="true" style={{ borderBottom: `1px solid ${tk.divider}` }} />
                                         </tr>
                                     );
                                 })
@@ -4405,6 +4506,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
 
     // ── Render: list ───────────────────────────────────────────
     renderList() {
+        const tk = this.tk;
         const { tickets, loading, exporting, total, off, search, fS, fC, fP, fA, fDateFrom, fDateTo,
             fHasComments, fHasSurvey, fHasPhotos, ready, extentFilter, sortOrder } = this.state;
 
@@ -4430,12 +4532,12 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
         const pageNum = Math.floor(off / PG) + 1;
         const totalPages = Math.max(1, Math.ceil(total / PG));
 
-        if (!ready) return <div role="status" style={{ padding: 20, textAlign: "center", color: "#555" }}>Connecting to map...</div>;
+        if (!ready) return <div role="status" style={{ padding: 20, textAlign: "center", color: tk.textSecondary }}>Connecting to map...</div>;
 
         return (
             <div style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }} role="region" aria-label="Ticket list">
 
-                <div ref={this.filterRef} style={{ padding: "10px 10px 0", borderBottom: "1px solid #e5e7eb", background: "#fff" }}>
+                <div ref={this.filterRef} style={{ padding: "10px 10px 0", borderBottom: `1px solid ${tk.divider}`, background: tk.surface }}>
 
                     {/* Search row */}
                     <div style={{ display: "flex", gap: 6, marginBottom: 8 }} role="search" aria-label="Search tickets">
@@ -4451,6 +4553,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                         <Button size="sm" type="primary" onClick={() => this.setState({ off: 0, openFilter: "none" }, () => { this.load(0); this.persistFilters(); })} aria-label="Search">
                             Search
                         </Button>
+                        {this.renderHelpButton()}
                     </div>
 
                     {/* Filter buttons row */}
@@ -4506,9 +4609,9 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                     )}
                                     style={{
                                         fontSize: 11, fontWeight: 600, padding: "3px 10px",
-                                        border: fHasComments ? "1.5px solid #2563eb" : "1px solid #d1d5db",
-                                        background: fHasComments ? "#eff6ff" : "#fff",
-                                        color: fHasComments ? "#1d4ed8" : "#6b7280",
+                                        border: fHasComments ? `1.5px solid ${tk.primary}` : `1px solid ${tk.divider}`,
+                                        background: fHasComments ? tk.infoBg : tk.surface,
+                                        color: fHasComments ? tk.primary : tk.textSecondary,
                                         borderRadius: 99, cursor: "pointer", outline: "none",
                                         transition: "border-color 0.15s, background 0.15s",
                                     }}
@@ -4529,9 +4632,9 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                     )}
                                     style={{
                                         fontSize: 11, fontWeight: 600, padding: "3px 10px",
-                                        border: fHasSurvey ? "1.5px solid #16a34a" : "1px solid #d1d5db",
-                                        background: fHasSurvey ? "#f0fdf4" : "#fff",
-                                        color: fHasSurvey ? "#15803d" : "#6b7280",
+                                        border: fHasSurvey ? "1.5px solid #16a34a" : `1px solid ${tk.divider}`,
+                                        background: fHasSurvey ? "#f0fdf4" : tk.surface,
+                                        color: fHasSurvey ? "#15803d" : tk.textSecondary,
                                         borderRadius: 99, cursor: "pointer", outline: "none",
                                         transition: "border-color 0.15s, background 0.15s",
                                     }}
@@ -4551,9 +4654,9 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                 )}
                                 style={{
                                     fontSize: 11, fontWeight: 600, padding: "3px 10px",
-                                    border: fHasPhotos ? "1.5px solid #b45309" : "1px solid #d1d5db",
-                                    background: fHasPhotos ? "#fffbeb" : "#fff",
-                                    color: fHasPhotos ? "#92400e" : "#6b7280",
+                                    border: fHasPhotos ? `1.5px solid ${tk.warning}` : `1px solid ${tk.divider}`,
+                                    background: fHasPhotos ? tk.warningBg : tk.surface,
+                                    color: fHasPhotos ? tk.warning : tk.textSecondary,
                                     borderRadius: 99, cursor: "pointer", outline: "none",
                                     transition: "border-color 0.15s, background 0.15s",
                                 }}
@@ -4567,33 +4670,33 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
 
                     {/* Date range row */}
                     <div style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 8, flexWrap: "wrap" }}>
-                        <label style={{ fontSize: 11, color: "#6b7280", fontWeight: 600, whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: "0.05em" }}>Date</label>
+                        <label style={{ fontSize: 11, color: tk.textSecondary, fontWeight: 600, whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: "0.05em" }}>Date</label>
                         <input
                             type="date" value={fDateFrom}
                             aria-label="Filter from date"
                             title="Filter tickets created on or after this date"
-                            style={{ fontSize: 12, padding: "3px 8px", border: "1px solid #d1d5db", borderRadius: 6, flex: 1, minWidth: 120, color: "#1f2937", outline: "none" }}
+                            style={{ fontSize: 12, padding: "3px 8px", border: `1px solid ${tk.divider}`, borderRadius: 6, flex: 1, minWidth: 120, color: tk.text, outline: "none" }}
                             onChange={(e: any) => this.setState({ fDateFrom: e.target.value, off: 0 }, () => { this.load(0); this.persistFilters(); })}
                         />
-                        <span style={{ fontSize: 11, color: "#9ca3af" }}>to</span>
+                        <span style={{ fontSize: 11, color: tk.textSecondary }}>to</span>
                         <input
                             type="date" value={fDateTo}
                             aria-label="Filter to date"
                             title="Filter tickets created on or before this date"
-                            style={{ fontSize: 12, padding: "3px 8px", border: "1px solid #d1d5db", borderRadius: 6, flex: 1, minWidth: 120, color: "#1f2937", outline: "none" }}
+                            style={{ fontSize: 12, padding: "3px 8px", border: `1px solid ${tk.divider}`, borderRadius: 6, flex: 1, minWidth: 120, color: tk.text, outline: "none" }}
                             onChange={(e: any) => this.setState({ fDateTo: e.target.value, off: 0 }, () => { this.load(0); this.persistFilters(); })}
                         />
                     </div>
 
                     {/* Sort + extent filter row */}
                     <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", paddingBottom: 10 }}>
-                        <label htmlFor="rac-sort" style={{ fontSize: 11, color: "#6b7280", fontWeight: 600, whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: "0.05em" }}>Sort</label>
+                        <label htmlFor="rac-sort" style={{ fontSize: 11, color: tk.textSecondary, fontWeight: 600, whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: "0.05em" }}>Sort</label>
                         <select
                             id="rac-sort"
                             value={sortOrder}
                             aria-label="Sort tickets"
                             title="Choose sort order for ticket list"
-                            style={{ fontSize: 12, padding: "3px 8px", border: "1px solid #d1d5db", borderRadius: 6, flex: 1, minWidth: 120, background: "#fff", color: "#1f2937", outline: "none" }}
+                            style={{ fontSize: 12, padding: "3px 8px", border: `1px solid ${tk.divider}`, borderRadius: 6, flex: 1, minWidth: 120, background: tk.surface, color: tk.text, outline: "none" }}
                             onChange={(e: any) => this.setState({ sortOrder: e.target.value, off: 0 }, () => { this.load(0); this.persistFilters(); })}
                         >
                             {SORT_OPTS.filter(o => {
@@ -4610,7 +4713,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                         <div
                             role="radiogroup"
                             aria-label="List view style"
-                            style={{ display: "inline-flex", border: "1px solid #d1d5db", borderRadius: 6, overflow: "hidden", flexShrink: 0 }}
+                            style={{ display: "inline-flex", border: `1px solid ${tk.divider}`, borderRadius: 6, overflow: "hidden", flexShrink: 0 }}
                         >
                             {(["cards", "table"] as const).map((mode, i) => {
                                 const active = this.state.viewMode === mode;
@@ -4633,18 +4736,18 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                             display: "inline-flex", alignItems: "center", gap: 4,
                                             fontSize: 11, fontWeight: 600,
                                             padding: "4px 10px",
-                                            background: active ? "#2563eb" : "#fff",
-                                            color: active ? "#fff" : "#374151",
+                                            background: active ? tk.primary : tk.surface,
+                                            color: active ? tk.primaryText : tk.text,
                                             border: "none",
-                                            borderLeft: i > 0 ? "1px solid #d1d5db" : "none",
+                                            borderLeft: i > 0 ? `1px solid ${tk.divider}` : "none",
                                             cursor: active ? "default" : "pointer",
                                             outline: "none",
                                             letterSpacing: "0.03em",
                                             textTransform: "uppercase",
                                             transition: "background 0.15s",
                                         }}
-                                        onMouseEnter={(e: any) => { if (!active) e.currentTarget.style.background = "#f3f4f6"; }}
-                                        onMouseLeave={(e: any) => { if (!active) e.currentTarget.style.background = "#fff"; }}
+                                        onMouseEnter={(e: any) => { if (!active) e.currentTarget.style.background = tk.background; }}
+                                        onMouseLeave={(e: any) => { if (!active) e.currentTarget.style.background = tk.surface; }}
                                         onFocus={(e: any) => { e.currentTarget.style.boxShadow = "inset 0 0 0 2px #93c5fd"; }}
                                         onBlur={(e: any) => { e.currentTarget.style.boxShadow = "none"; }}
                                     >
@@ -4670,7 +4773,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                             })}
                         </div>
                         <label
-                            style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, color: extentFilter ? "#2563eb" : "#6b7280", cursor: "pointer", userSelect: "none", whiteSpace: "nowrap" }}
+                            style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, color: extentFilter ? tk.primary : tk.textSecondary, cursor: "pointer", userSelect: "none", whiteSpace: "nowrap" }}
                             title="Only show tickets visible in the current map view"
                         >
                             <input
@@ -4678,7 +4781,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                 checked={extentFilter}
                                 onChange={() => this.setState((p: St) => ({ extentFilter: !p.extentFilter, off: 0 }), () => this.load(0))}
                                 aria-label="Filter by current map extent"
-                                style={{ width: 15, height: 15, accentColor: "#2563eb" }}
+                                style={{ width: 15, height: 15, accentColor: tk.primary }}
                             />
                             Map extent
                         </label>
@@ -4686,10 +4789,10 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                 </div>
 
                 {/* Result count + export + refresh */}
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "5px 10px", borderBottom: "1px solid #f3f4f6", background: "#fff" }}>
-                    <div role="status" aria-live="polite" style={{ fontSize: 11, color: "#9ca3af" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "5px 10px", borderBottom: `1px solid ${tk.divider}`, background: tk.surface }}>
+                    <div role="status" aria-live="polite" style={{ fontSize: 11, color: tk.textSecondary }}>
                         {total > 0
-                            ? <><strong style={{ color: "#374151" }}>{end - off}</strong> of <strong style={{ color: "#374151" }}>{total.toLocaleString()}</strong> tickets &middot; pg {pageNum}/{totalPages}</>
+                            ? <><strong style={{ color: tk.text }}>{end - off}</strong> of <strong style={{ color: tk.text }}>{total.toLocaleString()}</strong> tickets &middot; pg {pageNum}/{totalPages}</>
                             : "No tickets found"
                         }
                     </div>
@@ -4705,17 +4808,17 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                             style={{
                                 display: "flex", alignItems: "center", gap: 4,
                                 fontSize: 12, fontWeight: 500,
-                                color: (exporting || loading || total === 0) ? "#9ca3af" : "#15803d",
+                                color: (exporting || loading || total === 0) ? tk.textSecondary : "#15803d",
                                 padding: "4px 10px",
                                 border: "1px solid",
-                                borderColor: (exporting || loading || total === 0) ? "#e5e7eb" : "#bbf7d0",
+                                borderColor: (exporting || loading || total === 0) ? tk.divider : "#bbf7d0",
                                 borderRadius: 6,
-                                background: (exporting || loading || total === 0) ? "#f9fafb" : "#f0fdf4",
+                                background: (exporting || loading || total === 0) ? tk.background : "#f0fdf4",
                                 cursor: (exporting || loading || total === 0) ? "not-allowed" : "pointer",
                                 outline: "none",
                             }}
                             onMouseEnter={(e: any) => { if (!exporting && !loading && total > 0) e.currentTarget.style.background = "#dcfce7"; }}
-                            onMouseLeave={(e: any) => { e.currentTarget.style.background = (exporting || loading || total === 0) ? "#f9fafb" : "#f0fdf4"; }}
+                            onMouseLeave={(e: any) => { e.currentTarget.style.background = (exporting || loading || total === 0) ? tk.background : "#f0fdf4"; }}
                             onFocus={(e: any) => { e.currentTarget.style.boxShadow = FOCUS_RING; }}
                             onBlur={(e: any) => { e.currentTarget.style.boxShadow = "none"; }}
                         >
@@ -4734,14 +4837,14 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                             disabled={loading}
                             style={{
                                 display: "flex", alignItems: "center", gap: 4,
-                                fontSize: 12, fontWeight: 500, color: loading ? "#9ca3af" : "#374151",
-                                padding: "4px 10px", border: "1px solid #e5e7eb", borderRadius: 6,
-                                background: loading ? "#f9fafb" : "#fff",
+                                fontSize: 12, fontWeight: 500, color: loading ? tk.textSecondary : tk.text,
+                                padding: "4px 10px", border: `1px solid ${tk.divider}`, borderRadius: 6,
+                                background: loading ? tk.background : tk.surface,
                                 cursor: loading ? "not-allowed" : "pointer",
                                 outline: "none",
                             }}
-                            onMouseEnter={(e: any) => { if (!loading) e.currentTarget.style.background = "#f3f4f6"; }}
-                            onMouseLeave={(e: any) => { e.currentTarget.style.background = loading ? "#f9fafb" : "#fff"; }}
+                            onMouseEnter={(e: any) => { if (!loading) e.currentTarget.style.background = tk.background; }}
+                            onMouseLeave={(e: any) => { e.currentTarget.style.background = loading ? tk.background : tk.surface; }}
                             onFocus={(e: any) => { e.currentTarget.style.boxShadow = FOCUS_RING; }}
                             onBlur={(e: any) => { e.currentTarget.style.boxShadow = "none"; }}
                         >
@@ -4754,22 +4857,30 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                     </div>
                 </div>
 
+                {/* First-run hint (Section 10.5): shown until dismissed once per browser. */}
+                {this.helpEnabled() && !this.state.hintDismissed && !loading && (
+                    <FirstRunHint
+                        title={t("firstRunTitle")} body={t("firstRunBody")} linkLabel={t("firstRunHelpLink")} dismissLabel={t("firstRunDismiss")}
+                        onOpenHelp={this.openHelp} onDismiss={this.dismissHint}
+                    />
+                )}
+
                 {/* Ticket cards OR table — driven by viewMode toggle */}
                 {this.state.viewMode === "table"
                     ? this.renderTicketTable(visibleTickets, loading)
                     : (
-                        <div style={{ flex: 1, overflowY: "auto", padding: "6px 8px", background: "#f9fafb" }} role="list" aria-label="Tickets" aria-busy={loading} onClick={() => { this.setState({ openFilter: "none" }); this.clearHoverHl(); }}>
+                        <div style={{ flex: 1, overflowY: "auto", padding: "6px 8px", background: tk.background }} role="list" aria-label="Tickets" aria-busy={loading} onClick={() => { this.setState({ openFilter: "none" }); this.clearHoverHl(); }}>
                             {loading
-                                ? Array.from({ length: 5 }, (_, i) => <SkeletonCard key={i} />)
+                                ? Array.from({ length: 5 }, (_, i) => <SkeletonCard key={i} tk={tk} />)
                                 : visibleTickets.map((t: any) => {
-                                    const statusLabel = S[t.status] || "Unknown";
-                                    const catLabel = C[t.category] || "Unknown";
-                                    const priLabel = P[t.priority] || "Unknown";
+                                    const statusLabel = statusLabelOf(t.status);
+                                    const catLabel = categoryLabel(t.category);
+                                    const priLabel = priorityLabel(t.priority);
                                     const scLabel = this.subcatLabel(t.subcategory);
                                     const fullCat = catLabel + (scLabel ? ` - ${scLabel}` : "");
                                     const cardLabel = `Ticket ${t.ticket_number != null ? "#" + t.ticket_number + ", " : ""}${fullCat}, status ${statusLabel}, priority ${priLabel}, ${agoFull(t.created_date)}`;
                                     const badge = this.state.badges[t.ticket_id];
-                                    const leftColor = SC[t.status] || "#e5e7eb";
+                                    const leftColor = SC[t.status] || tk.divider;
                                     return (
                                         <div
                                             key={t.OBJECTID}
@@ -4779,35 +4890,35 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                             title={`Click to view — ${fullCat}`}
                                             onClick={(e: any) => { e.stopPropagation(); this.clearHoverHl(); this.select(t); }}
                                             onKeyDown={(e: any) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); this.clearHoverHl(); this.select(t); } }}
-                                            style={{ padding: "10px 12px", marginBottom: 6, border: "1px solid #e5e7eb", borderLeft: `3px solid ${leftColor}`, borderRadius: 6, cursor: "pointer", outline: "none", background: "#fff", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", transition: "box-shadow 0.15s" }}
+                                            style={{ padding: "10px 12px", marginBottom: 6, border: `1px solid ${tk.divider}`, borderLeft: `3px solid ${leftColor}`, borderRadius: 6, cursor: "pointer", outline: "none", background: tk.surface, boxShadow: "0 1px 3px rgba(0,0,0,0.04)", transition: "box-shadow 0.15s" }}
                                             onFocus={(e: any) => { e.currentTarget.style.boxShadow = FOCUS_RING; e.currentTarget.style.borderColor = "#93c5fd"; }}
-                                            onBlur={(e: any) => { e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)"; e.currentTarget.style.borderColor = "#e5e7eb"; (e.currentTarget as HTMLElement).style.borderLeftColor = leftColor; }}
+                                            onBlur={(e: any) => { e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)"; e.currentTarget.style.borderColor = tk.divider; (e.currentTarget as HTMLElement).style.borderLeftColor = leftColor; }}
                                             onMouseEnter={(e: any) => { e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.08)"; this.hoverHighlight(t.OBJECTID); }}
                                             onMouseLeave={(e: any) => { if (document.activeElement !== e.currentTarget) { e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)"; } this.clearHoverHl(); }}
                                         >
                                             <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 5 }}>
-                                                <span style={{ fontSize: 10, color: "#fff", padding: "2px 7px", borderRadius: 99, fontWeight: 600, background: SC[t.status] || "#9ca3af", letterSpacing: "0.02em" }}>{statusLabel}</span>
-                                                <span style={{ fontSize: 10, padding: "1px 6px", border: `1.5px solid ${PC[t.priority] || "#9ca3af"}`, borderRadius: 99, fontWeight: 600, color: PC[t.priority] || "#9ca3af" }}>{priLabel}</span>
+                                                <span style={{ fontSize: 10, color: "#fff", padding: "2px 7px", borderRadius: 99, fontWeight: 600, background: SC[t.status] || tk.textSecondary, letterSpacing: "0.02em" }}>{statusLabel}</span>
+                                                <span style={{ fontSize: 10, padding: "1px 6px", border: `1.5px solid ${PC[t.priority] || tk.textSecondary}`, borderRadius: 99, fontWeight: 600, color: PC[t.priority] || tk.textSecondary }}>{priLabel}</span>
                                                 {t.ticket_number != null && (
-                                                    <span style={{ fontSize: 12, color: "#2563eb", fontFamily: "monospace", fontWeight: 700 }}>#{t.ticket_number}</span>
+                                                    <span style={{ fontSize: 12, color: tk.primary, fontFamily: "monospace", fontWeight: 700 }}>#{t.ticket_number}</span>
                                                 )}
-                                                <span style={{ marginLeft: "auto", fontSize: 11, color: "#9ca3af" }} title={fmt(t.created_date)}>{ago(t.created_date)}</span>
+                                                <span style={{ marginLeft: "auto", fontSize: 11, color: tk.textSecondary }} title={fmt(t.created_date)}>{ago(t.created_date)}</span>
                                             </div>
-                                            <div style={{ fontWeight: 600, fontSize: 13, color: "#111827", marginBottom: 2 }}>{fullCat}</div>
-                                            <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 4, lineHeight: 1.4 }}>
+                                            <div style={{ fontWeight: 600, fontSize: 13, color: tk.text, marginBottom: 2 }}>{fullCat}</div>
+                                            <div style={{ fontSize: 12, color: tk.textSecondary, marginBottom: 4, lineHeight: 1.4 }}>
                                                 {(t.description || "No description").substring(0, 120)}
                                             </div>
-                                            <div style={{ display: "flex", gap: 8, fontSize: 11, color: "#9ca3af", flexWrap: "wrap" }}>
+                                            <div style={{ display: "flex", gap: 8, fontSize: 11, color: tk.textSecondary, flexWrap: "wrap" }}>
                                                 {t.address_submitted && <span>{t.address_submitted}</span>}
-                                                {t.assigned_to && <span style={{ color: "#2563eb", fontWeight: 600 }}>{t.assigned_to}</span>}
+                                                {t.assigned_to && <span style={{ color: tk.primary, fontWeight: 600 }}>{t.assigned_to}</span>}
                                             </div>
                                             {badge && (badge.comments > 0 || badge.photos > 0 || badge.survey) && (
                                                 <div style={{ display: "flex", gap: 5, marginTop: 6, flexWrap: "wrap" }}>
                                                     {badge.comments > 0 && (
-                                                        <span title={`${badge.comments} comment${badge.comments !== 1 ? "s" : ""}`} style={{ fontSize: 10, background: "#eff6ff", color: "#1d4ed8", borderRadius: 99, padding: "1px 7px", fontWeight: 600, border: "1px solid #bfdbfe" }}>💬 {badge.comments}</span>
+                                                        <span title={`${badge.comments} comment${badge.comments !== 1 ? "s" : ""}`} style={{ fontSize: 10, background: tk.infoBg, color: tk.primary, borderRadius: 99, padding: "1px 7px", fontWeight: 600, border: "1px solid #bfdbfe" }}>💬 {badge.comments}</span>
                                                     )}
                                                     {badge.photos > 0 && (
-                                                        <span title={`${badge.photos} photo${badge.photos !== 1 ? "s" : ""}`} style={{ fontSize: 10, background: "#fffbeb", color: "#92400e", borderRadius: 99, padding: "1px 7px", fontWeight: 600, border: "1px solid #fde68a" }}>📷 {badge.photos}</span>
+                                                        <span title={`${badge.photos} photo${badge.photos !== 1 ? "s" : ""}`} style={{ fontSize: 10, background: tk.warningBg, color: tk.warning, borderRadius: 99, padding: "1px 7px", fontWeight: 600, border: "1px solid #fde68a" }}>📷 {badge.photos}</span>
                                                     )}
                                                     {badge.survey && (
                                                         <span title="Survey response received" style={{ fontSize: 10, background: "#f0fdf4", color: "#15803d", borderRadius: 99, padding: "1px 7px", fontWeight: 600, border: "1px solid #bbf7d0" }}>⭐ Survey</span>
@@ -4822,12 +4933,12 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                     )}
 
                 {/* Pagination */}
-                <nav aria-label="Ticket list pagination" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "6px 10px", borderTop: "1px solid #e5e7eb", background: "#fff" }}>
+                <nav aria-label="Ticket list pagination" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "6px 10px", borderTop: `1px solid ${tk.divider}`, background: tk.surface }}>
                     <div style={{ display: "flex", gap: 4 }}>
                         <Button size="sm" disabled={off === 0} onClick={() => this.load(0)} aria-label="First page">« First</Button>
                         <Button size="sm" disabled={off === 0} onClick={() => this.load(Math.max(0, off - PG))} aria-label="Previous page">← Prev</Button>
                     </div>
-                    <span style={{ fontSize: 11, color: "#9ca3af" }} aria-live="polite">Page {pageNum} of {totalPages}</span>
+                    <span style={{ fontSize: 11, color: tk.textSecondary }} aria-live="polite">Page {pageNum} of {totalPages}</span>
                     <div style={{ display: "flex", gap: 4 }}>
                         <Button size="sm" disabled={end >= total} onClick={() => this.load(off + PG)} aria-label="Next page">Next →</Button>
                         <Button size="sm" disabled={end >= total} onClick={() => this.load((totalPages - 1) * PG)} aria-label="Last page">Last »</Button>
@@ -4839,6 +4950,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
 
     // ── Render: detail ─────────────────────────────────────────
     renderDetail() {
+        const tk = this.tk;
         const { sel: t, eS, eP, eA, eC, eSC, saving, comments, photos, nc, np, nct, tab, survey, catSubcatOptions, deptOptions, attFile, attPreview, attError, attUploading } = this.state;
         // Compute once — used by banner, save button, and save() method
         const currentIntegrityWarn = integrityWarning(eA, eC, eSC, deptOptions, catSubcatOptions);
@@ -4857,14 +4969,17 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
         return (
             <div style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }} role="region" aria-label="Ticket detail">
                 {/* Header */}
-                <div style={{ padding: "10px 12px", borderBottom: "1px solid #e5e7eb", background: "#fff" }}>
-                    <Button size="sm" onClick={this.back} title="Return to ticket list" aria-label="Back to ticket list">← Back</Button>
-                    <div style={{ fontSize: 14, fontWeight: 600, marginTop: 8, color: "#111827" }}>{detailTitle}</div>
-                    <div style={{ fontSize: 13, color: "#2563eb", fontFamily: "monospace", fontWeight: 700 }}>#{t.ticket_number}</div>
+                <div style={{ padding: "10px 12px", borderBottom: `1px solid ${tk.divider}`, background: tk.surface }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 }}>
+                        <Button size="sm" onClick={this.back} title="Return to ticket list" aria-label="Back to ticket list">← Back</Button>
+                        {this.renderHelpButton()}
+                    </div>
+                    <div style={{ fontSize: 14, fontWeight: 600, marginTop: 8, color: tk.text }}>{detailTitle}</div>
+                    <div style={{ fontSize: 13, color: tk.primary, fontFamily: "monospace", fontWeight: 700 }}>#{t.ticket_number}</div>
                 </div>
 
                 {/* Tab bar */}
-                <div role="tablist" aria-label="Ticket detail tabs" style={{ display: "flex", padding: "0 10px", borderBottom: "1px solid #e5e7eb", background: "#fff", flexWrap: "wrap" }}>
+                <div role="tablist" aria-label="Ticket detail tabs" style={{ display: "flex", padding: "0 10px", borderBottom: `1px solid ${tk.divider}`, background: tk.surface, flexWrap: "wrap" }}>
                     {tabDef.map(td => {
                         const active = tab === td.id;
                         return (
@@ -4876,56 +4991,56 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                 style={{
                                     padding: "8px 12px", cursor: "pointer", fontSize: 12,
                                     fontWeight: active ? 600 : 400,
-                                    color: active ? "#2563eb" : "#6b7280",
+                                    color: active ? tk.primary : tk.textSecondary,
                                     background: "none", border: "none",
-                                    borderBottom: active ? "2px solid #2563eb" : "2px solid transparent",
+                                    borderBottom: active ? `2px solid ${tk.primary}` : "2px solid transparent",
                                     outline: "none",
                                     transition: "color 0.15s, border-color 0.15s",
                                 }}
                                 onFocus={(e: any) => { e.currentTarget.style.boxShadow = FOCUS_RING; }}
                                 onBlur={(e: any) => { e.currentTarget.style.boxShadow = "none"; }}
                             >
-                                {td.label}{td.badge && <span aria-label={td.id === "survey" && td.badge === "\u2713" ? "has response" : `${td.badge} items`} style={{ marginLeft: 4, fontSize: 10, background: active ? "#eff6ff" : "#f3f4f6", color: active ? "#2563eb" : "#6b7280", borderRadius: 99, padding: "0 5px", fontWeight: 600 }}>{td.badge}</span>}
+                                {td.label}{td.badge && <span aria-label={td.id === "survey" && td.badge === "\u2713" ? "has response" : `${td.badge} items`} style={{ marginLeft: 4, fontSize: 10, background: active ? tk.infoBg : tk.background, color: active ? tk.primary : tk.textSecondary, borderRadius: 99, padding: "0 5px", fontWeight: 600 }}>{td.badge}</span>}
                             </button>
                         );
                     })}
                 </div>
 
                 {/* Tab panels */}
-                <div style={{ flex: 1, overflowY: "auto", padding: "10px 12px", background: "#f9fafb" }}>
+                <div style={{ flex: 1, overflowY: "auto", padding: "10px 12px", background: tk.background }}>
 
                     {tab === "details" && (
                         <div role="tabpanel" id="rac-tabpanel-details" aria-labelledby="rac-tab-details">
-                            <div style={{ marginBottom: 10, background: "#fff", borderRadius: 8, border: "1px solid #e5e7eb", padding: "10px 12px" }}>
-                                <div style={HDR}>Submitter</div>
-                                {row("Name", t.submitted_by_name || "Anonymous")}
-                                {row("Email", t.submitted_by_email || "\u2014")}
-                                {row("Phone", t.submitted_by_phone || "\u2014")}
-                                {row("Address", t.address_submitted || "\u2014")}
-                                {row("Source", t.source || "\u2014")}
+                            <div style={{ marginBottom: 10, background: tk.surface, borderRadius: 8, border: `1px solid ${tk.divider}`, padding: "10px 12px" }}>
+                                <div style={hdr(tk)}>Submitter</div>
+                                {row(tk, "Name", t.submitted_by_name || "Anonymous")}
+                                {row(tk, "Email", t.submitted_by_email || "\u2014")}
+                                {row(tk, "Phone", t.submitted_by_phone || "\u2014")}
+                                {row(tk, "Address", t.address_submitted || "\u2014")}
+                                {row(tk, "Source", t.source || "\u2014")}
                             </div>
-                            <div style={{ marginBottom: 10, background: "#fff", borderRadius: 8, border: "1px solid #e5e7eb", padding: "10px 12px" }}>
-                                <div style={HDR}>Description</div>
-                                <div style={{ fontSize: 13, lineHeight: 1.6, whiteSpace: "pre-wrap", color: "#374151" }}>{t.description || "None"}</div>
+                            <div style={{ marginBottom: 10, background: tk.surface, borderRadius: 8, border: `1px solid ${tk.divider}`, padding: "10px 12px" }}>
+                                <div style={hdr(tk)}>Description</div>
+                                <div style={{ fontSize: 13, lineHeight: 1.6, whiteSpace: "pre-wrap", color: tk.text }}>{t.description || "None"}</div>
                             </div>
-                            <div style={{ marginBottom: 10, background: "#fff", borderRadius: 8, border: "1px solid #e5e7eb", padding: "10px 12px" }}>
-                                <div style={HDR}>Dates</div>
-                                {row("Created", fmt(t.created_date))}
-                                {row("Updated", fmt(t.modified_date))}
-                                {row("Resolved", fmt(t.resolved_date))}
+                            <div style={{ marginBottom: 10, background: tk.surface, borderRadius: 8, border: `1px solid ${tk.divider}`, padding: "10px 12px" }}>
+                                <div style={hdr(tk)}>Dates</div>
+                                {row(tk, "Created", fmt(t.created_date))}
+                                {row(tk, "Updated", fmt(t.modified_date))}
+                                {row(tk, "Resolved", fmt(t.resolved_date))}
                             </div>
 
                             {/* ── Manage Ticket ── compact property rows, no card header */}
-                            <div style={{ marginBottom: 14, background: "#fff", borderRadius: 8, border: "1px solid #e5e7eb" }}>
+                            <div style={{ marginBottom: 14, background: tk.surface, borderRadius: 8, border: `1px solid ${tk.divider}` }}>
                                 {/* Property rows */}
-                                <div style={{ display: "flex", alignItems: "center", padding: "8px 12px", borderBottom: "1px solid #f3f4f6", gap: 12 }}>
-                                    <label htmlFor="rac-edit-status" style={{ width: 72, flexShrink: 0, fontSize: 12, color: "#9ca3af", fontWeight: 500 }}>Status</label>
+                                <div style={{ display: "flex", alignItems: "center", padding: "8px 12px", borderBottom: `1px solid ${tk.divider}`, gap: 12 }}>
+                                    <label htmlFor="rac-edit-status" style={{ width: 72, flexShrink: 0, fontSize: 12, color: tk.textSecondary, fontWeight: 500 }}>Status</label>
                                     <Select id="rac-edit-status" size="sm" value={eS} onChange={(e: any) => { const ns = Number(e.target.value); this.setState({ eS: ns, resolveNote: "", resolveDate: (ns === 4 || ns === 5) ? ymd() : "" }); }} style={{ flex: 1 }}>
                                         {Object.entries(S).map(([k, v]) => <Option key={k} value={Number(k)}>{v}</Option>)}
                                     </Select>
                                 </div>
-                                <div style={{ display: "flex", alignItems: "center", padding: "8px 12px", borderBottom: "1px solid #f3f4f6", gap: 12 }}>
-                                    <label htmlFor="rac-edit-priority" style={{ width: 72, flexShrink: 0, fontSize: 12, color: "#9ca3af", fontWeight: 500 }}>Priority</label>
+                                <div style={{ display: "flex", alignItems: "center", padding: "8px 12px", borderBottom: `1px solid ${tk.divider}`, gap: 12 }}>
+                                    <label htmlFor="rac-edit-priority" style={{ width: 72, flexShrink: 0, fontSize: 12, color: tk.textSecondary, fontWeight: 500 }}>Priority</label>
                                     <Select id="rac-edit-priority" size="sm" value={eP} onChange={(e: any) => this.setState({ eP: Number(e.target.value) })} style={{ flex: 1 }}>
                                         {Object.entries(P).map(([k, v]) => <Option key={k} value={Number(k)}>{v}</Option>)}
                                     </Select>
@@ -4934,15 +5049,15 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                 {(() => {
                                     const warn = currentIntegrityWarn;
                                     return warn ? (
-                                        <div role="alert" style={{ margin: "0 0 0 0", padding: "8px 12px", background: "#fffbeb", borderBottom: "1px solid #fde68a", fontSize: 12, color: "#92400e", display: "flex", gap: 6, alignItems: "flex-start" }}>
+                                        <div role="alert" style={{ margin: "0 0 0 0", padding: "8px 12px", background: tk.warningBg, borderBottom: "1px solid #fde68a", fontSize: 12, color: tk.warning, display: "flex", gap: 6, alignItems: "flex-start" }}>
                                             <span aria-hidden="true" style={{ flexShrink: 0 }}>⚠</span>
                                             <span>{warn}</span>
                                         </div>
                                     ) : null;
                                 })()}
                                 {/* ── Assigned dept ── */}
-                                <div style={{ display: "flex", alignItems: "center", padding: "8px 12px", gap: 12, borderBottom: "1px solid #f3f4f6" }}>
-                                    <label htmlFor="rac-edit-dept" style={{ width: 72, flexShrink: 0, fontSize: 12, color: "#9ca3af", fontWeight: 500 }}>Assigned</label>
+                                <div style={{ display: "flex", alignItems: "center", padding: "8px 12px", gap: 12, borderBottom: `1px solid ${tk.divider}` }}>
+                                    <label htmlFor="rac-edit-dept" style={{ width: 72, flexShrink: 0, fontSize: 12, color: tk.textSecondary, fontWeight: 500 }}>Assigned</label>
                                     <Select id="rac-edit-dept" size="sm" value={eA} onChange={(e: any) => {
                                         const newDept = e.target.value;
                                         const validCats = validCatsForDept(newDept);
@@ -4957,8 +5072,8 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                     </Select>
                                 </div>
                                 {/* ── Category — filtered to dept's valid codes ── */}
-                                <div style={{ display: "flex", alignItems: "center", padding: "8px 12px", gap: 12, borderBottom: "1px solid #f3f4f6" }}>
-                                    <label htmlFor="rac-edit-cat" style={{ width: 72, flexShrink: 0, fontSize: 12, color: "#9ca3af", fontWeight: 500 }}>Category</label>
+                                <div style={{ display: "flex", alignItems: "center", padding: "8px 12px", gap: 12, borderBottom: `1px solid ${tk.divider}` }}>
+                                    <label htmlFor="rac-edit-cat" style={{ width: 72, flexShrink: 0, fontSize: 12, color: tk.textSecondary, fontWeight: 500 }}>Category</label>
                                     <Select id="rac-edit-cat" size="sm" value={eC} onChange={(e: any) => {
                                         const newCat = Number(e.target.value);
                                         // Cascade: update eA to the canonical dept for this category.
@@ -4983,8 +5098,8 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                     </Select>
                                 </div>
                                 {/* ── Subcategory — cascades from category; empty if none defined ── */}
-                                <div style={{ display: "flex", alignItems: "center", padding: "8px 12px", gap: 12, borderBottom: eS !== t.status ? "1px solid #f3f4f6" : "none" }}>
-                                    <label htmlFor="rac-edit-subcat" style={{ width: 72, flexShrink: 0, fontSize: 12, color: "#9ca3af", fontWeight: 500 }}>Subcategory</label>
+                                <div style={{ display: "flex", alignItems: "center", padding: "8px 12px", gap: 12, borderBottom: eS !== t.status ? `1px solid ${tk.divider}` : "none" }}>
+                                    <label htmlFor="rac-edit-subcat" style={{ width: 72, flexShrink: 0, fontSize: 12, color: tk.textSecondary, fontWeight: 500 }}>Subcategory</label>
                                     <Select id="rac-edit-subcat" size="sm" value={eSC} onChange={(e: any) => this.setState({ eSC: e.target.value })} style={{ flex: 1 }}>
                                         <Option value="">— None —</Option>
                                         {(catSubcatOptions[eC] || []).map(opt => <Option key={opt.code} value={opt.code}>{opt.name}</Option>)}
@@ -4993,12 +5108,12 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
 
                                 {/* Status change comment — shown whenever status is changing */}
                                 {eS !== t.status && (
-                                    <div style={{ padding: "10px 12px", borderBottom: "1px solid #f3f4f6", background: eS === 4 ? "#fffbeb" : eS === 5 ? "#f8fafc" : "#eff6ff" }}>
+                                    <div style={{ padding: "10px 12px", borderBottom: `1px solid ${tk.divider}`, background: eS === 4 ? tk.warningBg : eS === 5 ? tk.background : tk.infoBg }}>
                                         {(eS === 4 || eS === 5) && (
                                             <div style={{ marginBottom: 10 }}>
-                                                <label htmlFor="rac-resolved-date" style={{ display: "block", fontSize: 12, fontWeight: 600, color: eS === 4 ? "#92400e" : "#374151", marginBottom: 5 }}>
+                                                <label htmlFor="rac-resolved-date" style={{ display: "block", fontSize: 12, fontWeight: 600, color: eS === 4 ? tk.warning : tk.text, marginBottom: 5 }}>
                                                     {eS === 4 ? "Resolved date" : "Closed date"}
-                                                    <span style={{ fontWeight: 400, color: eS === 4 ? "#b45309" : "#6b7280", marginLeft: 6, fontSize: 11 }}>
+                                                    <span style={{ fontWeight: 400, color: eS === 4 ? tk.warning : tk.textSecondary, marginLeft: 6, fontSize: 11 }}>
                                                         date the work was completed
                                                     </span>
                                                 </label>
@@ -5009,14 +5124,14 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                                     min={ymd(t.created_date)}
                                                     max={ymd()}
                                                     onChange={(e: any) => this.setState({ resolveDate: e.target.value })}
-                                                    style={{ fontSize: 13, padding: "5px 8px", border: "1px solid #d1d5db", borderRadius: 4 }}
+                                                    style={{ fontSize: 13, padding: "5px 8px", border: `1px solid ${tk.divider}`, borderRadius: 4 }}
                                                 />
-                                                <div style={{ fontSize: 11, color: "#6b7280", marginTop: 3 }}>Defaults to today. Set this to the actual completion date if it differs.</div>
+                                                <div style={{ fontSize: 11, color: tk.textSecondary, marginTop: 3 }}>Defaults to today. Set this to the actual completion date if it differs.</div>
                                             </div>
                                         )}
-                                        <label htmlFor="rac-status-note" style={{ display: "block", fontSize: 12, fontWeight: 600, color: eS === 4 ? "#92400e" : "#374151", marginBottom: 5 }}>
-                                            {eS === 4 ? "Resolution note" : eS === 5 ? "Closure note" : "Status change comment"} <span aria-hidden="true" style={{ color: "#dc2626" }}>*</span>
-                                            <span style={{ fontWeight: 400, color: eS === 4 ? "#b45309" : "#6b7280", marginLeft: 6, fontSize: 11 }}>
+                                        <label htmlFor="rac-status-note" style={{ display: "block", fontSize: 12, fontWeight: 600, color: eS === 4 ? tk.warning : tk.text, marginBottom: 5 }}>
+                                            {eS === 4 ? "Resolution note" : eS === 5 ? "Closure note" : "Status change comment"} <span aria-hidden="true" style={{ color: tk.danger }}>*</span>
+                                            <span style={{ fontWeight: 400, color: eS === 4 ? tk.warning : tk.textSecondary, marginLeft: 6, fontSize: 11 }}>
                                                 {eS === 4 ? "sent with the resolution email" : eS === 5 ? "reason ticket is being closed" : "submitter will be notified"}
                                             </span>
                                         </label>
@@ -5028,21 +5143,21 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                             aria-label={`Comment explaining status change to ${S[eS]}, required`}
                                             aria-required="true"
                                             maxLength={(eS === 4 || eS === 5) ? INTERNAL_NOTES_MAXLEN : undefined}
-                                            style={{ width: "100%", fontSize: 13, borderColor: this.state.resolveNote.trim() ? "#d1d5db" : "#fca5a5" }}
+                                            style={{ width: "100%", fontSize: 13, borderColor: this.state.resolveNote.trim() ? tk.divider : "#fca5a5" }}
                                         />
                                         {(eS === 4 || eS === 5) && this.state.resolveNote.length >= INTERNAL_NOTES_MAXLEN - 50 && (
-                                            <div style={{ fontSize: 11, color: this.state.resolveNote.length >= INTERNAL_NOTES_MAXLEN ? "#dc2626" : "#6b7280", marginTop: 3, textAlign: "right" }}>
+                                            <div style={{ fontSize: 11, color: this.state.resolveNote.length >= INTERNAL_NOTES_MAXLEN ? tk.danger : tk.textSecondary, marginTop: 3, textAlign: "right" }}>
                                                 {this.state.resolveNote.length} / {INTERNAL_NOTES_MAXLEN}
                                             </div>
                                         )}
                                         {!this.state.resolveNote.trim() && (
-                                            <div role="alert" style={{ fontSize: 11, color: "#dc2626", marginTop: 3 }}>Required before changing status to {S[eS]}</div>
+                                            <div role="alert" style={{ fontSize: 11, color: tk.danger, marginTop: 3 }}>Required before changing status to {S[eS]}</div>
                                         )}
                                     </div>
                                 )}
 
                                 {/* Footer row with right-aligned save */}
-                                <div style={{ display: "flex", justifyContent: "flex-end", padding: "8px 12px", borderTop: "1px solid #f3f4f6" }}>
+                                <div style={{ display: "flex", justifyContent: "flex-end", padding: "8px 12px", borderTop: `1px solid ${tk.divider}` }}>
                                     {(() => {
                                         const hasIntegrityErr = !!currentIntegrityWarn;
                                         const needsComment = eS !== t.status && !this.state.resolveNote.trim();
@@ -5068,25 +5183,25 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                             </div>
 
                             {/* ── Add Comment ── compose-style, no card header */}
-                            <div style={{ marginBottom: 10, background: "#fff", borderRadius: 8, border: "1px solid #e5e7eb" }}>
+                            <div style={{ marginBottom: 10, background: tk.surface, borderRadius: 8, border: `1px solid ${tk.divider}` }}>
                                 <TextArea
                                     id="rac-new-comment"
                                     value={nc}
                                     onChange={(e: any) => this.setState({ nc: e.target.value })}
                                     placeholder="Leave a note…"
                                     aria-label="Comment text"
-                                    style={{ width: "100%", fontSize: 13, border: "none", borderBottom: "1px solid #f3f4f6", borderRadius: "8px 8px 0 0", resize: "vertical" as const, padding: "10px 12px", boxSizing: "border-box" as const, outline: "none" }}
+                                    style={{ width: "100%", fontSize: 13, border: "none", borderBottom: `1px solid ${tk.divider}`, borderRadius: "8px 8px 0 0", resize: "vertical" as const, padding: "10px 12px", boxSizing: "border-box" as const, outline: "none" }}
                                 />
                                 {/* Staged photo preview + validation error */}
                                 {attError && (
-                                    <div style={{ padding: "6px 12px", fontSize: 12, color: "#dc2626" }}>{attError}</div>
+                                    <div style={{ padding: "6px 12px", fontSize: 12, color: tk.danger }}>{attError}</div>
                                 )}
                                 {attPreview && (
-                                    <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", borderBottom: "1px solid #f3f4f6" }}>
-                                        <img src={attPreview} alt="Attached photo preview" style={{ width: 44, height: 44, objectFit: "cover", borderRadius: 6, border: "1px solid #e5e7eb", flexShrink: 0 }} />
-                                        <span style={{ fontSize: 12, color: "#6b7280", flex: 1 }}>Photo attached to this comment</span>
+                                    <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", borderBottom: `1px solid ${tk.divider}` }}>
+                                        <img src={attPreview} alt="Attached photo preview" style={{ width: 44, height: 44, objectFit: "cover", borderRadius: 6, border: `1px solid ${tk.divider}`, flexShrink: 0 }} />
+                                        <span style={{ fontSize: 12, color: tk.textSecondary, flex: 1 }}>Photo attached to this comment</span>
                                         <button type="button" onClick={this.clearAttachment} aria-label="Remove attached photo"
-                                            style={{ border: "none", background: "none", color: "#dc2626", cursor: "pointer", fontSize: 12, fontWeight: 600, padding: 4 }}>
+                                            style={{ border: "none", background: "none", color: tk.danger, cursor: "pointer", fontSize: 12, fontWeight: 600, padding: 4 }}>
                                             Remove
                                         </button>
                                     </div>
@@ -5108,7 +5223,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                         disabled={saving || attUploading || !!attFile}
                                         aria-label="Attach a photo to this comment"
                                         title="Attach a photo"
-                                        style={{ flexShrink: 0, fontWeight: 600, background: "#fff", color: attFile ? "#6b7280" : "#2563eb", border: `1px solid ${attFile ? "#e5e7eb" : "#2563eb"}` }}
+                                        style={{ flexShrink: 0, fontWeight: 600, background: tk.surface, color: attFile ? tk.textSecondary : tk.primary, border: `1px solid ${attFile ? tk.divider : tk.primary}` }}
                                     >
                                         {attUploading ? "…" : attFile ? "📷 Attached" : "📷 Photo"}
                                     </Button>
@@ -5151,24 +5266,24 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
 
                     {tab === "comments" && (
                         <div role="tabpanel" id="rac-tabpanel-comments" aria-labelledby="rac-tab-comments">
-                            <div style={HDR} id="rac-comment-history">Comment History ({comments.length})</div>
-                            {comments.length === 0 && <div style={{ fontSize: 13, color: "#9ca3af", padding: "12px 0" }}>No comments yet.</div>}
+                            <div style={hdr(tk)} id="rac-comment-history">Comment History ({comments.length})</div>
+                            {comments.length === 0 && <div style={{ fontSize: 13, color: tk.textSecondary, padding: "12px 0" }}>No comments yet.</div>}
                             <div role="list" aria-labelledby="rac-comment-history">
                                 {comments.map((c: any) => {
                                     const isInternal = c.is_public === 0;
                                     return (
-                                        <div key={c.OBJECTID} role="listitem" style={{ padding: "10px 12px", marginBottom: 6, background: "#fff", borderRadius: 8, border: "1px solid #e5e7eb", borderLeft: `3px solid ${isInternal ? "#dc2626" : "#2563eb"}`, boxShadow: "0 1px 2px rgba(0,0,0,0.04)" }}>
+                                        <div key={c.OBJECTID} role="listitem" style={{ padding: "10px 12px", marginBottom: 6, background: tk.surface, borderRadius: 8, border: `1px solid ${tk.divider}`, borderLeft: `3px solid ${isInternal ? tk.danger : tk.primary}`, boxShadow: "0 1px 2px rgba(0,0,0,0.04)" }}>
                                             <div style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 4, flexWrap: "wrap" }}>
-                                                <span style={{ fontWeight: 600, fontSize: 12, color: "#111827" }}>{c.author || "Unknown"}</span>
-                                                {c.author_role && <span style={{ fontSize: 10, color: "#9ca3af" }}>{c.author_role}</span>}
+                                                <span style={{ fontWeight: 600, fontSize: 12, color: tk.text }}>{c.author || "Unknown"}</span>
+                                                {c.author_role && <span style={{ fontSize: 10, color: tk.textSecondary }}>{c.author_role}</span>}
                                                 {isInternal && (
                                                     <Tip text="Only visible to staff">
-                                                        <span style={{ fontSize: 9, background: "#fef2f2", color: "#dc2626", border: "1px solid #fecaca", padding: "1px 6px", borderRadius: 99, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase" as const }}>Internal</span>
+                                                        <span style={{ fontSize: 9, background: "#fef2f2", color: tk.danger, border: "1px solid #fecaca", padding: "1px 6px", borderRadius: 99, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase" as const }}>Internal</span>
                                                     </Tip>
                                                 )}
-                                                <span style={{ fontSize: 10, color: "#9ca3af", marginLeft: "auto" }}>{fmt(c.created_date)}</span>
+                                                <span style={{ fontSize: 10, color: tk.textSecondary, marginLeft: "auto" }}>{fmt(c.created_date)}</span>
                                             </div>
-                                            <div style={{ fontSize: 13, lineHeight: 1.5, color: "#374151" }}>{c.comment_text}</div>
+                                            <div style={{ fontSize: 13, lineHeight: 1.5, color: tk.text }}>{c.comment_text}</div>
                                         </div>
                                     );
                                 })}
@@ -5178,19 +5293,19 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
 
                     {tab === "photos" && (
                         <div role="tabpanel" id="rac-tabpanel-photos" aria-labelledby="rac-tab-photos">
-                            <div style={HDR} id="rac-photo-header">Photos ({photos.length})</div>
+                            <div style={hdr(tk)} id="rac-photo-header">Photos ({photos.length})</div>
                             {photos.length === 0 && (
-                                <div style={{ fontSize: 13, color: "#9ca3af", padding: "12px 0" }}>No photos found for this ticket.</div>
+                                <div style={{ fontSize: 13, color: tk.textSecondary, padding: "12px 0" }}>No photos found for this ticket.</div>
                             )}
                             <div role="list" aria-labelledby="rac-photo-header" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                                 {photos.map((p: any, idx: number) => (
-                                    <div key={p.OBJECTID ?? idx} role="listitem" style={{ background: "#fff", borderRadius: 8, border: "1px solid #e5e7eb", boxShadow: "0 1px 2px rgba(0,0,0,0.04)", overflow: "hidden" }}>
+                                    <div key={p.OBJECTID ?? idx} role="listitem" style={{ background: tk.surface, borderRadius: 8, border: `1px solid ${tk.divider}`, boxShadow: "0 1px 2px rgba(0,0,0,0.04)", overflow: "hidden" }}>
                                         {/* Thumbnail — click opens lightbox */}
                                         {p.att_url && (p.content_type || "").startsWith("image/") && (
                                             <button
                                                 type="button"
                                                 aria-label={`View full size: ${p.att_name || `Photo ${idx + 1}`}`}
-                                                onClick={() => this.setState({ lightboxIndex: idx })}
+                                                onClick={() => this.openLightbox(idx)}
                                                 style={{ display: "block", width: "100%", padding: 0, border: "none", background: "none", cursor: "zoom-in" }}
                                             >
                                                 <img
@@ -5215,19 +5330,19 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                                 const isStaffInt = /^staffint-/i.test(nm);
                                                 const isStaff = isStaffInt || /^staff-/i.test(nm);
                                                 const badge = isStaffInt ? "Staff · Internal" : isStaff ? "Staff · Public" : "Submitter";
-                                                const bg = isStaffInt ? "#fef2f2" : isStaff ? "#eff6ff" : "#f3f4f6";
-                                                const fg = isStaffInt ? "#dc2626" : isStaff ? "#2563eb" : "#6b7280";
-                                                const bd = isStaffInt ? "#fecaca" : isStaff ? "#bfdbfe" : "#e5e7eb";
+                                                const bg = isStaffInt ? "#fef2f2" : isStaff ? tk.infoBg : tk.background;
+                                                const fg = isStaffInt ? tk.danger : isStaff ? tk.primary : tk.textSecondary;
+                                                const bd = isStaffInt ? "#fecaca" : isStaff ? "#bfdbfe" : tk.divider;
                                                 return (
                                                     <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-                                                        <span style={{ fontWeight: 600, fontSize: 12, color: "#111827" }}>{isStaff ? "Staff photo" : nm}</span>
+                                                        <span style={{ fontWeight: 600, fontSize: 12, color: tk.text }}>{isStaff ? "Staff photo" : nm}</span>
                                                         <Tip text={isStaffInt ? "Attached to an internal note — not shown to the submitter" : isStaff ? "Attached to a public comment — visible on the public status page" : "Uploaded by the submitter"}>
                                                             <span style={{ fontSize: 9, background: bg, color: fg, border: `1px solid ${bd}`, padding: "1px 6px", borderRadius: 99, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase" as const }}>{badge}</span>
                                                         </Tip>
                                                     </div>
                                                 );
                                             })()}
-                                            <div style={{ display: "flex", gap: 10, fontSize: 11, color: "#9ca3af", marginTop: 2 }}>
+                                            <div style={{ display: "flex", gap: 10, fontSize: 11, color: tk.textSecondary, marginTop: 2 }}>
                                                 {p.upload_date && <span>{fmt(p.upload_date)}</span>}
                                                 {p.photo_order && <span>#{p.photo_order}</span>}
                                             </div>
@@ -5265,11 +5380,11 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                         aria-modal="true"
                                         aria-label={`Media viewer: ${lbItem.att_name || lbItem.file_name} (${lbIdx + 1} of ${total})`}
                                         onKeyDown={(e: any) => {
-                                            if (e.key === "Escape") this.setState({ lightboxIndex: null });
+                                            if (e.key === "Escape") this.closeLightbox();
                                             if (e.key === "ArrowLeft" && hasPrev) this.setState({ lightboxIndex: lbIdx - 1 });
                                             if (e.key === "ArrowRight" && hasNext) this.setState({ lightboxIndex: lbIdx + 1 });
                                         }}
-                                        onClick={() => this.setState({ lightboxIndex: null })}
+                                        onClick={this.closeLightbox}
                                         tabIndex={-1}
                                         ref={(el: any) => el && el.focus()}
                                         style={{
@@ -5285,7 +5400,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                         <button
                                             type="button"
                                             aria-label="Close media viewer"
-                                            onClick={() => this.setState({ lightboxIndex: null })}
+                                            onClick={this.closeLightbox}
                                             style={{
                                                 position: "absolute", top: 16, right: 16, zIndex: 3,
                                                 background: "rgba(255,255,255,0.15)",
@@ -5392,25 +5507,25 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
 
                     {tab === "survey" && (
                         <div role="tabpanel" id="rac-tabpanel-survey" aria-labelledby="rac-tab-survey">
-                            <div style={HDR}>Survey Response</div>
-                            {!survey && <div style={{ fontSize: 13, color: "#9ca3af", padding: "12px 0" }}>No survey response for this ticket.</div>}
+                            <div style={hdr(tk)}>Survey Response</div>
+                            {!survey && <div style={{ fontSize: 13, color: tk.textSecondary, padding: "12px 0" }}>No survey response for this ticket.</div>}
                             {survey && (
-                                <div style={{ background: "#fff", borderRadius: 8, border: "1px solid #e5e7eb", padding: "12px 14px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+                                <div style={{ background: tk.surface, borderRadius: 8, border: `1px solid ${tk.divider}`, padding: "12px 14px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
                                     <div style={{ marginBottom: 12 }}>
-                                        <div style={{ ...LBL, marginBottom: 6 }}>Satisfaction Rating</div>
-                                        {stars(survey.satisfaction_rating)}
+                                        <div style={{ ...lbl(tk), marginBottom: 6 }}>Satisfaction Rating</div>
+                                        {stars(tk, survey.satisfaction_rating)}
                                     </div>
                                     <div style={{ marginBottom: 12 }}>
-                                        <div style={{ ...LBL, marginBottom: 4 }}>Comments</div>
-                                        <div style={{ fontSize: 13, lineHeight: 1.6, whiteSpace: "pre-wrap", color: "#374151" }}>{survey.comments || "\u2014"}</div>
+                                        <div style={{ ...lbl(tk), marginBottom: 4 }}>Comments</div>
+                                        <div style={{ fontSize: 13, lineHeight: 1.6, whiteSpace: "pre-wrap", color: tk.text }}>{survey.comments || "\u2014"}</div>
                                     </div>
                                     <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
                                         <div>
-                                            <div style={{ ...LBL, marginBottom: 2 }}>Submitted</div>
-                                            <div style={{ fontSize: 13, color: "#374151" }}>{fmt(survey.submitted_date)}</div>
+                                            <div style={{ ...lbl(tk), marginBottom: 2 }}>Submitted</div>
+                                            <div style={{ fontSize: 13, color: tk.text }}>{fmt(survey.submitted_date)}</div>
                                         </div>
                                     </div>
-                                    <div style={{ fontSize: 10, color: "#9ca3af", fontFamily: "monospace", marginTop: 12 }}>Survey ID: {survey.survey_id || "\u2014"}</div>
+                                    <div style={{ fontSize: 10, color: tk.textSecondary, fontFamily: "monospace", marginTop: 12 }}>Survey ID: {survey.survey_id || "\u2014"}</div>
                                 </div>
                             )}
                         </div>
@@ -5420,17 +5535,47 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
         );
     }
 
+    // ── Help button (top right of the list and detail headers) ──
+    renderHelpButton() {
+        if (!this.helpEnabled()) return null;
+        return (
+            <Button size="sm" type="tertiary" icon onClick={this.openHelp} title={t("helpTitle")} aria-label={t("helpTitle")} style={{ flexShrink: 0 }}>
+                <CalciteIcon icon="question" scale="s" />
+            </Button>
+        );
+    }
+
     // ── Main render ────────────────────────────────────────────
+    // <Themed> reads the theme tokens (a hook, so it cannot run in the class)
+    // and stores them on this.tk before the rest of the tree renders.
     render() {
+        return <Themed>{(tk: Tokens) => { this.tk = tk; return this.renderRoot(); }}</Themed>;
+    }
+
+    renderRoot() {
+        const tk = this.tk;
         const mid = this.props.config?.useMapWidgetIds?.[0];
         return (
-            <div ref={this.rootRef} style={{ width: "100%", height: "100%", overflow: "hidden", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif", background: "#fff" }} role="application" aria-label="Report A Concern Manager">
+            <div ref={this.rootRef} className={ROOT_CLASS} style={{ width: "100%", height: "100%", overflow: "hidden", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif", background: tk.surface, color: tk.text }} role="region" aria-label="Report A Concern Manager">
                 {mid && <JimuMapViewComponent useMapWidgetId={mid} onActiveViewChange={this.onView} />}
                 {this.renderMsg()}
                 {this.state.mode === "list" ? this.renderList() : this.renderDetail()}
-                <div aria-live="assertive" aria-atomic="true" style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0,0,0,0)" }}>
+                {/* One polite live region for results (Section 11.4). Every ok / err message lands here. */}
+                <div role="status" aria-live="polite" aria-atomic="true" style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0,0,0,0)" }}>
                     {this.state.ok || this.state.err}
                 </div>
+                {this.helpEnabled() && (
+                    <HelpPopup
+                        open={this.state.helpOpen}
+                        onClose={this.closeHelp}
+                        sections={buildHelpSections(t, this.helpFeatures())}
+                        title={t("helpTitle")}
+                        intro={t("helpIntro")}
+                        searchPlaceholder={t("helpSearchPlaceholder")}
+                        noMatches={t("helpNoMatches")}
+                        closeLabel={t("close")}
+                    />
+                )}
             </div>
         );
     }

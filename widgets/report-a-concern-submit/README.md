@@ -14,6 +14,11 @@ rules handle additional validation server-side.
 - Photo attachments with configurable size and count limits
 - Configurable header (title, image, alignment, link) and message text via the settings panel
 - No hardcoded service URLs; all endpoints set in the settings panel or `config.json`
+- Ticket status view: a `?ticket_number=N` link shows the ticket, its public staff updates and staff photos
+- Client-side profanity filter (English and Spanish) on the name and description fields
+- Accessible: one polite live region, keyboard access to every control, visible focus ring, reduced motion honored
+
+No in-widget help guide: the four-step wizard, its headings and inline hints already walk the public user through the form. See `docs/handover/README.md`.
 
 ## Requirements
 
@@ -50,6 +55,17 @@ rules handle additional validation server-side.
 The zip is the widget only. The Visual Studio type shims in the repo (`report-a-concern-submit/src/exb-editor-shims.d.ts`) are left out on purpose: their ambient `declare module` blocks are not file-scoped and would rewrite the react, jimu and esri types for every other widget in your `your-extensions` folder.
 
 If you clone the repository instead of using the zip, delete `report-a-concern-submit/src/exb-editor-shims.d.ts` before building; nothing else depends on it.
+
+## Developer checks
+
+From the widget folder (Command Prompt, regular user, no elevation needed):
+
+```
+npx tsc -p .          # editor type check, must print nothing
+npm test              # node tests/transpile.js (syntax and emit of every source file), then node --test over tests/*.test.js
+```
+
+The tests cover the pure parts only: the email and phone validators, the profanity filter and the category to boundary fallback map (`src/runtime/lib/`). Handover notes live in `docs/handover/`.
 
 ## Usage telemetry
 

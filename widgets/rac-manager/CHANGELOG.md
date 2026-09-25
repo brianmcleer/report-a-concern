@@ -5,6 +5,18 @@ All notable changes to the RAC Ticket Manager widget are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.2.0 (2026-09-25)
+
+Playbook audit and retrofit (see `AUDIT.md`). No version bump yet: bump `manifest.json` and `package.json` together at release.
+
+- Added: in-widget help guide (handoff Section 10). A Help button at the top right of the list and detail headers opens a searchable, plain-language guide whose lines follow what the app has (map linked, comments table, survey table, sidebar). A one-time "New here?" hint shows on the list until dismissed; the dismissal is stored per browser and per widget id. New files: `src/runtime/components/HelpPopup.tsx` (generic, copied verbatim), `src/runtime/components/FirstRunHint.tsx`, `src/runtime/helpSections.ts`, `src/runtime/translations/default.ts`. New config key `showHelp` (default true) with a switch in the settings panel.
+- Added: theme tokens. `src/runtime/theme.ts` (byte copy of the shared file) supplies the app theme's colors; the runtime and settings panel read them through a small `Themed` wrapper because both are class components. Hard-coded grays, blues, reds and ambers in `widget.tsx` and `setting.tsx` now come from the tokens, so the widget follows the experience theme and dark mode. Status and priority chip colors, success greens, danger tints and the photo viewer's black overlay stay as literals because no token fits them.
+- Added: node test suite (`npm test`): `tests/transpile.js` checks every source file compiles, `tests/help.test.js` checks the guide's content rules, feature gating and that every control name in the guide exists in the interface, `tests/format.test.js` and `tests/labels.test.js` cover the date formatters, table name matcher and coded value labels.
+- Added: handover docs under `docs/handover/` (README, CODE_STRUCTURE, MAINTENANCE, TROUBLESHOOTING).
+- Changed: pure helpers moved out of `widget.tsx` unchanged so the tests can load them: date formatters and `matchAll` to `src/runtime/lib/format.ts`; status, priority, category and comment type labels plus `toggleVal` to `src/runtime/lib/labels.ts`.
+- Changed (accessibility): the results live region is now `role="status" aria-live="polite" aria-atomic="true"` (was assertive); the root is `role="region"` instead of `role="application"`, which had switched screen readers out of reading mode; the table column resize handle is keyboard operable (Tab to it, left and right arrows change the width by 10px, Home resets) and reports its width through `aria-valuenow`; closing the photo viewer returns focus to the thumbnail that opened it; every animation and transition is switched off under `prefers-reduced-motion: reduce`.
+- Changed: `package.json` gains `scripts.test` and `scripts.typecheck`; `tests/build/` is git-ignored and `tests/` is npm-ignored.
+
 ## 1.1.4 (2026-09-25)
 
 - Changed: organization name for the Excel export (workbook author and summary subtitle) is now the `orgName` setting instead of a hard-coded value. Default "GIS Division".

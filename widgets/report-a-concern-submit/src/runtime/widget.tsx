@@ -4,6 +4,9 @@ import { JimuMapViewComponent, type JimuMapView } from "jimu-arcgis";
 import type { IMConfig } from "../config";
 import { beacon } from "../shared/beacon";
 import type { BeaconHandle } from "../shared/beacon";
+import { isValidEmail, PHONE_DIGITS_RE, stripPhoneDigits } from "./lib/validators";
+import { containsProfanity } from "./lib/profanity";
+import { CATEGORY_BOUNDARY_MAP } from "./lib/categoryBoundaries";
 
 // ╔═══════════════════════════════════════════════════════════╗
 // ║  Report A Concern — Public Submission Widget             ║
@@ -645,6 +648,9 @@ interface WidgetState {
     statusViewPhotos: StatusPhoto[];
     statusViewPhotosLoading: boolean;
 
+    /** Latest message for the visually hidden polite live region (step changes, results, errors). */
+    liveMessage: string;
+
     /** True when a touch device is in landscape — triggers CSS portrait lock. */
 }
 
@@ -701,472 +707,23 @@ const PRIORITY_LABELS: Record<number, string> = {
     3: "High",
 };
 
-/**
- * RFC 5321-aligned email validator.
- *
- * Rules enforced:
- *   · Local part: a–z 0–9 . _ % + − only; max 64 chars; no consecutive dots
- *   · Exactly one @
- *   · Domain: one or more labels separated by dots; each label is alphanumeric
- *     + hyphens, must not start or end with a hyphen, max 63 chars per label
- *   · TLD: alpha only, 2–24 chars (rejects numeric TLDs like .123)
- *   · Total length: ≤ 254 chars (RFC 5321 max path length)
- *
- * Intentionally stricter than RFC 5321 in two ways:
- *   · Quoted local parts ("user name"@domain.com) are rejected — uncommon and
- *     a frequent vector for injection attempts.
- *   · IP-address domain literals ([192.168.1.1]) are rejected — not relevant
- *     for a public municipal form.
- */
-const EMAIL_RE =
-    /^[a-zA-Z0-9._%+\-]{1,64}@[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,24}$/;
+// Email and phone validators moved to ./lib/validators.ts (pure functions, unit tested).
 
-/**
- * Reserved / non-deliverable email domains.
- *
- * These are syntactically valid but can never receive mail. The city SMTP
- * relay rejects them with a hard 501 5.1.5 ("Recipient address reserved by
- * RFC 2606"), and because the notification scripts retry on failure, a single
- * placeholder submission (e.g. the "your.email@example.com" hint text) re-queues
- * on every run and floods Notification_Log. Blocking here stops it at the source.
- *
- * RESERVED_EMAIL_TLDS  — RFC 2606 / RFC 6761 / RFC 6762 reserved top-level names.
- *                        Matches ANY subdomain (foo.test, a.b.invalid, etc.).
- * RESERVED_EMAIL_SLDS  — RFC 2606 reserved second-level example domains.
- *
- * Deliberately scoped to RFC-reserved names only — real user domains (gmail.com,
- * test-corp.org, etc.) are never caught. Typo domains that ARE registered still
- * fail downstream; the Python mailer's permanent-failure handling covers those.
- */
-const RESERVED_EMAIL_TLDS = new Set(["test", "example", "invalid", "localhost", "local"]);
-const RESERVED_EMAIL_SLDS = new Set(["example.com", "example.net", "example.org"]);
-
-function isReservedEmailDomain(domain: string): boolean {
-    const d = domain.toLowerCase();
-    // example.com/.net/.org and any subdomain of them.
-    for (const sld of RESERVED_EMAIL_SLDS) {
-        if (d === sld || d.endsWith("." + sld)) return true;
-    }
-    const lastDot = d.lastIndexOf(".");
-    const tld = lastDot === -1 ? d : d.slice(lastDot + 1);
-    return RESERVED_EMAIL_TLDS.has(tld);
-}
-
-function isValidEmail(raw: string): boolean {
-    const t = raw.trim();
-    if (!t || t.length > 254) return false;
-    // Reject consecutive dots anywhere in the local part
-    const atIdx = t.indexOf("@");
-    if (atIdx < 1) return false;
-    if (/\.{2,}/.test(t.slice(0, atIdx))) return false;
-    if (!EMAIL_RE.test(t)) return false;
-    // Reject RFC 2606/6761 reserved domains — valid syntax, undeliverable.
-    if (isReservedEmailDomain(t.slice(atIdx + 1))) return false;
-    return true;
-}
-const PHONE_DIGITS_RE = /^\d{10}$/;
-const stripPhoneDigits = (val: string) => val.replace(/\D/g, "");
-
-// ══════════════════════════════════════════════════════════════
-//  PROFANITY FILTER
-//  Client-side courtesy filter to prevent staff mistreatment in
-//  open text fields (description, name). Targets PG-13 level —
-//  blocks words that would earn a film a PG-13 or R rating.
-//  Covers English and Spanish (Mexican/pan-Latin American and
-//  Castilian). Uses word-boundary / lookbehind matching to avoid
-//  false positives inside legitimate words (e.g. "bass", "classic",
-//  "passage", "scunthorpe", "putativo", "icono"). Leet-speak
-//  substitutions (@→a, 3→e, 1/!→i, 0→o, $→s, 5→s, v→u) are
-//  normalised before checking. Unicode diacriticals are stripped
-//  via NFD decomposition so accented Spanish input (cabrón, coño,
-//  chingón) reduces to ASCII before pattern matching.
-//
-//  This is a UX-layer filter only. Server-side moderation is the
-//  authoritative gate for policy enforcement.
-// ══════════════════════════════════════════════════════════════
-
-/**
- * Normalise common leet-speak character substitutions before
- * profanity checking. Applied to a lowercase copy of the input;
- * the original value is never modified.
- *
- * NFD decomposition + diacritic strip is applied first so that
- * accented characters in any language reduce to their ASCII base
- * before pattern matching (cabrón→cabron, coño→cono, chingón→chingon,
- * etc.). This also ensures \b word boundaries work correctly — JS regex
- * \b only recognises ASCII \w chars, so accented letters without
- * normalisation silently break boundary matching.
- */
-function normalizeLeet(text: string): string {
-    return text
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "") // strip combining diacriticals (á→a, é→e, ñ→n, ü→u …)
-        .replace(/@/g, "a")
-        .replace(/3/g, "e")
-        .replace(/[1!]/g, "i")
-        .replace(/0/g, "o")
-        .replace(/[$5]/g, "s")
-        .replace(/v/g, "u");   // catches fvcking, fvck, etc.
-}
-
-/**
- * Common word-form suffixes: -s, -es, -ed, -er, -ers, -ing, -ings,
- * and common compound suffixes (-face, -head, -wad, -bag, -tard).
- * Appended to root patterns so inflected forms are all caught.
- * The group is optional so the bare root still matches.
- */
-const SUFFIX = /(?:e?s|e?d|e?r|e?rs|in[g]?|ings|face|head|wad|bag|tard)?\b/;
-
-// ── Pass 1: word-boundary-anchored patterns ───────────────────
-// Applied to the leet-normalised text with spacing intact.
-// Most patterns carry a leading \b to prevent false positives inside
-// legitimate words (e.g. "class", "grassland", "Scunthorpe").
-//
-// Reference: patterns are cross-referenced against the LDNOOBW
-// (List of Dirty, Naughty, Obscene and Otherwise Bad Words, MIT
-// license) to ensure comprehensive coverage. The FCC's seven dirty
-// words (FCC v. Pacifica Foundation, 1978) form the legal baseline.
-//
-// Two roots are unanchored because no common English word contains
-// them innocuously:
-//   fuck  — catches "horsefucker", "brotherfucking", "pigfucker"
-//   shit  — catches "horseshit", "bullshit", "dipshit"
-const PROFANITY_PATTERNS: RegExp[] = [
-    // ── Core profanity ────────────────────────────────────────
-    // fuck — fully unanchored, NO trailing \b or SUFFIX.
-    // The \b in SUFFIX blocked matches when a word char immediately follows
-    // the root (e.g. "fuckmyballs" → "fuck"+"m", both word chars, no boundary).
-    // No English word contains "fuck" innocuously, so no false-positive risk.
-    /f+u+c+k+/i,
-
-    // shit — same reasoning as fuck above.
-    /sh[i!1]+t+/i,
-
-    // ass standalone — \b prevents "class", "mass", "grassland", "harass"
-    new RegExp(/\ba+s{2,}/.source + SUFFIX.source, "i"),
-
-    // asshole / arsehole (British spelling) — arsehole needs explicit match
-    // because the SUFFIX \b pattern fires between "arse" and "hole" (both
-    // word chars), so /\barse/ + SUFFIX only catches standalone "arse".
-    // Using /\barse(?:hole)?/ catches both.
-    new RegExp(/\ba+s+h+o+l+e+/.source + SUFFIX.source, "i"),
-    /\barse(?:hole)?\b/i,
-
-    // -ass compounds: dumbass, jackass, smartass, badass, etc.
-    new RegExp(/(?:dumb|jack|smart|bad|wise|hard|fat|kick|lard|horse|tight|half|candy|lazy)ass/.source + SUFFIX.source, "i"),
-
-    // bitch / bitching / bitches
-    new RegExp(/\bb+i+t+c+h+/.source + SUFFIX.source, "i"),
-
-    // bastard
-    new RegExp(/\bb+a+s+t+a+r+d+/.source + SUFFIX.source, "i"),
-
-    // bollocks (British) — \b prevents "bullock" (young bull)
-    /\bbollocks\b/i,
-
-    // bunghole / butthole
-    /\bbunghole\b/i,
-    /\bbutthole\b/i,
-
-    // cunt — \b prevents "Scunthorpe"
-    new RegExp(/\bc+u+n+t+/.source + SUFFIX.source, "i"),
-
-    // damn / goddamn / god damn / damned
-    new RegExp(/\bd+a+m+n+/.source + SUFFIX.source, "i"),
-    new RegExp(/\bg+o+d+\s*d+a+m+n+/.source + SUFFIX.source, "i"),
-
-    // dick — bare word ALLOWED (common given name, e.g. a resident named
-    // "Dick"). Reported 2026-09: a resident named Dick could not submit
-    // because the old /\bd+i+c+k+/ + SUFFIX pattern flagged his name in
-    // both the name and description fields. Only the aggressive compounds
-    // are blocked now (dickhead, dickface, dickwad, dickbag, dicktard).
-    // The compound suffix is required, so standalone "dick", "dicks", and
-    // "Dick's" pass. \b on both sides still keeps "Dickens", "Dickinson",
-    // "Dickson" safe.
-    new RegExp(/\bd+i+c+k+(?:head|face|wad|bag|tard)/.source + SUFFIX.source, "i"),
-
-    // cock — \b + SUFFIX \b prevents "cockroach"
-    new RegExp(/\bc+o+c+k+/.source + SUFFIX.source, "i"),
-
-    // piss
-    new RegExp(/\bp+i+s+s+/.source + SUFFIX.source, "i"),
-
-    // prick
-    new RegExp(/\bp+r+i+c+k+/.source + SUFFIX.source, "i"),
-
-    // tosser / wanker (British profanity — in LDNOOBW)
-    /\btosser\b/i,
-    /\bwanker\b/i,
-
-    // whore
-    new RegExp(/\bw+h+o+r+e+/.source + SUFFIX.source, "i"),
-
-    // slut
-    new RegExp(/\bs+l+u+t+/.source + SUFFIX.source, "i"),
-
-    // twat
-    new RegExp(/\bt+w+a+t+/.source + SUFFIX.source, "i"),
-
-    // ── Abbreviations ─────────────────────────────────────────
-    /\bwtf\b/i,
-    /\btf\b/i,
-
-    // ── Racial / ethnic slurs ──────────────────────────────────
-    // Black / African-American
-    new RegExp(/\bn[i!1]+g+[e3]+r+/.source + SUFFIX.source, "i"),  // nigger
-    new RegExp(/\bn[i!1]+g+[a@]+/.source + SUFFIX.source, "i"),    // nigga
-    /\bcoon\b/i,            // \b: safe for "raccoon", "cocoon"
-    /\bdarkie\b/i,
-    /\bjig+[ae]boo\b/i,     // jigaboo / jiggaboo / jiggerboo
-
-    // Hispanic / Latino
-    /\bbeaner[s]?\b/i,
-    /\bspic[s]?\b/i,        // \b: safe for "spice", "hospice", "auspicious"
-    /\bwetback[s]?\b/i,
-
-    // Asian
-    /\bslanteye\b/i,
-
-    // Middle Eastern / Muslim
-    /\braghead\b/i,
-    /\btowelhead\b/i,
-
-    // South Asian
-    /\bpaki\b/i,            // \b: safe for "Pakistan" (paki not at word boundary)
-
-    // LGBTQ+ slurs
-    new RegExp(/\bf+[a@]+g+[o0]+t+/.source + SUFFIX.source, "i"),  // faggot
-    new RegExp(/\bf+[a@]+g+/.source + SUFFIX.source, "i"),         // fag
-    new RegExp(/\bd+y+k+e+/.source + SUFFIX.source, "i"),          // dyke
-    /\btranny\b/i,
-
-    // ── Disability / other slurs ──────────────────────────────
-    new RegExp(/\br+[e3]+t+[a@]+r+d+/.source + SUFFIX.source, "i"),
-
-    // kike
-    new RegExp(/\bk+[i!1]+k+[e3]*/.source + SUFFIX.source, "i"),
-
-    // ── Hate ideology / symbols ────────────────────────────────
-    /\bswastika\b/i,
-    /\bneo[-\s]?nazi\b/i,
-
-    // ── Spanish profanity — core ──────────────────────────────
-    // normalizeLeet() strips diacriticals before this runs, so all
-    // patterns use plain ASCII. Accented input (cabrón, coño, chingón)
-    // normalises to the unaccented form and is caught here.
-    //
-    // False-positive audit (confirmed safe with \b):
-    //   puta   → "putativo" (putative) — \bputa\b does NOT match ✓
-    //   cono   → "icono"               — \bcono\b does NOT match ✓
-    //   culo   → "vehiculo","muscular" — \bculo\b does NOT match ✓
-    //   polla  → "ampolla"             — \bpolla\b does NOT match ✓
-    //   mamon  → "mammon"              — different spelling          ✓
-
-    // chingar / chinga / chingado / chingada / chingon / chingo
-    // Unanchored like fuck/shit — no innocent Spanish word contains "chinga" or "chingo".
-    // Two roots needed: chinga* (chinga, chingada, chingadera) and chingo* (chingón→chingon).
-    /chinga/i,
-    /chingo/i,
-
-    // puta / puto (whore; also used as intensifier) — \b required: "putativo"
-    /\bputa[s]?\b/i,
-    /\bputo[s]?\b/i,
-
-    // pendejo / pendeja (dumbass / idiot)
-    /\bpendej[oa][s]?\b/i,
-
-    // cabron / cabrona (bastard / bitch; after diacritic strip: cabrón→cabron)
-    /\bcabron[ao]?\b/i,
-
-    // cono / coño (cunt; after strip: coño→cono) — \b: "icono" safe ✓
-    /\bcono\b/i,
-
-    // mierda (shit)
-    /\bmierda[s]?\b/i,
-
-    // culo (ass) — \b: "vehiculo", "muscular" safe ✓
-    /\bculo[s]?\b/i,
-
-    // verga (cock — Mexican Spanish)
-    // NOTE: normalizeLeet applies v→u, so "verga" normalises to "uerga" before
-    // pattern matching. Pattern targets the post-normalisation form.
-    // \b: "uerga" has no false positives.
-    /\buerga[s]?\b/i,
-
-    // joder / jodete / jodido / jodida (fuck — Castilian)
-    // Two patterns: jode[rt] for joder/jodete, jodid[oa] for jodido/jodida.
-    /\bjode[rt]/i,
-    /\bjodid[oa][s]?\b/i,
-
-    // maricon / marica (faggot — LGBTQ+ slur; after strip: maricón→maricon)
-    /\bmaric[oa]n?\b/i,
-
-    // culero / culera (asshole — Mexican)
-    /\bculer[oa][s]?\b/i,
-
-    // hijo de puta / hijoputa (son of a bitch)
-    /\bhijo\s+de\s+puta\b/i,
-    /\bhijoputa\b/i,
-
-    // perra / perro used as insult (bitch / fucker)
-    /\bperra[s]?\b/i,
-
-    // polla (cock — Castilian) — \b: "ampolla" safe ✓
-    /\bpolla[s]?\b/i,
-
-    // hostia / hostias (damn / shit — Castilian; very common)
-    /\bhostia[s]?\b/i,
-
-    // mamon / mamona (wanker — after strip: mamón→mamon)
-    /\bmamon[ao]?\b/i,
-
-    // gilipollas (idiot / asshole — Castilian)
-    /\bgilipollas\b/i,
-
-    // cojones / cojon (balls — used as curse; after strip: cojón→cojon)
-    /\bcojon[es]*\b/i,
-
-    // sudaca (derogatory slur for South Americans)
-    /\bsudaca[s]?\b/i,
-];
-
-// ── Pass 2: unanchored root patterns for concatenated runs ────
-// Applied ONLY to alpha runs of 12+ consecutive characters extracted
-// from the normalised text. The 12-char threshold is chosen to keep
-// common legitimate words safe:
-//   "Scunthorpe"  (10 chars) — below threshold ✓
-//   "cockroaches" (11 chars) — below threshold ✓
-//   "horsefucker" (11 chars) — caught by Pass 1's unanchored /fuck/ ✓
-// Runs >= 12 chars are almost always deliberate concatenation evasion.
-//
-// /cock/ and /cunt/ are intentionally omitted — covered by Pass 1
-// anchored patterns; their absence avoids any hypothetical 12+ char
-// proper-noun false positive.
-const PROFANITY_ROOTS_EMBEDDED: RegExp[] = [
-    /fuck/i,
-    /shit/i,
-    /(?:dumb|jack|smart|bad|wise|hard|fat|kick|lard|horse|tight|half|candy|lazy)ass/i,
-    /asshole/i,
-    /arsehole/i,
-    /bitch/i,
-    /bastard/i,
-    /bollocks/i,
-    /bunghole/i,
-    /butthole/i,
-    /goddamn/i,
-    /damn/i,
-    /prick/i,
-    /tosser/i,
-    /wanker/i,
-    /whore/i,
-    /slut/i,
-    /twat/i,
-    // Racial / ethnic slurs
-    /nigger/i,
-    /nigga/i,
-    /beaner/i,
-    /spic/i,
-    /wetback/i,
-    /slanteye/i,
-    /raghead/i,
-    /towelhead/i,
-    /faggot/i,
-    /tranny/i,
-    /retard/i,
-    /kike/i,
-    /dyke/i,
-    // Hate ideology
-    /swastika/i,
-    /neonazi/i,
-    // Spanish profanity roots (for concatenated-evasion runs ≥11 chars)
-    // Note: v→u leet sub is already applied before Pass 2 runs, so
-    // "verga" is matched as "uerga" here.
-    /chinga/i,
-    /chingo/i,
-    /pendejo/i,
-    /cabron/i,
-    /mierda/i,
-    /uerga/i,    // verga after v→u normalisation
-    /jodido/i,
-    /maricon/i,
-    /culero/i,
-    /hijoputa/i,
-    /gilipollas/i,
-    /cojones/i,
-];
-
-/**
- * Returns true if `text` contains any profanity after leet-speak normalisation.
- *
- * Word list cross-referenced against:
- *   - LDNOOBW (List of Dirty, Naughty, Obscene and Otherwise Bad Words,
- *     MIT license, github.com/LDNOOBW)
- *   - FCC v. Pacifica Foundation (1978) "seven dirty words" legal baseline
- *   - Common Mexican/pan-Latin American and Castilian Spanish profanity
- *
- * Two-pass strategy:
- *
- *   Pass 1 — Anchored patterns on the full normalised text.
- *             Word-boundary anchors protect legitimate words.
- *             fuck, shit, and chinga are unanchored (no innocent word
- *             embeds them) to catch compound forms like "horsefucker".
- *             normalizeLeet() strips Unicode diacriticals via NFD before
- *             this runs so accented Spanish input matches ASCII patterns.
- *
- *   Pass 2 — Unanchored root patterns applied to every run of 11+
- *             consecutive alpha characters in the normalised text.
- *             Catches deliberate concatenation evasion while keeping
- *             "Scunthorpe" (10) and "cockroaches" (11) safely below
- *             the threshold.
- */
-// ── Offensive emoji blocklist ─────────────────────────────────
-// Emojis are outside ASCII and are not touched by normalizeLeet()
-// or the [a-z]{11,} Pass 2 alpha-run scan, so they require a
-// separate pre-normalisation check.
-//
-// The `u` flag is required for \u{XXXXXX} literals that reference
-// Unicode code points above U+FFFF (astral plane).
-//
-// Skin-tone modifier sequence: U+1F595 followed by any Fitzpatrick
-// modifier (U+1F3FB–U+1F3FF) covers all six middle-finger variants:
-//   🖕  🖕🏻  🖕🏼  🖕🏽  🖕🏾  🖕🏿
-//
-// ZWJ sequences (e.g. emoji + U+200D + another emoji) are handled
-// implicitly — if the base codepoint is present, it matches.
-const OFFENSIVE_EMOJI_RE = /\u{1F595}[\u{1F3FB}-\u{1F3FF}]?/u;  // 🖕 middle finger, all skin tones
-
-function containsProfanity(text: string): boolean {
-    if (!text) return false;
-
-    // ── Emoji check — runs on raw input before normalisation ─────
-    // normalizeLeet() does not touch astral-plane codepoints, so emoji
-    // must be detected here against the original string.
-    if (OFFENSIVE_EMOJI_RE.test(text)) return true;
-
-    const normalised = normalizeLeet(text);
-
-    // Pass 1: standard check — handles normally typed text
-    if (PROFANITY_PATTERNS.some((re) => re.test(normalised))) return true;
-
-    // Pass 2: long alpha-run check — handles concatenated evasion.
-    // Threshold is 11+ chars (lowered from 12 in v2.8.1 to catch
-    // 11-char compounds like "fuckmyballs" as a safety net).
-    // Common legitimate 11-char words are safe: "cockroaches" contains
-    // no Pass 2 roots (/cock/ and /cunt/ are intentionally excluded).
-    const longRuns = normalised.match(/[a-z]{11,}/g);
-    if (longRuns) {
-        for (const run of longRuns) {
-            if (PROFANITY_ROOTS_EMBEDDED.some((re) => re.test(run))) return true;
-        }
-    }
-
-    return false;
-}
+// Profanity filter moved to ./lib/profanity.ts (pure functions, unit tested).
 
 const MAX_PHOTOS = 3;
 const MAX_PHOTO_SIZE_MB = 15;
 const STEP_LABELS = ["Location", "Details", "Contact", "Review"] as const;
+
+/**
+ * Off-screen but still in the accessibility tree and the tab order. Used for the
+ * polite live region and for file inputs whose visible control is a styled label.
+ * display:none would remove them from keyboard and screen reader reach.
+ */
+const VISUALLY_HIDDEN: React.CSSProperties = {
+    position: "absolute", width: 1, height: 1, margin: -1, padding: 0,
+    overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap", border: 0,
+};
 
 // ── Photo compression settings ────────────────────────────────
 // Applied after OWASP validation, before upload.
@@ -1877,41 +1434,7 @@ async function validateMediaFile(
     return { valid: true, error: "" };
 }
 
-/**
- * Hardcoded fallback: maps each Tickets subtype code (SHORT) to the
- * boundary_type value in Service_Boundaries that must spatially contain
- * the selected point for that category to be valid.
- *
- * null = accepted anywhere inside any boundary (no spatial restriction).
- *
- * This is used ONLY when the Category_Boundary_Lookup REST table is not
- * configured in widget settings. The primary enforcement path is the
- * lookup table; this is the client-side backstop that fires via
- * checkCategoryGeofence() whenever the user changes their category selection.
- *
- * Server-side enforcement: the RAC_Geofence_Validate constraint attribute
- * rule on DBO.Tickets will also block invalid submissions at insert time.
- *
- * Subtype codes match the geodatabase domain:
- *   1=Water, 2=Sewer, 3=Roads, 4=Signs, 5=Parks, 6=Trees,
- *   7=Drainage & Stormwater, 8=Graffiti, 9=Illegal Dumping,
- *   10=Sidewalks & Curbs, 11=Street Lighting, 12=Other
- */
-const CATEGORY_BOUNDARY_MAP: Record<number, string | null> = {
-    1: "WATER_DIST",   // Water — must be inside a water service area
-    2: "SEWER_DIST",   // Sewer — must be inside a sewer district
-    3: "CITY_LIMITS",  // Roads & Pavement
-    4: "CITY_LIMITS",  // Signs & Signals
-    5: "CITY_LIMITS",  // Parks & Recreation
-    6: "CITY_LIMITS",  // Trees & Vegetation
-    7: "CITY_LIMITS",  // Drainage & Stormwater
-    8: "CITY_LIMITS",  // Graffiti
-    9: "CITY_LIMITS",  // Illegal Dumping
-    10: "CITY_LIMITS",  // Sidewalks & Curbs
-    11: "CITY_LIMITS",  // Street Lighting
-    12: null,           // Other — accepted anywhere inside any boundary
-    13: "CITY_LIMITS",  // Code Enforcement
-};
+// CATEGORY_BOUNDARY_MAP moved to ./lib/categoryBoundaries.ts (pure data, unit tested).
 
 // ══════════════════════════════════════════════════════════════
 //  THEME SYSTEM
@@ -1919,6 +1442,8 @@ const CATEGORY_BOUNDARY_MAP: Record<number, string | null> = {
 
 interface ThemeColors {
     brand: string;
+    /** Text color on a brand-colored background (theme primary.text). */
+    brandText: string;
     brandLight: string;
     brandBorder: string;
     success: string;
@@ -1934,6 +1459,8 @@ interface ThemeColors {
     textLight: string;
     textMuted: string;
     border: string;
+    /** Hairline separators and card outlines (theme divider). */
+    divider: string;
     inputBg: string;
     pageBg: string;
     fontFamily: string;
@@ -1962,17 +1489,24 @@ function resolveTheme(theme: any): ThemeColors {
     const body = theme?.body;
     const typography = theme?.sys?.typography || theme?.typography;
 
+    // Reads follow src/runtime/theme.ts (the family's useTokens hook) so the widget
+    // takes the same theme values as every other widget. This is a class component,
+    // so it cannot call the hook; the paths and fallback order are the same ones.
     const brand = sys?.primary?.main || sys?.primary?.default || colors?.primary || "#1a6daa";
-    const danger = sys?.danger?.main || sys?.danger?.default || colors?.danger || "#c0392b";
+    const danger = sys?.error?.main || sys?.danger?.main || sys?.danger?.default || colors?.danger || "#c0392b";
     const success = sys?.success?.main || sys?.success?.default || colors?.success || "#1e7e34";
     const warning = sys?.warning?.main || sys?.warning?.default || colors?.warning || "#d4a017";
-    const dark = sys?.color?.dark || colors?.dark || "#333";
+    const dark = sys?.surface?.paperText || sys?.color?.dark || colors?.dark || "#333";
+    const surface = sys?.surface?.paper || sys?.color?.surface || colors?.white || "#fff";
+    const background = sys?.surface?.background || sys?.color?.background || colors?.light || "#f7f8fa";
+    const divider = sys?.divider?.secondary || sys?.divider?.primary || "#e1e5e9";
     const fontFamily =
         typography?.fontFamilyBase || body?.fontFamily ||
         '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
 
     return {
         brand,
+        brandText: sys?.primary?.text || "#fff",
         brandLight: hexToLight(brand, 0.08),
         brandBorder: hexToLight(brand, 0.3),
         success,
@@ -1985,12 +1519,14 @@ function resolveTheme(theme: any): ThemeColors {
         warningBg: hexToLight(warning, 0.08),
         warningBorder: hexToLight(warning, 0.3),
         text: dark,
-        // AA-compliant muted colors: textLight #595959 (7:1), textMuted #767676 (4.54:1) on white
+        // AA-compliant muted colors: textLight #595959 (7:1), textMuted #767676 (4.54:1) on white.
+        // Kept as literals on purpose: a theme's hint color is not guaranteed to pass contrast.
         textLight: "#595959",
         textMuted: "#767676",
         border: "#ccc",
-        inputBg: sys?.color?.surface || colors?.white || "#fff",
-        pageBg: sys?.color?.background || colors?.light || "#f7f8fa",
+        divider,
+        inputBg: surface,
+        pageBg: background,
         fontFamily,
     };
 }
@@ -2007,7 +1543,7 @@ function buildStyles(t: ThemeColors) {
         } as React.CSSProperties,
 
         header: {
-            background: t.brand, color: "#fff", padding: "16px 20px",
+            background: t.brand, color: t.brandText, padding: "16px 20px",
             fontSize: 20, fontWeight: 700, letterSpacing: 0.3,
             fontFamily: t.fontFamily,
             display: "flex", alignItems: "center", gap: 12,
@@ -2024,22 +1560,22 @@ function buildStyles(t: ThemeColors) {
             width: 34, height: 34, borderRadius: "50%",
             display: "flex", alignItems: "center", justifyContent: "center",
             fontSize: 13, fontWeight: 700,
-            border: `2px solid ${done ? t.brand : active ? t.brand : "#dde0e4"}`,
-            background: done ? t.brand : active ? "#fff" : "#f5f6f8",
-            color: done ? "#fff" : active ? t.brand : t.textMuted,
+            border: `2px solid ${done ? t.brand : active ? t.brand : t.divider}`,
+            background: done ? t.brand : active ? t.inputBg : t.pageBg,
+            color: done ? t.brandText : active ? t.brand : t.textMuted,
             transition: "all 0.2s", flexShrink: 0,
             boxShadow: active ? `0 0 0 4px ${hexToLight(t.brand, 0.12)}` : "none",
         }),
 
         stepLine: (done: boolean): React.CSSProperties => ({
             flex: 1, height: 2, maxWidth: 48,
-            background: done ? t.brand : "#e0e3e8",
+            background: done ? t.brand : t.divider,
             transition: "background 0.2s",
         }),
 
         stepLabel: (active: boolean): React.CSSProperties => ({
             fontSize: 11, fontWeight: active ? 700 : 500,
-            textAlign: "center", color: active ? t.brand : "#767676",
+            textAlign: "center", color: active ? t.brand : t.textMuted,
             marginTop: 5, letterSpacing: 0.1,
         }),
 
@@ -2064,7 +1600,7 @@ function buildStyles(t: ThemeColors) {
         input: (hasError: boolean): React.CSSProperties => ({
             width: "100%", padding: "11px 14px", fontSize: 14,
             fontFamily: t.fontFamily,
-            border: `1.5px solid ${hasError ? t.error : "#767676"}`,
+            border: `1.5px solid ${hasError ? t.error : t.textMuted}`,
             borderRadius: 10, marginBottom: hasError ? 2 : 14,
             boxSizing: "border-box",
             background: t.inputBg, color: t.text,
@@ -2075,7 +1611,7 @@ function buildStyles(t: ThemeColors) {
         select: (hasError: boolean): React.CSSProperties => ({
             width: "100%", padding: "11px 14px", fontSize: 14,
             fontFamily: t.fontFamily,
-            border: `1.5px solid ${hasError ? t.error : "#767676"}`,
+            border: `1.5px solid ${hasError ? t.error : t.textMuted}`,
             borderRadius: 10, marginBottom: hasError ? 2 : 14,
             background: t.inputBg, color: t.text,
             boxSizing: "border-box",
@@ -2085,7 +1621,7 @@ function buildStyles(t: ThemeColors) {
         textarea: (hasError: boolean): React.CSSProperties => ({
             width: "100%", padding: "11px 14px", fontSize: 14,
             fontFamily: t.fontFamily,
-            border: `1.5px solid ${hasError ? t.error : "#767676"}`,
+            border: `1.5px solid ${hasError ? t.error : t.textMuted}`,
             borderRadius: 10, marginBottom: hasError ? 2 : 14,
             minHeight: 90, resize: "vertical" as const,
             boxSizing: "border-box", color: t.text,
@@ -2109,7 +1645,7 @@ function buildStyles(t: ThemeColors) {
             fontFamily: t.fontFamily,
             border: active ? `2px solid ${t.brand}` : "2px solid transparent",
             borderRadius: 12, cursor: "pointer",
-            background: active ? t.brandLight : "#fff",
+            background: active ? t.brandLight : t.inputBg,
             color: active ? t.brand : t.text,
             transition: "all 0.15s",
             boxShadow: active ? `0 0 0 1px ${t.brandBorder}` : "0 2px 8px rgba(0,0,0,0.08)",
@@ -2135,8 +1671,8 @@ function buildStyles(t: ThemeColors) {
 
         searchRow: {
             display: "flex", gap: 0, marginBottom: 8,
-            background: "#fff",
-            border: "1.5px solid #767676",
+            background: t.inputBg,
+            border: `1.5px solid ${t.textMuted}`,
             borderRadius: 999,
             overflow: "hidden",
             boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
@@ -2154,7 +1690,7 @@ function buildStyles(t: ThemeColors) {
         searchBtn: {
             padding: "8px 16px 8px 10px", fontSize: 13, fontWeight: 700,
             fontFamily: t.fontFamily,
-            background: t.brand, color: "#fff",
+            background: t.brand, color: t.brandText,
             border: "none", borderRadius: 999,
             cursor: "pointer", whiteSpace: "nowrap" as const,
             margin: "4px 4px 4px 0",
@@ -2163,9 +1699,9 @@ function buildStyles(t: ThemeColors) {
 
         resultsList: {
             listStyle: "none", margin: "0 0 14px 0", padding: 0,
-            border: "1.5px solid #767676", borderRadius: 14,
+            border: `1.5px solid ${t.textMuted}`, borderRadius: 14,
             maxHeight: 196, overflowY: "auto" as const,
-            background: "#fff",
+            background: t.inputBg,
             boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
             overflow: "hidden",
         } as React.CSSProperties,
@@ -2173,11 +1709,11 @@ function buildStyles(t: ThemeColors) {
         resultItem: {
             padding: "13px 18px", fontSize: 14, fontWeight: 500,
             color: t.text, cursor: "pointer",
-            borderBottom: "1px solid #f0f2f5", background: "#fff",
+            borderBottom: `1px solid ${t.divider}`, background: t.inputBg,
             display: "flex", alignItems: "center", gap: 10,
         } as React.CSSProperties,
 
-        resultItemHoverBg: "#f5f8ff",
+        resultItemHoverBg: t.brandLight,
 
         navRow: { display: "flex", gap: 10, marginTop: 24 } as React.CSSProperties,
 
@@ -2185,7 +1721,7 @@ function buildStyles(t: ThemeColors) {
             flex: 1, padding: "14px 20px", fontSize: 15, fontWeight: 700,
             fontFamily: t.fontFamily,
             background: disabled ? mixColor(t.brand, "#ffffff", 0.4) : t.brand,
-            color: "#fff", border: "none", borderRadius: 12,
+            color: t.brandText, border: "none", borderRadius: 12,
             cursor: disabled ? "not-allowed" : "pointer",
             transition: "background 0.15s, box-shadow 0.15s",
             boxShadow: disabled ? "none" : "0 4px 14px rgba(0,0,0,0.18)",
@@ -2195,8 +1731,8 @@ function buildStyles(t: ThemeColors) {
         btnSecondary: {
             flex: 1, padding: "14px 20px", fontSize: 15, fontWeight: 600,
             fontFamily: t.fontFamily,
-            background: "#fff", color: t.text,
-            border: "1.5px solid #767676", borderRadius: 12,
+            background: t.inputBg, color: t.text,
+            border: `1.5px solid ${t.textMuted}`, borderRadius: 12,
             cursor: "pointer",
             boxShadow: "0 2px 6px rgba(0,0,0,0.06)",
         } as React.CSSProperties,
@@ -2223,7 +1759,7 @@ function buildStyles(t: ThemeColors) {
         } as React.CSSProperties,
 
         reviewCard: {
-            background: t.inputBg, border: "1.5px solid #767676",
+            background: t.inputBg, border: `1.5px solid ${t.textMuted}`,
             borderRadius: 12, padding: "16px 18px", marginBottom: 12,
             boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
         } as React.CSSProperties,
@@ -2245,7 +1781,7 @@ function buildStyles(t: ThemeColors) {
         } as React.CSSProperties,
 
         skeleton: {
-            height: 16, borderRadius: 4, background: "#e8e8e8",
+            height: 16, borderRadius: 4, background: t.divider,
             marginBottom: 12,
             animation: "pulse 1.5s ease-in-out infinite",
         } as React.CSSProperties,
@@ -2269,7 +1805,7 @@ function buildStyles(t: ThemeColors) {
         gfResetBtn: {
             marginTop: 10, padding: "10px 16px", fontSize: 13,
             fontWeight: 600, fontFamily: t.fontFamily,
-            background: "#fff", color: t.error,
+            background: t.inputBg, color: t.error,
             border: `1.5px solid ${t.errorBorder}`,
             borderRadius: 8, cursor: "pointer", width: "100%",
         } as React.CSSProperties,
@@ -2311,7 +1847,7 @@ function buildStyles(t: ThemeColors) {
             position: "relative",
             aspectRatio: "1",
             borderRadius: 10,
-            border: `2px dashed ${hasError ? t.error : (dragOver || filled) ? t.brand : "#aab0ba"}`,
+            border: `2px dashed ${hasError ? t.error : (dragOver || filled) ? t.brand : t.border}`,
             background: dragOver ? t.brandLight : filled ? "#000" : t.pageBg,
             display: "flex", alignItems: "center", justifyContent: "center",
             overflow: "hidden", cursor: filled ? "default" : "pointer",
@@ -2399,7 +1935,7 @@ function buildStyles(t: ThemeColors) {
             flexShrink: 0, padding: "9px 14px",
             fontSize: 12, fontWeight: 700, fontFamily: t.fontFamily,
             background: copied ? t.success : t.brand,
-            color: "#fff", border: "none", cursor: "pointer",
+            color: t.brandText, border: "none", cursor: "pointer",
             transition: "background 0.2s",
             whiteSpace: "nowrap" as const,
         }),
@@ -2620,6 +2156,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
         statusViewPhotos: [],
         statusViewPhotosLoading: false,
 
+        liveMessage: "",
     };
 
     private getTheme = (): ThemeColors => resolveTheme(this.props.theme);
@@ -3289,8 +2826,23 @@ export default class ReportAConcernSubmit extends React.PureComponent<
     // ══════════════════════════════════════════════════════════
 
     goToStep = (step: WizardStep) => {
-        this.setState({ step });
+        // Announce the new step in the polite live region and move keyboard focus to
+        // the step heading, so screen reader and keyboard users land on the new content.
+        this.setState({ step, liveMessage: `Step ${step + 1} of ${STEP_LABELS.length}: ${STEP_LABELS[step]}` }, this.focusStepHeading);
         this.rootRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    /** Focus the current step's heading (tabIndex -1) after a step change. */
+    private focusStepHeading = (): void => {
+        try {
+            const h = this.rootRef.current?.querySelector<HTMLElement>("h2[data-rac-step-heading]");
+            h?.focus({ preventScroll: true });
+        } catch { }
+    };
+
+    /** Write a message to the polite live region (see render). */
+    private announce = (message: string): void => {
+        this.setState({ liveMessage: message });
     };
 
     nextStep = () => {
@@ -4009,6 +3561,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                     })),
                     addressSearching: false,
                 });
+                this.announce(`${json.candidates.length} address${json.candidates.length === 1 ? "" : "es"} found. Press Tab to move into the list and Enter to pick one.`);
             } else { this.setState({ addressResults: [], addressSearching: false, addressError: "No results found." }); }
         } catch { this.setState({ addressSearching: false, addressError: "Search failed." }); }
     };
@@ -4385,7 +3938,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
             gap: 2,
             marginTop: 10,
             padding: "10px 12px",
-            background: "#fff",
+            background: t.inputBg,
             border: `1.5px solid ${t.warningBorder}`,
             borderRadius: 8,
         };
@@ -4540,13 +4093,13 @@ export default class ReportAConcernSubmit extends React.PureComponent<
 
             if (writeUrl) await this.submitViaREST(writeUrl, attrs, geometry, photoFiles, onProgress);
             else if (ticketsLayer) await this.submitViaLayer(ticketsLayer, attrs, geometry, photoFiles, onProgress);
-            else this.setState({ submitting: false, submitResult: "error", submitMessage: "No write endpoint or map layer configured.", submitPhase: "", submitProgress: 0 });
+            else this.setState({ submitting: false, submitResult: "error", submitMessage: "No write endpoint or map layer configured.", liveMessage: "No write endpoint or map layer configured.", submitPhase: "", submitProgress: 0 });
         } catch (err: any) {
             this.beacon?.error(err, 'submit');
             let msg = "An error occurred.";
             if (err?.message) msg = err.message;
             if (err?.details?.messages?.length) msg = err.details.messages.join("\n");
-            this.setState({ submitting: false, submitResult: "error", submitMessage: msg, submitPhase: "", submitProgress: 0 });
+            this.setState({ submitting: false, submitResult: "error", submitMessage: msg, liveMessage: msg, submitPhase: "", submitProgress: 0 });
         }
     };
 
@@ -4560,13 +4113,13 @@ export default class ReportAConcernSubmit extends React.PureComponent<
         const json = await resp.json();
         onProgress("Submitting report\u2026", 40);
 
-        if (json.error) { this.setState({ submitting: false, submitResult: "error", submitMessage: `Server error: ${json.error.message || JSON.stringify(json.error)}`, submitPhase: "", submitProgress: 0 }); return; }
+        if (json.error) { const msg = `Server error: ${json.error.message || JSON.stringify(json.error)}`; this.setState({ submitting: false, submitResult: "error", submitMessage: msg, liveMessage: msg, submitPhase: "", submitProgress: 0 }); return; }
 
         const addResults = json.addResults || [];
-        if (!addResults.length) { this.setState({ submitting: false, submitResult: "error", submitMessage: "No result from server.", submitPhase: "", submitProgress: 0 }); return; }
+        if (!addResults.length) { this.setState({ submitting: false, submitResult: "error", submitMessage: "No result from server.", liveMessage: "No result from server.", submitPhase: "", submitProgress: 0 }); return; }
 
         const r = addResults[0];
-        if (r.error) { this.setState({ submitting: false, submitResult: "error", submitMessage: r.error.description || r.error.message || "Submission rejected.", submitPhase: "", submitProgress: 0 }); return; }
+        if (r.error) { const msg = r.error.description || r.error.message || "Submission rejected."; this.setState({ submitting: false, submitResult: "error", submitMessage: msg, liveMessage: msg, submitPhase: "", submitProgress: 0 }); return; }
 
         // ── Upload attachments to enterprise FeatureServer (non-fatal) ──
         // addAttachment on enterprise ArcGIS Server works anonymously for public
@@ -4606,7 +4159,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
 
         if (result.addFeatureResults?.length > 0) {
             const r = result.addFeatureResults[0];
-            if (r.error) { this.setState({ submitting: false, submitResult: "error", submitMessage: r.error.message || "Submission rejected.", submitPhase: "", submitProgress: 0 }); return; }
+            if (r.error) { const msg = r.error.message || "Submission rejected."; this.setState({ submitting: false, submitResult: "error", submitMessage: msg, liveMessage: msg, submitPhase: "", submitProgress: 0 }); return; }
             // ── Upload attachments to enterprise FeatureServer (non-fatal) ──
             if (r.objectId != null && photoFiles.length > 0) {
                 const total = photoFiles.length;
@@ -4624,7 +4177,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
             onProgress("Finalizing\u2026", 100);
             this.onSubmitSuccess(ticketNumber);
         } else {
-            this.setState({ submitting: false, submitResult: "error", submitMessage: "No result from server.", submitPhase: "", submitProgress: 0 });
+            this.setState({ submitting: false, submitResult: "error", submitMessage: "No result from server.", liveMessage: "No result from server.", submitPhase: "", submitProgress: 0 });
         }
     };
 
@@ -4655,6 +4208,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
             geofence: { ...EMPTY_GEOFENCE }, lookupData: [], lookupLoaded: false,
             categoryGeofence: { ...EMPTY_CAT_GEOFENCE },
             urlCopied: false,
+            liveMessage: ticketNumber != null ? `Report submitted. Your ticket number is ${ticketNumber}.` : "Report submitted.",
             statusViewTicket: null, statusViewError: "", statusViewLoading: false,
             statusViewComments: [], statusViewCommentsLoading: false,
             statusViewPhotos: [], statusViewPhotosLoading: false,
@@ -4766,6 +4320,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
     copyTicketUrl = (url: string) => {
         const doSet = () => {
             this.setState({ urlCopied: true });
+            this.announce("Ticket status link copied.");
             if (this.copyResetTimer) clearTimeout(this.copyResetTimer);
             this.copyResetTimer = setTimeout(() => {
                 this.setState({ urlCopied: false });
@@ -4927,8 +4482,8 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                     width: "100%",
                     display: "flex", alignItems: "center", gap: 14,
                     padding: "15px 18px",
-                    background: "#fff",
-                    border: `1.5px solid ${gpsLocating ? t.brand : "#767676"}`,
+                    background: t.inputBg,
+                    border: `1.5px solid ${gpsLocating ? t.brand : t.textMuted}`,
                     borderRadius: 14,
                     cursor: gpsLocating ? "default" : "pointer",
                     textAlign: "left",
@@ -4993,8 +4548,8 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                 {/* Section heading */}
                 <h2 style={{
                     fontSize: 17, fontWeight: 700, color: t.text,
-                    margin: "0 0 20px 0", letterSpacing: -0.2,
-                }}>
+                    margin: "0 0 20px 0", letterSpacing: -0.2, outline: "none",
+                }} tabIndex={-1} data-rac-step-heading="true">
                     Where is the concern?
                 </h2>
 
@@ -5014,7 +4569,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                             <div style={{ display: "flex", alignItems: "center", paddingLeft: 14, flexShrink: 0 }}
                                 aria-hidden="true">
                                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
-                                    stroke={addressSearching ? t.brand : "#767676"}
+                                    stroke={addressSearching ? t.brand : t.textMuted}
                                     strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                                     <circle cx="11" cy="11" r="7" />
                                     <line x1="16.5" y1="16.5" x2="22" y2="22" />
@@ -5043,13 +4598,14 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                 disabled={addressSearching || (addressQuery?.trim()?.length || 0) < 3}
                                 aria-busy={addressSearching}
                                 title="Search for this address"
+                                aria-label="Search for this address"
                             >
                                 {addressSearching ? (
                                     <svg width="14" height="14" viewBox="0 0 22 22" fill="none"
                                         aria-hidden="true"
                                         style={{ animation: "rac-spin 0.8s linear infinite", display: "block" }}>
                                         <circle cx="11" cy="11" r="9" stroke="rgba(255,255,255,0.4)" strokeWidth="2.5" />
-                                        <path d="M11 2a9 9 0 0 1 9 9" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" />
+                                        <path d="M11 2a9 9 0 0 1 9 9" stroke={t.brandText} strokeWidth="2.5" strokeLinecap="round" />
                                     </svg>
                                 ) : "Search"}
                             </button>
@@ -5069,16 +4625,26 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                         style={S.resultItem}
                                         role="option"
                                         aria-selected="false"
+                                        tabIndex={0}
                                         onClick={() => this.selectAddress(r)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); this.selectAddress(r); }
+                                        }}
                                         onMouseEnter={(e) => {
                                             e.currentTarget.style.background = S.resultItemHoverBg;
                                         }}
                                         onMouseLeave={(e) => {
-                                            e.currentTarget.style.background = "#fff";
+                                            e.currentTarget.style.background = t.inputBg;
+                                        }}
+                                        onFocus={(e) => {
+                                            e.currentTarget.style.background = S.resultItemHoverBg;
+                                        }}
+                                        onBlur={(e) => {
+                                            e.currentTarget.style.background = t.inputBg;
                                         }}
                                     >
                                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
-                                            stroke="#767676" strokeWidth="2" strokeLinecap="round"
+                                            stroke={t.textMuted} strokeWidth="2" strokeLinecap="round"
                                             strokeLinejoin="round" aria-hidden="true" style={{ flexShrink: 0 }}>
                                             <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z" />
                                             <circle cx="12" cy="10" r="3" />
@@ -5128,12 +4694,12 @@ export default class ReportAConcernSubmit extends React.PureComponent<
 
                 {/* Divider */}
                 <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "16px 0" }}>
-                    <div style={{ flex: 1, height: 1, background: "#e8ebf0" }} />
+                    <div style={{ flex: 1, height: 1, background: t.divider }} />
                     <span style={{
-                        fontSize: 11, fontWeight: 700, color: "#767676",
+                        fontSize: 11, fontWeight: 700, color: t.textMuted,
                         letterSpacing: "0.1em", textTransform: "uppercase",
                     }}>or use the map</span>
-                    <div style={{ flex: 1, height: 1, background: "#e8ebf0" }} />
+                    <div style={{ flex: 1, height: 1, background: t.divider }} />
                 </div>
 
                 {/* ── Map tools ────────────────────────────────── */}
@@ -5148,8 +4714,8 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                 width: "100%",
                                 display: "flex", alignItems: "center", gap: 14,
                                 padding: "15px 18px",
-                                background: placingPin ? t.brandLight : "#fff",
-                                border: placingPin ? `1.5px solid ${t.brand}` : "1.5px solid #767676",
+                                background: placingPin ? t.brandLight : t.inputBg,
+                                border: placingPin ? `1.5px solid ${t.brand}` : `1.5px solid ${t.textMuted}`,
                                 borderRadius: 14,
                                 cursor: "pointer",
                                 textAlign: "left",
@@ -5171,7 +4737,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                             }}>
                                 {placingPin ? (
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                        stroke="#fff" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                                        stroke={t.brandText} strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
                                         <line x1="18" y1="6" x2="6" y2="18" />
                                         <line x1="6" y1="6" x2="18" y2="18" />
                                     </svg>
@@ -5322,7 +4888,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
 
         return (
             <div>
-                <h2 style={S.sectionTitle}>What&rsquo;s the concern?</h2>
+                <h2 style={S.sectionTitle} tabIndex={-1} data-rac-step-heading="true">What&rsquo;s the concern?</h2>
 
                 {/* Lookup error (non-fatal — categories still shown unfiltered) */}
                 {lookupError && (
@@ -5473,12 +5039,12 @@ export default class ReportAConcernSubmit extends React.PureComponent<
 
                     {/* ── Photos ──────────────────────────────────────── */}
                     <div style={{ marginTop: 8, marginBottom: 14 }}>
-                        <label style={S.label}>
-                            Photos (optional — up to {MAX_PHOTOS})
-                        </label>
+                        <div id="rac-photos-label" style={S.label}>
+                            Photos (optional, up to {MAX_PHOTOS})
+                        </div>
 
                         {/* 3-slot thumbnail grid */}
-                        <div style={S.mediaGrid}>
+                        <div style={S.mediaGrid} role="group" aria-labelledby="rac-photos-label">
                             {Array.from({ length: MAX_PHOTOS }).map((_, i) => {
                                 const filled = !!photoPreviews[i];
                                 const slotErr = photoErrors[i] || "";
@@ -5505,6 +5071,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                                     style={S.photoSlotRemove}
                                                     onClick={() => this.onPhotoRemove(i)}
                                                     aria-label={`Remove photo ${i + 1}`}
+                                                    title={`Remove photo ${i + 1}`}
                                                     disabled={disableSection}
                                                 >
                                                     ×
@@ -5543,8 +5110,8 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                                     accept="image/*"
                                                     onChange={(e) => this.onPhotoAdd(i, e)}
                                                     disabled={disableSection}
-                                                    style={{ display: "none" }}
-                                                    aria-hidden="true"
+                                                    style={VISUALLY_HIDDEN}
+                                                    aria-label={`Add photo ${i + 1} from library`}
                                                 />
                                                 {/* Camera button — touch devices only.
                                                     Uses capture="environment" to launch
@@ -5578,8 +5145,8 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                                             capture="environment"
                                                             onChange={(e) => this.onPhotoAdd(i, e)}
                                                             disabled={disableSection}
-                                                            style={{ display: "none" }}
-                                                            aria-hidden="true"
+                                                            style={VISUALLY_HIDDEN}
+                                                            aria-label={`Take photo ${i + 1} with camera`}
                                                         />
                                                     </>
                                                 )}
@@ -5637,7 +5204,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
 
         return (
             <div>
-                <div style={S.sectionTitle}>How can we reach you?</div>
+                <h2 style={S.sectionTitle} tabIndex={-1} data-rac-step-heading="true">How can we reach you?</h2>
 
                 {/* ── Name ──────────────────────────────────────────── */}
                 <label style={S.label} htmlFor="rac-name">
@@ -5748,7 +5315,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
 
         return (
             <div>
-                <h2 style={S.sectionTitle}>Review Your Report</h2>
+                <h2 style={S.sectionTitle} tabIndex={-1} data-rac-step-heading="true">Review Your Report</h2>
 
                 {/* Submit error — role="alert" ensures immediate announcement */}
                 {submitResult === "error" && submitMessage && (
@@ -6067,7 +5634,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                             <div style={S.gfChecking} aria-live="polite">Loading photos&hellip;</div>
                         ) : (
                             statusViewPhotos.map((p, i) => (
-                                <div key={i} style={{ marginBottom: 12, borderRadius: 8, overflow: "hidden", border: "1px solid #e5e7eb", background: "#fff" }} role="figure" aria-label={`Photo from City staff ${i + 1} of ${statusViewPhotos.length}`}>
+                                <div key={i} style={{ marginBottom: 12, borderRadius: 8, overflow: "hidden", border: `1px solid ${t.divider}`, background: t.inputBg }} role="figure" aria-label={`Photo from City staff ${i + 1} of ${statusViewPhotos.length}`}>
                                     <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ display: "block" }} aria-label={`Open staff photo ${i + 1} full size in a new tab`}>
                                         <img
                                             src={p.url}
@@ -6077,7 +5644,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                         />
                                     </a>
                                     {p.uploadDate && (
-                                        <div style={{ fontSize: 12, color: "#6b7280", padding: "6px 10px" }}>
+                                        <div style={{ fontSize: 12, color: t.textMuted, padding: "6px 10px" }}>
                                             <time dateTime={new Date(p.uploadDate).toISOString()}>
                                                 {new Date(p.uploadDate).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
                                             </time>
@@ -6254,9 +5821,37 @@ export default class ReportAConcernSubmit extends React.PureComponent<
         } = this.state;
 
         const showStatusView = !statusViewLoading && (!!statusViewTicket || !!statusViewError);
+        const t = this.getTheme();
 
         return (
             <div style={S.root} id="rac-submit-root" ref={this.rootRef}>
+                {/* One polite live region for the whole widget (handoff Section 11.4).
+                    Step changes and submit results are written here; the inline
+                    role="alert" and aria-live blocks in each step stay as they are. */}
+                <div role="status" aria-live="polite" aria-atomic="true" style={VISUALLY_HIDDEN}>
+                    {this.state.liveMessage}
+                </div>
+                {/* Keyboard focus ring for every control, and reduced motion for the
+                    whole widget (the per-step style blocks only cover their own step). */}
+                <style>{`
+                    #rac-submit-root button:focus-visible,
+                    #rac-submit-root input:focus-visible,
+                    #rac-submit-root select:focus-visible,
+                    #rac-submit-root textarea:focus-visible,
+                    #rac-submit-root a:focus-visible,
+                    #rac-submit-root [tabindex]:focus-visible {
+                        outline: 3px solid ${t.brand};
+                        outline-offset: 2px;
+                    }
+                    #rac-submit-root h2[data-rac-step-heading]:focus-visible { outline: none; }
+                    @media (prefers-reduced-motion: reduce) {
+                        #rac-submit-root *, #rac-submit-root *::before, #rac-submit-root *::after {
+                            animation-duration: 0.01ms !important;
+                            animation-iteration-count: 1 !important;
+                            transition-duration: 0.01ms !important;
+                        }
+                    }
+                `}</style>
                 {/* ── Portrait orientation lock (pure CSS, zero JS state) ────────
                     Touch devices only (pointer: coarse). Rotates the widget -90°
                     and swaps width/height so content always reads as portrait.

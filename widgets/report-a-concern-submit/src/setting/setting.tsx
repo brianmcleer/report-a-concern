@@ -10,6 +10,30 @@ import {
 import { TextInput, TextArea, NumericInput, Switch, Select, Option } from "jimu-ui";
 import type { IMConfig } from "../config";
 
+/**
+ * Panel colors read from the builder theme, with the same paths and fallbacks as
+ * src/runtime/theme.ts (useTokens). The settings panel is a class component and
+ * cannot call the hook, so the reads are repeated here. Nothing under src/setting
+ * may import esri modules (handoff Section 12, item 1); this reads only the theme
+ * object the builder passes in props.
+ */
+function panelColors(theme: any) {
+    const sys = theme?.sys ?? {};
+    const color = sys.color ?? {};
+    const primary: string = color.primary?.main ?? "#0079c1";
+    return {
+        primary,
+        primaryText: (color.primary?.text ?? "#ffffff") as string,
+        surface: (color.surface?.paper ?? "#ffffff") as string,
+        background: (color.surface?.background ?? "#f7f8fa") as string,
+        text: (color.surface?.paperText ?? "#1b1f24") as string,
+        textSecondary: (color.surface?.paperHint ?? "#5a6572") as string,
+        divider: (color.divider?.secondary ?? color.divider?.primary ?? "#e1e5e9") as string,
+        danger: (color.error?.main ?? "#d64545") as string,
+        warning: (color.warning?.main ?? "#8a6100") as string,
+    };
+}
+
 interface SubtypeOption {
     code: number;
     name: string;
@@ -550,6 +574,7 @@ export default class Setting extends React.PureComponent<
 
     render() {
         const cfg = this.props.config;
+        const c = panelColors(this.props.theme);
         const { importStatus, importIsError } = this.state;
 
         return (
@@ -562,9 +587,9 @@ export default class Setting extends React.PureComponent<
                                 type="button"
                                 onClick={this.exportConfigAsXML}
                                 style={{
-                                    background: "#fff",
-                                    border: "1px solid #0079c1",
-                                    color: "#0079c1",
+                                    background: c.surface,
+                                    border: `1px solid ${c.primary}`,
+                                    color: c.primary,
                                     borderRadius: 3,
                                     padding: "6px 14px",
                                     fontSize: 12,
@@ -577,9 +602,9 @@ export default class Setting extends React.PureComponent<
                             </button>
                             <label
                                 style={{
-                                    background: "#fff",
-                                    border: "1px solid #0079c1",
-                                    color: "#0079c1",
+                                    background: c.surface,
+                                    border: `1px solid ${c.primary}`,
+                                    color: c.primary,
                                     borderRadius: 3,
                                     padding: "6px 14px",
                                     fontSize: 12,
@@ -612,7 +637,7 @@ export default class Setting extends React.PureComponent<
                                 style={{
                                     fontSize: 11,
                                     fontWeight: 500,
-                                    color: importIsError ? "#dc2626" : "#15803d",
+                                    color: importIsError ? c.danger : "#15803d",
                                 }}
                             >
                                 {importStatus}
@@ -946,7 +971,7 @@ export default class Setting extends React.PureComponent<
                             /* ── Preview + remove ─────────────────────── */
                             <div style={{
                                 display: "flex", alignItems: "center", gap: 10,
-                                padding: "8px 10px", background: "#f0f0f0",
+                                padding: "8px 10px", background: c.background,
                                 borderRadius: 4, width: "100%", boxSizing: "border-box",
                             }}>
                                 <img
@@ -955,8 +980,8 @@ export default class Setting extends React.PureComponent<
                                     style={{
                                         maxHeight: 40, maxWidth: 120,
                                         objectFit: "contain", flexShrink: 0,
-                                        border: "1px solid #ccc", borderRadius: 2,
-                                        background: "#fff", padding: 2,
+                                        border: `1px solid ${c.divider}`, borderRadius: 2,
+                                        background: c.surface, padding: 2,
                                     }}
                                 />
                                 <div style={{ flex: 1, minWidth: 0 }}>
@@ -967,7 +992,7 @@ export default class Setting extends React.PureComponent<
                                             display: "block", width: "100%",
                                             padding: "4px 8px", marginBottom: 4,
                                             fontSize: 12, cursor: "pointer",
-                                            background: "#fff", border: "1px solid #999",
+                                            background: c.surface, border: "1px solid #999",
                                             borderRadius: 3,
                                         }}
                                     >
@@ -980,8 +1005,8 @@ export default class Setting extends React.PureComponent<
                                             display: "block", width: "100%",
                                             padding: "4px 8px",
                                             fontSize: 12, cursor: "pointer",
-                                            background: "#fff", border: "1px solid #d9534f",
-                                            borderRadius: 3, color: "#d9534f",
+                                            background: c.surface, border: `1px solid ${c.danger}`,
+                                            borderRadius: 3, color: c.danger,
                                         }}
                                     >
                                         Remove image
@@ -996,9 +1021,9 @@ export default class Setting extends React.PureComponent<
                                 style={{
                                     width: "100%", padding: "10px 8px",
                                     fontSize: 13, cursor: "pointer",
-                                    background: "#fff",
+                                    background: c.surface,
                                     border: "2px dashed #aaa", borderRadius: 4,
-                                    color: "#555", textAlign: "center",
+                                    color: c.textSecondary, textAlign: "center",
                                 }}
                             >
                                 Click to upload image (PNG, JPG, SVG)
@@ -1022,9 +1047,9 @@ export default class Setting extends React.PureComponent<
                                         flex: 1, padding: "5px 0",
                                         fontSize: 12, cursor: "pointer",
                                         borderRadius: 3, border: "1px solid",
-                                        borderColor: (cfg.headerTitleAlign ?? "left") === align ? "#005e8b" : "#aaa",
-                                        background: (cfg.headerTitleAlign ?? "left") === align ? "#005e8b" : "#fff",
-                                        color: (cfg.headerTitleAlign ?? "left") === align ? "#fff" : "#333",
+                                        borderColor: (cfg.headerTitleAlign ?? "left") === align ? c.primary : "#aaa",
+                                        background: (cfg.headerTitleAlign ?? "left") === align ? c.primary : c.surface,
+                                        color: (cfg.headerTitleAlign ?? "left") === align ? c.primaryText : c.text,
                                         fontWeight: (cfg.headerTitleAlign ?? "left") === align ? 700 : 400,
                                         textTransform: "capitalize",
                                     }}
@@ -1143,11 +1168,11 @@ export default class Setting extends React.PureComponent<
                         const n = this.state.subtypes.length;
 
                         let label = "";
-                        let color = "#666";
-                        if (loading) { label = "Loading categories from layer…"; color = "#666"; }
-                        else if (err) { label = `Error: ${err}`; color = "#c33"; }
-                        else if (!url) { label = "No layer URL available. Set Category Metadata URL below, or make sure Write Endpoint URL is a FeatureServer/MapServer URL (not the proxy)."; color = "#a60"; }
-                        else if (n === 0) { label = "Fetched layer JSON but found 0 subtypes."; color = "#a60"; }
+                        let color = c.textSecondary;
+                        if (loading) { label = "Loading categories from layer…"; color = c.textSecondary; }
+                        else if (err) { label = `Error: ${err}`; color = c.danger; }
+                        else if (!url) { label = "No layer URL available. Set Category Metadata URL below, or make sure Write Endpoint URL is a FeatureServer/MapServer URL (not the proxy)."; color = c.warning; }
+                        else if (n === 0) { label = "Fetched layer JSON but found 0 subtypes."; color = c.warning; }
                         else { label = `${n} categor${n === 1 ? "y" : "ies"} loaded`; color = "#080"; }
 
                         return (
@@ -1156,7 +1181,7 @@ export default class Setting extends React.PureComponent<
                                     <div style={{ color, marginBottom: 4 }}>
                                         <strong>Pickers:</strong> {label}
                                     </div>
-                                    <div style={{ color: "#888", wordBreak: "break-all", fontSize: 11 }}>
+                                    <div style={{ color: c.textSecondary, wordBreak: "break-all", fontSize: 11 }}>
                                         URL: {url || "(none)"}
                                     </div>
                                     <button
@@ -1164,7 +1189,7 @@ export default class Setting extends React.PureComponent<
                                         onClick={this.fetchMetadata}
                                         style={{
                                             marginTop: 4, background: "transparent", border: "none",
-                                            color: "#0079c1", textDecoration: "underline",
+                                            color: c.primary, textDecoration: "underline",
                                             cursor: "pointer", padding: 0, fontSize: 12,
                                         }}
                                     >
@@ -1192,7 +1217,7 @@ export default class Setting extends React.PureComponent<
 
                     {this.getCriticalAlerts().map((row, i) => (
                         <div key={i} style={{
-                            border: "1px solid #ddd",
+                            border: `1px solid ${c.divider}`,
                             borderRadius: 4,
                             padding: 8,
                             marginTop: 8,
@@ -1213,8 +1238,8 @@ export default class Setting extends React.PureComponent<
                                     onClick={() => this.removeCriticalAlert(i)}
                                     style={{
                                         background: "transparent",
-                                        border: "1px solid #c33",
-                                        color: "#c33",
+                                        border: `1px solid ${c.danger}`,
+                                        color: c.danger,
                                         borderRadius: 3,
                                         padding: "2px 8px",
                                         fontSize: 11,
@@ -1241,8 +1266,8 @@ export default class Setting extends React.PureComponent<
                                         className="w-100"
                                         style={{
                                             height: 28, fontSize: 13, padding: "2px 6px",
-                                            border: "1px solid #ccc", borderRadius: 2,
-                                            background: "#fff", width: "100%",
+                                            border: `1px solid ${c.divider}`, borderRadius: 2,
+                                            background: c.surface, width: "100%",
                                         }}
                                         value={row.category ?? ""}
                                         onChange={(e) => {
@@ -1295,8 +1320,8 @@ export default class Setting extends React.PureComponent<
                                             className="w-100"
                                             style={{
                                                 height: 28, fontSize: 13, padding: "2px 6px",
-                                                border: "1px solid #ccc", borderRadius: 2,
-                                                background: "#fff", width: "100%",
+                                                border: `1px solid ${c.divider}`, borderRadius: 2,
+                                                background: c.surface, width: "100%",
                                             }}
                                             value={row.subcategory ?? ""}
                                             onChange={(e) =>
@@ -1332,7 +1357,7 @@ export default class Setting extends React.PureComponent<
                                         borderRadius: 3,
                                         padding: 6,
                                         marginBottom: 6,
-                                        background: "#fff",
+                                        background: c.surface,
                                     }}>
                                         <div style={{
                                             display: "flex",
@@ -1340,7 +1365,7 @@ export default class Setting extends React.PureComponent<
                                             alignItems: "center",
                                             marginBottom: 4,
                                         }}>
-                                            <em style={{ fontSize: 11, color: "#666" }}>
+                                            <em style={{ fontSize: 11, color: c.textSecondary }}>
                                                 Phone #{j + 1}
                                             </em>
                                             <div style={{ display: "flex", gap: 4 }}>
@@ -1352,7 +1377,7 @@ export default class Setting extends React.PureComponent<
                                                     style={{
                                                         background: "transparent",
                                                         border: "1px solid #999",
-                                                        color: "#333",
+                                                        color: c.text,
                                                         borderRadius: 3,
                                                         padding: "0px 6px",
                                                         fontSize: 11,
@@ -1369,7 +1394,7 @@ export default class Setting extends React.PureComponent<
                                                     style={{
                                                         background: "transparent",
                                                         border: "1px solid #999",
-                                                        color: "#333",
+                                                        color: c.text,
                                                         borderRadius: 3,
                                                         padding: "0px 6px",
                                                         fontSize: 11,
@@ -1383,8 +1408,8 @@ export default class Setting extends React.PureComponent<
                                                     onClick={() => this.removeAlertPhone(i, j)}
                                                     style={{
                                                         background: "transparent",
-                                                        border: "1px solid #c33",
-                                                        color: "#c33",
+                                                        border: `1px solid ${c.danger}`,
+                                                        color: c.danger,
                                                         borderRadius: 3,
                                                         padding: "0px 8px",
                                                         fontSize: 11,
@@ -1397,7 +1422,7 @@ export default class Setting extends React.PureComponent<
 
                                         <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                                             <div style={{ flex: "1 1 220px", minWidth: 180 }}>
-                                                <label style={{ fontSize: 11, color: "#555", display: "block", marginBottom: 2 }}>
+                                                <label style={{ fontSize: 11, color: c.textSecondary, display: "block", marginBottom: 2 }}>
                                                     When (optional)
                                                 </label>
                                                 <TextInput
@@ -1410,7 +1435,7 @@ export default class Setting extends React.PureComponent<
                                                 />
                                             </div>
                                             <div style={{ flex: "1 1 180px", minWidth: 140 }}>
-                                                <label style={{ fontSize: 11, color: "#555", display: "block", marginBottom: 2 }}>
+                                                <label style={{ fontSize: 11, color: c.textSecondary, display: "block", marginBottom: 2 }}>
                                                     Who (optional)
                                                 </label>
                                                 <TextInput
@@ -1423,7 +1448,7 @@ export default class Setting extends React.PureComponent<
                                                 />
                                             </div>
                                             <div style={{ flex: "1 1 150px", minWidth: 130 }}>
-                                                <label style={{ fontSize: 11, color: "#555", display: "block", marginBottom: 2 }}>
+                                                <label style={{ fontSize: 11, color: c.textSecondary, display: "block", marginBottom: 2 }}>
                                                     Number *
                                                 </label>
                                                 <TextInput
@@ -1444,8 +1469,8 @@ export default class Setting extends React.PureComponent<
                                     onClick={() => this.addAlertPhone(i)}
                                     style={{
                                         background: "transparent",
-                                        border: "1px dashed #0079c1",
-                                        color: "#0079c1",
+                                        border: `1px dashed ${c.primary}`,
+                                        color: c.primary,
                                         borderRadius: 3,
                                         padding: "4px 10px",
                                         fontSize: 11,
@@ -1479,9 +1504,9 @@ export default class Setting extends React.PureComponent<
                             type="button"
                             onClick={this.addCriticalAlert}
                             style={{
-                                background: "#0079c1",
-                                border: "1px solid #0079c1",
-                                color: "#fff",
+                                background: c.primary,
+                                border: `1px solid ${c.primary}`,
+                                color: c.primaryText,
                                 borderRadius: 3,
                                 padding: "6px 14px",
                                 fontSize: 12,

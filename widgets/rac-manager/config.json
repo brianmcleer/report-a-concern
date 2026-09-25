@@ -4,5 +4,6 @@
   "commentsTableName": "Ticket_Comments",
   "photosTableName": "Ticket_Photos_Meta",
   "surveyTableName": "Survey_Responses",
-  "orgName": "GIS Division"
+  "orgName": "GIS Division",
+  "showHelp": true
 }

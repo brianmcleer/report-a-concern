@@ -16,3 +16,6 @@ dist/
 # Cowork working folder and release zips never ship
 Claude outputs/
 *.zip
+
+# Transpiled test build (node tests/transpile.js)
+tests/build/

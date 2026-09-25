@@ -10,7 +10,8 @@ service and its related tables.
 - Ticket list and detail review tied to the configured Tickets layer
 - Status updates and comment management
 - Related photo metadata and survey response display
-- Settings panel for the map widget, the related table names, and the organization name used in exports
+- Settings panel for the map widget, the related table names, the organization name used in exports, and the help guide switch
+- In-widget help guide with search and a first-run hint, following the app theme. Keyboard and screen reader friendly.
 - Part of the [report-a-concern](https://github.com/brianmcleer/report-a-concern) repository (schema, proxy, scripts, docs)
 
 ## Requirements
@@ -49,6 +50,15 @@ service and its related tables.
 The zip is the widget only. The Visual Studio type shims in the repo (`rac-manager/src/exb-editor-shims.d.ts`, `rac-manager/src/vendor-shims.d.ts`) are left out on purpose: their ambient `declare module` blocks are not file-scoped and would rewrite the react, jimu and esri types for every other widget in your `your-extensions` folder.
 
 If you clone the repository instead of using the zip, delete `rac-manager/src/exb-editor-shims.d.ts` and the other shim files listed above before building; nothing else depends on them.
+
+## Developer checks
+
+Run both from the widget folder before handing files over. Neither needs the Experience Builder client.
+
+- `npx tsc -p .` (Command Prompt, regular user, in the widget folder): type check against the self-contained editor shims. It must print nothing. On TypeScript 6 add `--ignoreDeprecations 6.0`.
+- `npm test` (same window): transpiles every source file with the TypeScript compiler as a syntax check, then runs the node test suite in `tests/` (help guide rules and feature gating, date formatters, coded value labels). The transpiled copies land in `tests/build/`, which is git-ignored.
+
+The handover docs live in `docs/handover/` (where things are, routine maintenance, troubleshooting).
 
 ## Usage telemetry
 

@@ -2,7 +2,7 @@
   "name": "report-a-concern-submit",
   "label": "Report A Concern - Submit",
   "type": "widget",
-  "version": "3.1.9",
+  "version": "3.2.0",
   "exbVersion": "1.21.0",
   "author": "Brian McLeer",
   "description": "Multi-step public ticket submission form for Report A Concern with geofenced service boundary validation. Submits to the Tickets feature layer via applyEdits; spatial queries enforce jurisdiction boundaries client-side, and attribute rules handle additional validation server-side.",
