@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="x-apple-disable-message-reformatting">
+    <title>Report a Concern - Request Received</title>
+    <!--[if mso]>
+    <noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+    <![endif]-->
+    <style>
+        table, td, div, h1, h2, p {
+            font-family: Arial, sans-serif;
+        }
+
+        .label-text {
+            color: #003a55;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .detail-val {
+            color: #1a1a1a;
+            font-size: 15px;
+        }
+
+        .tile {
+            width: 260px;
+            padding: 12px;
+            vertical-align: top;
+            background-color: #003a55;
+            border: 2px solid #003a55;
+        }
+
+        .tile-link {
+            color: #ffffff;
+            text-decoration: underline;
+            font-size: 16px;
+            line-height: 24px;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body style="margin:0;padding:0;">
+    <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;background:#ffffff;">
+        <tr>
+            <td align="center" style="padding:0;">
+                <table role="presentation" style="width:602px;border-collapse:collapse;border:1px solid #cccccc;border-spacing:0;text-align:left;">
+
+                    <!-- Header -->
+                    <tr>
+                        <td align="center" style="padding:40px 0 30px 0;background:#003a55;">
+                            <h1 style="color:#ffffff;font-family:Arial,sans-serif;font-size:24px;margin:0 0 16px 0;">
+                                Report a Concern Request
+                            </h1>
+                            <img src="{org_logo_url}"
+                                 alt="{org_logo_alt}"
+                                 width="300" style="height:auto;display:block;margin:0 auto;" />
+                        </td>
+                    </tr>
+
+                    <!-- Body -->
+                    <tr>
+                        <td style="padding:36px 30px 42px 30px;">
+                            <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
+                                <tr>
+                                    <td style="padding:0 0 24px 0;">
+
+                                        <h2 style="font-size:22px;margin:0 0 16px 0;font-family:Arial,sans-serif;color:#003a55;">
+                                            New Request Received
+                                        </h2>
+
+                                        <p style="margin:0 0 12px 0;font-size:16px;line-height:26px;font-family:Arial,sans-serif;color:#003a55;">
+                                            Hello, {submitted_by_name}
+                                        </p>
+                                        <p style="margin:0 0 20px 0;font-size:16px;line-height:26px;font-family:Arial,sans-serif;color:#1a1a1a;">
+                                            Thank you for submitting your <strong>{category}</strong> concern through Grand
+                                            Junction's Report a Concern system. Your request has been received and forwarded
+                                            to the appropriate City staff. You will receive an update email if the status
+                                            of your request changes.
+                                        </p>
+
+                                        <!-- Request details -->
+                                        <div style="padding:6px 8px;background-color:#003a55;">
+                                            <strong style="color:#ffffff;font-family:Arial,sans-serif;font-size:15px;">Request Details</strong>
+                                        </div>
+                                        <table role="presentation" style="width:100%;border-collapse:collapse;margin-top:4px;">
+                                            <tr>
+                                                <!-- ticket_number is the human-readable display number (e.g. 1042).  -->
+                                                <!-- The underlying ticket_id GUID is never shown to the public.      -->
+                                                <td class="label-text" style="padding:5px 8px 2px 0;width:140px;">Ticket Number:</td>
+                                                <td class="detail-val" style="padding:5px 0 2px 0;">{ticket_number}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-text" style="padding:2px 8px 2px 0;">Category:</td>
+                                                <td class="detail-val" style="padding:2px 0;">{category}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-text" style="padding:2px 8px 2px 0;">Type:</td>
+                                                <td class="detail-val" style="padding:2px 0;">{subcategory}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-text" style="padding:2px 8px 2px 0;">Description:</td>
+                                                <td class="detail-val" style="padding:2px 0;">{description}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-text" style="padding:2px 8px 5px 0;">Submitted:</td>
+                                                <td class="detail-val" style="padding:2px 0 5px 0;">{submitted_date}</td>
+                                            </tr>
+                                        </table>
+
+                                        <!-- Track ticket button -->
+                                        <table role="presentation" style="border-collapse:collapse;margin:20px 0 8px 0;">
+                                            <tr>
+                                                <td style="background-color:#003a55;padding:12px 28px;border-radius:3px;text-align:center;">
+                                                    <a href="{ticket_url}"
+                                                       style="color:#ffffff;text-decoration:none;font-size:16px;font-weight:bold;font-family:Arial,sans-serif;">
+                                                        Track the progress of your request
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <p style="font-size:12px;color:#555555;margin:0 0 0 0;font-family:Arial,sans-serif;">
+                                            If the button above does not work, copy and paste this link into your browser:<br>
+                                            <a href="{ticket_url}" style="color:#003a55;word-break:break-all;">{ticket_url}</a>
+                                        </p>
+
+                                    </td>
+                                </tr>
+
+                                <!-- Bottom tiles -->
+                                <tr>
+                                    <td style="padding:16px 0 0 0;">
+                                        <table role="presentation" style="width:100%;border-collapse:collapse;border-spacing:0;">
+                                            <tr>
+                                                <td class="tile">
+                                                    <p style="margin:0 0 10px 0;text-align:center;">
+                                                        <a href="{ticket_url}" aria-label="Report another concern">
+                                                            <span aria-hidden="true" style="display:block;font-size:72px;line-height:1;color:#003a55;">&rarr;</span>
+                                                        </a>
+                                                    </p>
+                                                    <p style="margin:0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;text-align:center;">
+                                                        <a href="{rac_app_url}" class="tile-link">Report another concern</a>
+                                                    </p>
+                                                </td>
+                                                <td style="width:20px;padding:0;font-size:0;line-height:0;">&nbsp;</td>
+                                                <td class="tile">
+                                                    <p style="margin:0 0 10px 0;text-align:center;">
+                                                        <a href="{org_website}" aria-label="Visit the {org_name} official website">
+                                                            <img src="{org_logo_url}"
+                                                                 alt="{org_logo_alt}"
+                                                                 width="120" style="height:auto;display:block;margin:0 auto;" />
+                                                        </a>
+                                                    </p>
+                                                    <p style="margin:0;color:#ffffff;font-size:16px;line-height:24px;font-family:Arial,sans-serif;text-align:center;">
+                                                        Visit the <a href="{org_website}" class="tile-link">{org_name} website</a>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding:24px 30px;background:#003a55;">
+                            <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
+                                <tr>
+                                    <td style="padding:0;width:60%;" align="left">
+                                        <p style="margin:0;font-size:12px;line-height:18px;font-family:Arial,sans-serif;color:#ffffff;">
+                                            &copy; <a href="{org_website}" style="color:#ffffff;text-decoration:underline;">{org_name}</a><br>
+                                            {org_address}<br>
+                                            This is an automated message. Please do not reply to this email.
+                                        </p>
+                                    </td>
+                                    <td style="padding:0;width:40%;" align="right">
+                                        <a href="{org_website}" aria-label="{org_name} official website">
+                                            <img src="{org_logo_url}"
+                                                 alt="{org_logo_alt}"
+                                                 width="80" style="height:auto;display:block;border:0;" />
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

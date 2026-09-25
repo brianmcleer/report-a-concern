@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="x-apple-disable-message-reformatting">
+    <title>Report a Concern - Request Update</title>
+    <!--[if mso]>
+    <noscript>
+      <xml>
+        <o:OfficeDocumentSettings>
+          <o:PixelsPerInch>96</o:PixelsPerInch>
+        </o:OfficeDocumentSettings>
+      </xml>
+    </noscript>
+    <![endif]-->
+    <style>
+        table,
+        td,
+        div,
+        h1,
+        h2,
+        p {
+            font-family: Arial, sans-serif;
+        }
+
+        .borderex {
+            border-style: solid;
+            border-color: #003a55;
+            color: #ffffff;
+        }
+
+        .center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        a.button {
+            -webkit-appearance: button;
+            -moz-appearance: button;
+            appearance: button;
+            text-decoration: none;
+            color: initial;
+        }
+    </style>
+</head>
+
+<body style="margin:0;padding:0;">
+    <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;background:#ffffff;">
+        <tr>
+            <td align="center" style="padding:0;">
+                <table role="presentation"
+                       style="width:602px;border-collapse:collapse;border:1px solid #cccccc;border-spacing:0;text-align:left;">
+
+                    <!-- Header -->
+                    <tr>
+                        <td align="center" style="padding:40px 0 30px 0;background:#003a55;">
+                            <!-- Single h1 for the page - WCAG 1.3.1 heading hierarchy -->
+                            <h1 class="title" style="color:#ffffff;font-family:Arial,sans-serif;margin:0 0 16px 0;">
+                                Report a Concern Request
+                            </h1>
+                            <img src="{org_logo_url}"
+                                 alt="{org_logo_alt}"
+                                 width="300"
+                                 style="height:auto;display:block;" />
+                        </td>
+                    </tr>
+
+                    <!-- Body -->
+                    <tr>
+                        <td style="padding:36px 30px 42px 30px;">
+                            <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
+                                <tr>
+                                    <td style="padding:0 0 36px 0;color:#003a55;">
+
+                                        <!-- h2 (not h1) to maintain heading hierarchy - WCAG 1.3.1 -->
+                                        <h2 style="font-size:24px;margin:0 0 20px 0;font-family:Arial,sans-serif;">Request Update:</h2>
+
+                                        <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">
+                                            Hello, {Name_req}<br /><br />
+                                            We have an update on your <strong>{category_label}</strong> request. A new
+                                            <strong>{comment_type_label}</strong> has been added by city staff.
+                                        </p>
+
+                                        <div class="contact_table" style="padding:5px;background-color:#003a55;color:#ffffff;">
+                                            <strong>Request Details</strong>
+                                        </div>
+                                        <!-- ticket_number is the human-readable display number (e.g. 1042).     -->
+                                        <!-- The underlying ticket_id GUID is never shown to the public.         -->
+                                        <p style="font-size:14px;line-height:22px;"><strong>Ticket Number:</strong> {ticket_number}</p>
+                                        <p style="font-size:14px;line-height:22px;"><strong>Category:</strong> {category_label}</p>
+                                        <p style="font-size:14px;line-height:22px;"><strong>Update Type:</strong> {comment_type_label}</p>
+                                        {status_line}
+                                        <p style="font-size:14px;line-height:22px;"><strong>Date:</strong> {comment_date}</p>
+                                        <p style="font-size:14px;line-height:22px;"><strong>From:</strong> {comment_author}</p>
+
+                                        <div class="contact_table" style="padding:5px;background-color:#003a55;color:#ffffff;">
+                                            <strong>Staff Comment</strong>
+                                        </div>
+                                        <p style="margin:12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">
+                                            {comment_text}
+                                        </p>
+
+                                        <!-- Deep link to the public status page. Opens this ticket's -->
+                                        <!-- status view, which includes any photos staff attached to  -->
+                                        <!-- public comments. ticket_url is built by the mailer.        -->
+                                        <table role="presentation" class="center" style="border-collapse:collapse;border:0;border-spacing:0;margin:24px auto 8px auto;">
+                                            <tr>
+                                                <td align="center" bgcolor="#003a55" style="border-radius:4px;">
+                                                    <a href="{ticket_url}"
+                                                       aria-label="View your request status on the City website"
+                                                       style="display:inline-block;padding:13px 28px;font-family:Arial,sans-serif;font-size:16px;line-height:20px;font-weight:bold;color:#ffffff;text-decoration:none;border:1px solid #003a55;border-radius:4px;">
+                                                        View Your Request Status
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <p style="margin:0;font-size:12px;line-height:18px;color:#003a55;font-family:Arial,sans-serif;text-align:center;">
+                                            Or paste this link into your browser:<br />
+                                            <a href="{ticket_url}" style="color:#003a55;text-decoration:underline;">{ticket_url}</a>
+                                        </p>
+
+                                    </td>
+                                </tr>
+
+                                <!-- Bottom city website tile - full width -->
+                                <tr>
+                                    <td style="padding:0;">
+                                        <table role="presentation" style="width:100%;border-collapse:collapse;border:1px;border-spacing:0;">
+                                            <tr>
+                                                <td class="borderex"
+                                                    style="padding:16px;vertical-align:top;color:#ffffff;background-color:#003a55;text-align:center;">
+                                                    <p style="margin:0 0 16px 0;">
+                                                        <a href="{org_website}"
+                                                           aria-label="Visit the {org_name} official website">
+                                                            <img src="{org_logo_url}"
+                                                                 alt="{org_logo_alt}"
+                                                                 width="140"
+                                                                 style="height:auto;display:block;margin:0 auto;" />
+                                                        </a>
+                                                    </p>
+                                                    <p style="color:#ffffff;margin:0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">
+                                                        Visit the
+                                                        <a href="{org_website}"
+                                                           style="color:#ffffff;text-decoration:underline;">
+                                                            {org_name} website
+                                                        </a>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding:30px;background:#003a55;">
+                            <table role="presentation"
+                                   style="width:100%;border-collapse:collapse;border:0;border-spacing:0;font-family:Arial,sans-serif;">
+                                <tr>
+                                    <td style="padding:0;width:50%;" align="left">
+                                        <!-- Minimum 12px font - WCAG 1.4.4 -->
+                                        <p style="margin:0;font-size:12px;line-height:16px;font-family:Arial,sans-serif;color:#ffffff;">
+                                            &copy; <a href="{org_website}"
+                                                      style="color:#ffffff;text-decoration:underline;">{org_name}</a>
+                                        </p>
+                                    </td>
+                                    <td style="padding:0;width:50%;" align="right">
+                                        <table role="presentation" style="border-collapse:collapse;border:0;border-spacing:0;">
+                                            <tr>
+                                                <td style="padding:0 0 0 10px;width:38px;">
+                                                    <a href="{org_website}">
+                                                        <img src="{org_logo_url}"
+                                                             alt="{org_logo_alt}"
+                                                             width="100"
+                                                             style="height:auto;display:block;border:0;" />
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

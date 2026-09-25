@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  RAC_Notify_New_Ticket
+  Windows Task Scheduler import file for the Report a Concern (RAC) system.
+
+  Before importing, edit:
+    - Principal/UserId       : the service account that runs the job
+    - Actions/Exec/Command   : path to python.exe in the cloned ArcGIS Pro env
+    - Actions/Exec/Arguments : path to the script
+    - Actions/Exec/WorkingDirectory
+
+  WHY a cloned ArcGIS Pro env: the base arcgispro-py3 env fails with
+  0x800700C1 (not a valid Win32 application) when launched from Task
+  Scheduler on Windows Server 2025. Clone it in ArcGIS Pro (Package Manager)
+  (clone arcgispro-py3 to arcgispro-py3-rac) and point Command at the clone.
+-->
+<Task version="1.4" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
+  <RegistrationInfo>
+    <Author>GIS</Author>
+    <Description>Report a Concern: emails the submitter confirmation and routes new tickets to the assigned department. Runs every 5 minutes.</Description>
+    <URI>\RAC\RAC_Notify_New_Ticket</URI>
+  </RegistrationInfo>
+  <Triggers>
+    <CalendarTrigger>
+      <Repetition>
+        <Interval>PT5M</Interval>
+        <Duration>P1D</Duration>
+        <StopAtDurationEnd>false</StopAtDurationEnd>
+      </Repetition>
+      <StartBoundary>2026-01-01T00:00:00</StartBoundary>
+      <Enabled>true</Enabled>
+      <ScheduleByDay>
+        <DaysInterval>1</DaysInterval>
+      </ScheduleByDay>
+    </CalendarTrigger>
+  </Triggers>
+  <Principals>
+    <Principal id="Author">
+      <UserId>DOMAIN\svc_gis</UserId>
+      <LogonType>Password</LogonType>
+      <RunLevel>LeastPrivilege</RunLevel>
+    </Principal>
+  </Principals>
+  <Settings>
+    <MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>
+    <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>
+    <StopIfGoingOnBatteries>false</StopIfGoingOnBatteries>
+    <AllowHardTerminate>true</AllowHardTerminate>
+    <StartWhenAvailable>true</StartWhenAvailable>
+    <RunOnlyIfNetworkAvailable>false</RunOnlyIfNetworkAvailable>
+    <IdleSettings>
+      <StopOnIdleEnd>false</StopOnIdleEnd>
+      <RestartOnIdle>false</RestartOnIdle>
+    </IdleSettings>
+    <AllowStartOnDemand>true</AllowStartOnDemand>
+    <Enabled>true</Enabled>
+    <Hidden>false</Hidden>
+    <RunOnlyIfIdle>false</RunOnlyIfIdle>
+    <WakeToRun>false</WakeToRun>
+    <ExecutionTimeLimit>PT30M</ExecutionTimeLimit>
+    <Priority>7</Priority>
+  </Settings>
+  <Actions Context="Author">
+    <Exec>
+      <Command>C:\envs\arcgispro-py3-rac\python.exe</Command>
+      <Arguments>D:\RAC\scripts\rac_notify_new_ticket.py</Arguments>
+      <WorkingDirectory>D:\RAC\scripts</WorkingDirectory>
+    </Exec>
+  </Actions>
+</Task>

@@ -1,0 +1,25 @@
+{
+  "name": "report-a-concern-submit",
+  "label": "Report A Concern - Submit",
+  "type": "widget",
+  "version": "3.1.9",
+  "exbVersion": "1.21.0",
+  "author": "Brian McLeer",
+  "description": "Multi-step public ticket submission form for Report A Concern with geofenced service boundary validation. Submits to the Tickets feature layer via applyEdits; spatial queries enforce jurisdiction boundaries client-side, and attribute rules handle additional validation server-side.",
+  "copyright": "",
+  "license": "http://www.apache.org/licenses/LICENSE-2.0",
+  "properties": {
+    "canCreateMapView": false,
+    "hasVersionManager": false
+  },
+  "translatedLocales": [
+    "en"
+  ],
+  "defaultSize": {
+    "width": 480,
+    "height": 780
+  },
+  "dependency": [
+    "jimu-arcgis"
+  ]
+}

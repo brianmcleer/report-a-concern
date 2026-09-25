@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="x-apple-disable-message-reformatting">
+    <title>Service Request Survey - {org_name}</title>
+    <!--[if mso]>
+    <noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+    <![endif]-->
+    <style>
+        table, td, div, h1, h2, p {
+            font-family: Arial, sans-serif;
+        }
+
+        /* Ensure minimum 4.5:1 contrast on all text */
+        .body-text {
+            color: #003a55;
+            font-size: 16px;
+            line-height: 26px;
+        }
+
+        .label-text {
+            color: #003a55;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .detail-val {
+            color: #1a1a1a;
+            font-size: 15px;
+        }
+
+        /* Footer - minimum 12px to satisfy WCAG 1.4.4 Resize Text */
+        .footer-text {
+            font-size: 12px;
+            line-height: 18px;
+            color: #ffffff;
+        }
+
+        /* Button cell */
+        .btn-cell {
+            background-color: #003a55;
+            padding: 12px 28px;
+            border-radius: 3px;
+            text-align: center;
+        }
+
+        .btn-link {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Bottom nav tiles */
+        .tile {
+            width: 260px;
+            padding: 5px;
+            vertical-align: top;
+            background-color: #003a55;
+            border: 2px solid #003a55;
+        }
+
+        .tile-link {
+            color: #ffffff;
+            text-decoration: underline;
+            font-size: 16px;
+            line-height: 24px;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body style="margin:0;padding:0;">
+
+    <!-- Outer wrapper -->
+    <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;background:#ffffff;">
+        <tr>
+            <td align="center" style="padding:0;">
+
+                <!-- Email container - 602px matches existing city templates -->
+                <table role="presentation" style="width:602px;border-collapse:collapse;border:1px solid #cccccc;border-spacing:0;text-align:left;">
+
+                    <!-- ── Header ── -->
+                    <tr>
+                        <td align="center" style="padding:40px 0 30px 0;background:#003a55;">
+                            <!-- Single h1 for the email - screen readers announce this as the page title -->
+                            <h1 style="color:#ffffff;font-family:Arial,sans-serif;font-size:24px;margin:0 0 16px 0;">
+                                Report a Concern Request
+                            </h1>
+                            <img src="{org_logo_url}"
+                                 alt="{org_logo_alt}"
+                                 width="300"
+                                 style="height:auto;display:block;margin:0 auto;" />
+                        </td>
+                    </tr>
+
+                    <!-- ── Body ── -->
+                    <tr>
+                        <td style="padding:36px 30px 42px 30px;">
+                            <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
+                                <tr>
+                                    <td style="padding:0 0 24px 0;">
+
+                                        <!-- Greeting -->
+                                        <h2 style="font-size:22px;margin:0 0 16px 0;font-family:Arial,sans-serif;color:#003a55;">
+                                            Completed Request
+                                        </h2>
+                                        <p class="body-text" style="margin:0 0 12px 0;">
+                                            Hello, {submitted_by_name}
+                                        </p>
+                                        <p class="body-text" style="margin:0 0 12px 0;">
+                                            We recently completed your <strong>{category}</strong> request submitted through
+                                            {org_name}'s Report a Concern system.
+                                        </p>
+                                        <p class="body-text" style="margin:0 0 20px 0;">
+                                            Your feedback is important to us. Please take a moment to complete the brief
+                                            survey about your experience.
+                                        </p>
+
+                                        <!-- Survey button - table-based for Outlook compatibility -->
+                                        <table role="presentation" style="border-collapse:collapse;margin:0 0 24px 0;">
+                                            <tr>
+                                                <td class="btn-cell">
+                                                    <a href="{survey_link}" class="btn-link">
+                                                        Complete Satisfaction Survey
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <!-- Fallback link text for clients that block images/buttons -->
+                                        <p style="font-size:12px;color:#555555;margin:0 0 24px 0;font-family:Arial,sans-serif;">
+                                            If the button above does not work, copy and paste this link into your browser:<br>
+                                            <a href="{survey_link}" style="color:#003a55;word-break:break-all;">{survey_link}</a>
+                                        </p>
+
+                                        <!-- Request details section -->
+                                        <div style="padding:6px 8px;background-color:#003a55;" role="heading" aria-level="3">
+                                            <strong style="color:#ffffff;font-family:Arial,sans-serif;font-size:15px;">Request Details</strong>
+                                        </div>
+
+                                        <table role="presentation" style="width:100%;border-collapse:collapse;margin-top:4px;">
+                                            <tr>
+                                                <!-- ticket_number is the human-readable display number (e.g. 1042).  -->
+                                                <!-- The underlying ticket_id GUID is never shown to the public.      -->
+                                                <td class="label-text" style="padding:5px 8px 2px 0;width:140px;">Ticket Number:</td>
+                                                <td class="detail-val" style="padding:5px 0 2px 0;">{ticket_number}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-text" style="padding:2px 8px 2px 0;">Category:</td>
+                                                <td class="detail-val" style="padding:2px 0;">{category}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-text" style="padding:2px 8px 2px 0;">Details:</td>
+                                                <td class="detail-val" style="padding:2px 0;">{description}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-text" style="padding:2px 8px 2px 0;">Submitted on:</td>
+                                                <td class="detail-val" style="padding:2px 0;">{created_date}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-text" style="padding:2px 8px 2px 0;">Completed on:</td>
+                                                <td class="detail-val" style="padding:2px 0;">{resolved_date}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-text" style="padding:2px 8px 5px 0;">Resolution:</td>
+                                                <td class="detail-val" style="padding:2px 0 5px 0;">{resolution}</td>
+                                            </tr>
+                                        </table>
+
+                                    </td>
+                                </tr>
+
+                                <!-- ── Bottom nav tiles ── -->
+                                <tr>
+                                    <td style="padding:16px 0 0 0;">
+                                        <table role="presentation" style="width:100%;border-collapse:collapse;border-spacing:0;">
+                                            <tr>
+
+                                                <!-- Report another concern -->
+                                                <td class="tile">
+                                                    <p style="margin:0 0 16px 0;text-align:center;">
+                                                        <a href="{submit_app_url}"
+                                                           aria-label="Report another concern using the {org_name} Report a Concern app">
+                                                            <span aria-hidden="true" style="display:block;font-size:72px;line-height:1;color:#003a55;">&rarr;</span>
+                                                        </a>
+                                                    </p>
+                                                    <p style="margin:0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;text-align:center;">
+                                                        <a href="{submit_app_url}" class="tile-link">
+                                                            Report another concern
+                                                        </a>
+                                                    </p>
+                                                </td>
+
+                                                <!-- Spacer -->
+                                                <td style="width:20px;padding:0;font-size:0;line-height:0;">&nbsp;</td>
+
+                                                <!-- City website -->
+                                                <td class="tile">
+                                                    <p style="margin:0 0 16px 0;text-align:center;">
+                                                        <a href="{org_website}"
+                                                           aria-label="Visit the {org_name} official website">
+                                                            <img src="{org_logo_url}"
+                                                                 alt="{org_logo_alt}"
+                                                                 width="140"
+                                                                 style="height:auto;display:block;margin:0 auto;" />
+                                                        </a>
+                                                    </p>
+                                                    <p style="margin:0;color:#ffffff;font-size:16px;line-height:24px;font-family:Arial,sans-serif;text-align:center;">
+                                                        Visit the
+                                                        <a href="{org_website}" class="tile-link">
+                                                            {org_name} website
+                                                        </a>
+                                                    </p>
+                                                </td>
+
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- ── Footer ── -->
+                    <tr>
+                        <td style="padding:24px 30px;background:#003a55;">
+                            <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
+                                <tr>
+                                    <td style="padding:0;width:60%;" align="left">
+                                        <p class="footer-text" style="margin:0;">
+                                            &copy;
+                                            <a href="{org_website}" style="color:#ffffff;text-decoration:underline;">
+                                                {org_name}
+                                            </a><br>
+                                            {org_address}<br>
+                                            You received this email because you submitted a service request.
+                                        </p>
+                                    </td>
+                                    <td style="padding:0;width:40%;" align="right">
+                                        <a href="{org_website}"
+                                           aria-label="{org_name} official website">
+                                            <img src="{org_logo_url}"
+                                                 alt="{org_logo_alt}"
+                                                 width="80"
+                                                 style="height:auto;display:block;border:0;" />
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+           

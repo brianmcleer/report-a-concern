@@ -1,0 +1,5 @@
+flask
+waitress
+requests
+pyodbc
+urllib3

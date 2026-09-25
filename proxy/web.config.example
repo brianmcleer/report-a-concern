@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  web.config.example - IIS site-level configuration for the RAC proxy.
+
+  Requirements:
+    - IIS URL Rewrite 2.1
+    - Application Request Routing (ARR) 3.0 with "Enable proxy" turned on
+      in Server Proxy Settings (server node > Application Request Routing
+      Cache > Server Proxy Settings). Without ARR the rewrite rule returns
+      404, not 502.
+
+  Placement:
+    These rules must live at the SITE level (Default Web Site), not inside
+    the /ReportAConcern application. Republishing the Experience Builder app
+    replaces the application folder and wipes any application-level
+    web.config, so rules placed there disappear on the next publish.
+
+  Merge the <rewrite> and <httpProtocol> sections into the site's existing
+  web.config rather than replacing the whole file.
+-->
+<configuration>
+  <system.webServer>
+
+    <rewrite>
+      <rules>
+
+        <!-- Forward the widget's write endpoint to the Flask/waitress process. -->
+        <rule name="RAC Flask Proxy" stopProcessing="true">
+          <match url="^ReportAConcern/proxy/(.*)" />
+          <action type="Rewrite" url="http://localhost:5000/{R:1}" />
+        </rule>
+
+        <!-- Deny direct POSTs to any FeatureServer through this site so the
+             only write path is the proxy above. -->
+        <rule name="Block Direct FeatureServer POST" stopProcessing="true">
+          <match url="^arcgis/rest/services/.*/FeatureServer/.*" />
+          <conditions>
+            <add input="{REQUEST_METHOD}" pattern="^POST$" />
+          </conditions>
+          <action type="CustomResponse" statusCode="403"
+                  statusReason="Forbidden"
+                  statusDescription="Direct FeatureServer edits are not allowed." />
+        </rule>
+
+      </rules>
+
+      <outboundRules>
+        <!-- Stop browsers caching the Experience Builder bundle so republishes
+             take effect immediately. -->
+        <rule name="NoCacheJsJson" preCondition="IsJsOrJson">
+          <match serverVariable="RESPONSE_Cache_Control" pattern=".*" />
+          <action type="Rewrite" value="no-cache, no-store, must-revalidate" />
+        </rule>
+        <preConditions>
+          <preCondition name="IsJsOrJson">
+            <add input="{REQUEST_FILENAME}" pattern="\.(js|json)$" />
+          </preCondition>
+        </preConditions>
+      </outboundRules>
+    </rewrite>
+
+    <httpProtocol>
+      <customHeaders>
+        <remove name="X-Powered-By" />
+        <add name="Strict-Transport-Security" value="max-age=31536000; includeSubDomains" />
+        <add name="X-Content-Type-Options" value="nosniff" />
+        <add name="X-Frame-Options" value="SAMEORIGIN" />
+      </customHeaders>
+    </httpProtocol>
+
+  </system.webServer>
+</configuration>

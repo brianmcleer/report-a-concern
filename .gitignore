@@ -1,0 +1,27 @@
+# Local configuration and secrets. Never commit these; use the *.example.py files.
+config.py
+rac_secrets.py
+proxy_config.py
+
+# ArcGIS database connection files hold credentials
+*.sde
+
+# Runtime output
+*.log
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Packaging and OS noise
+*.zip
+.DS_Store
+Thumbs.db
+
+# Experience Builder widget folders (mirrored from the EB source by publish.ps1)
+widgets/*/node_modules/
+widgets/*/.vs/
+widgets/*/Claude outputs/
+widgets/*/*.user
+widgets/*/*.suo

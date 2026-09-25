@@ -1,0 +1,23 @@
+node_modules/
+.vs/
+.vscode/
+.idea/
+*.log
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.tmp
+*.swp
+*~
+~$*
+.gitignore
+.npmignore
+
+package-lock.json
+pnpm-lock.yaml
+
+# Cowork working folder and release zips never ship
+Claude outputs/
+*.zip

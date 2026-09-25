@@ -1,0 +1,19 @@
+{
+  "name": "report-a-concern-submit",
+  "version": "3.1.9",
+  "description": "Multi-step public ticket submission form for Report A Concern with geofenced service boundary validation. Submits to the Tickets feature layer via applyEdits.",
+  "keywords": [
+    "exb-widget",
+    "experience-builder",
+    "exb",
+    "report-a-concern",
+    "ticket-submission",
+    "geofencing"
+  ],
+  "license": "Apache-2.0",
+  "author": "Brian McLeer",
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "dependencies": {}
+}

@@ -1,0 +1,23 @@
+{
+  "//": "Mode B (self-contained) per WIDGETHANDOFF Section 12 item 3: Visual Studio cannot read client\\node_modules under the EB 1.21 pnpm layout (IDE1100), so nothing here reaches outside the widget. Every import is declared ambiently in src/exb-editor-shims.d.ts (shared master, copied byte for byte from widgets\\_vs, never edited per widget) and src/vendor-shims.d.ts (this widget's own additions, the global JSX namespace is harmless under react-jsx). jsx is \"react-jsx\" with jsxImportSource \"@emotion/react\" and must stay that way: ts-loader (transpileOnly, no configFile) reads THIS file when webpack builds the widget, and classic \"react\" makes jimu-core's patched React.createElement receive null props, which crashes every settings panel and runtime with \"Cannot convert undefined or null to object\" (WIDGETHANDOFF 12.3, 16 and 18 September 2026). Editor IDE1100 noise from the jsx-runtime lookup is accepted; never trade a build change for an editor convenience. Check with: npx tsc -p . (0 errors expected; add --ignoreDeprecations 6.0 on TypeScript 6).",
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "jsx": "react-jsx",
+    "jsxImportSource": "@emotion/react",
+    "types": [],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": true
+  },
+  "//files": "Order matters: the master shim declares jimu-for-builder and jimu-ui/* in shorthand form (declare module 'x';) and the first ambient declaration of a module id wins, so vendor-shims.d.ts must be seen first to give those modules real shapes. files and include are unioned.",
+  "files": ["src/vendor-shims.d.ts", "src/exb-editor-shims.d.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts"],
+  "exclude": ["node_modules", "dist", ".vs", "Claude outputs"]
+}

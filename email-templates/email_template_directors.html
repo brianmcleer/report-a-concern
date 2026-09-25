@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="x-apple-disable-message-reformatting">
+  <title>Report a Concern - Overdue Ticket Report</title>
+  <!--[if mso]>
+  <noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+  <![endif]-->
+  <style>
+    /* Base - minimum 15px satisfies WCAG 1.4.4 Resize Text */
+    table, td, div, p {
+      font-family: Arial, sans-serif;
+      font-size: 15px;
+    }
+
+    /* Alternating row shade - #003a55 bg with white text meets 4.5:1 */
+    .reportshade {
+      background-color: #99B0BB;   /* contrast ≥ 4.5:1 against #1a1a1a text */
+    }
+
+    /* Table header - white on #003a55 meets 7:1 */
+    th {
+      background-color: #003a55;
+      color: #ffffff;
+      font-size: 15px;
+      padding: 6px 8px;
+      text-align: left;
+    }
+
+    td {
+      padding: 6px 8px;
+      color: #1a1a1a;
+    }
+
+    tr { height: 30px; }
+
+    /* Footer - minimum 12px per WCAG 1.4.4 */
+    .footer-text {
+      font-size: 12px;
+      line-height: 18px;
+      color: #ffffff;
+      margin: 0;
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;">
+
+  <!-- Outer wrapper -->
+  <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;background:#ffffff;">
+    <tr>
+      <td align="center" style="padding:0;">
+
+        <!-- Email container -->
+        <table role="presentation" style="width:900px;border-collapse:collapse;border:1px solid #cccccc;border-spacing:0;text-align:left;">
+
+          <!-- ── Header ── -->
+          <tr>
+            <td align="center" style="padding:10px 0 10px 0;background:#003a55;">
+              <!-- Single h1 for the email -->
+              <h1 style="color:#ffffff;font-family:Arial,sans-serif;font-size:24px;margin:0 0 8px 0;">
+                Report a Concern - Overdue Ticket Report
+              </h1>
+              <!-- h2 for the date subtitle -->
+              <h2 style="color:#ffffff;font-family:Arial,sans-serif;font-size:18px;font-weight:normal;margin:0 0 12px 0;">
+                {Date}
+              </h2>
+              <img
+                src="{org_logo_url}"
+                alt="{org_logo_alt}"
+                width="300"
+                style="height:auto;display:block;margin:0 auto;" />
+            </td>
+          </tr>
+
+          <!-- ── Body ── -->
+          <tr>
+            <td style="padding:36px 30px 42px 30px;">
+              <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
+                <tr>
+                  <td style="padding:0 0 36px 0;color:#1a1a1a;">
+
+                    <!-- Section heading bar -->
+                    <div role="heading" aria-level="3"
+                         style="padding:10px;background-color:#003a55;color:#ffffff;font-family:Arial,sans-serif;font-size:15px;font-weight:bold;text-align:center;">
+                      Ticket Report: {Date}
+                    </div>
+
+                    <p style="margin:16px 0;">
+                      This report identifies tickets in the Report a Concern application
+                      that have crossed a key status threshold in one of the following
+                      categories assigned to you: <strong>{assigned_categories}</strong>.
+                    </p>
+
+                    <!-- ── Submitted Overdue ── -->
+                    <p style="text-align:center;margin:20px 0 8px 0;">
+                      <strong>Ticket status is "Submitted" more than 24 hours after being submitted</strong>
+                    </p>
+                    {Submitted Overdue}
+
+                    <!-- ── Received Overdue ── -->
+                    <p style="text-align:center;margin:20px 0 8px 0;">
+                      <strong>Ticket status is "Received" for more than one week</strong>
+                    </p>
+                    {Received Overdue}
+
+                    <!-- ── In Progress Overdue ── -->
+                    <p style="text-align:center;margin:20px 0 8px 0;">
+                      <strong>Ticket status is "In Progress" for more than one month</strong>
+                    </p>
+                    {In Progress Overdue}
+
+                    <!-- ── No Resolution Date ── -->
+                    <p style="text-align:center;margin:20px 0 4px 0;">
+                      <strong>Ticket status is "Resolved" but no resolution date has been set</strong>
+                    </p>
+                    <p style="text-align:center;margin:0 0 8px 0;">
+                      (Resolution email has not yet been sent to the submitter)
+                    </p>
+                    {Resolution Date Overdue}
+
+                    <!-- ── CTA Button ── -->
+                    <br>
+                    <table role="presentation" align="center" style="border-collapse:collapse;border:0;border-spacing:0;">
+                      <tr>
+                        <td style="background-color:#003a55;padding:0;border-radius:3px;">
+                          <a href="{manager_url}"
+                             style="display:inline-block;color:#ffffff;background-color:#003a55;width:185px;border:1px solid #003a55;padding:15px 10px;text-align:center;text-decoration:none;font-family:Arial,sans-serif;font-size:15px;">
+                            Open Report a Concern Manager
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <!-- ── Contact ── -->
+                    <p style="text-align:center;margin:24px 0 0 0;">
+                      Questions about this report? Contact
+                      <a href="mailto:{contact_email}"
+                         style="color:#003a55;text-decoration:underline;">
+                        {contact_name}
+                      </a>
+                    </p>
+
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- ── Footer ── -->
+          <tr>
+            <td style="padding:30px;background:#003a55;">
+              <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
+                <tr>
+                  <td style="padding:0;width:50%;" align="left">
+                    <p class="footer-text">
+                      &copy; <a href="{org_website}"
+                                style="color:#ffffff;text-decoration:underline;">
+                               {org_name}
+                             </a> {Year}
+                    </p>
+                  </td>
+                  <td style="padding:0;width:50%;" align="right">
+                    <table role="presentation" style="border-collapse:collapse;border:0;border-spacing:0;">
+                      <tr>
+                        <td style="padding:0 0 0 10px;">
+                          <a href="{org_website}">
+                            <img src="{org_logo_url}"
+                                 alt="{org_logo_alt}"
+                                 width="100"
+                                 style="height:auto;display:block;border:0;" />
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

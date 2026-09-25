@@ -1,0 +1,53 @@
+{
+  // Visual Studio type-check helper for Experience Builder 1.21 (pnpm).
+  // IDE-only, noEmit. Webpack builds the widget with EB's own client tsconfig
+  // and ignores this file. Companion: src/exb-editor-shims.d.ts.
+  //
+  // Self-contained on purpose. On this install Visual Studio cannot read any
+  // file under client\node_modules (IDE1100 "Access to the path is denied" on
+  // the pnpm junctions), so:
+  //   - no "paths" and no "baseUrl": nothing resolves into client\jimu-core
+  //     or client\node_modules. react, jimu-core, jimu-arcgis, jimu-ui and
+  //     esri/* are all declared in src/exb-editor-shims.d.ts instead.
+  //   - "types": [] stops the automatic @types/* scan of node_modules, which
+  //     is where the @types\lodash, @types\uuid, @types\react-dom IDE1100
+  //     lines came from.
+  //   - strict false: VS otherwise applies noImplicitAny (TS7006/TS7026).
+  //
+  // If VS ever regains read access to node_modules (for example after
+  // reinstalling the EB client with node-linker=hoisted in .npmrc), the real
+  // types can be restored by adding "baseUrl": "../../.." and
+  // "paths": { "jimu-*": ["jimu-*"], "esri/*": ["node_modules/@arcgis/core/*"] }
+  // and deleting the react/jimu blocks from the shim file.
+  //
+  // Place at the widget root next to manifest.json, in the EB source folder.
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "jsx": "react-jsx",
+    "jsxImportSource": "@emotion/react",
+    "types": [],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "noEmit": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".vs"
+  ]
+}

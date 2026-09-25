@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="x-apple-disable-message-reformatting">
+  <title>Report a Concern Monthly Report</title>
+  <!--[if mso]>
+  <noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+  <![endif]-->
+  <style>
+    table, td, div, p {
+      font-family: Arial, sans-serif;
+      font-size: 15px;
+    }
+
+    .reportshade {
+      background-color: #99B0BB;
+    }
+
+    th {
+      background-color: #003a55;
+      color: #ffffff;
+      font-size: 15px;
+      padding: 6px 8px;
+      text-align: left;
+    }
+
+    td {
+      padding: 6px 8px;
+      color: #1a1a1a;
+    }
+
+    tr { height: 30px; }
+
+    .footer-text {
+      font-size: 12px;
+      line-height: 18px;
+      color: #ffffff;
+      margin: 0;
+    }
+
+    .section-bar {
+      padding: 10px;
+      background-color: #003a55;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      font-size: 15px;
+      font-weight: bold;
+      text-align: center;
+      margin: 20px 0 10px 0;
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;">
+
+  <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;background:#ffffff;">
+    <tr>
+      <td align="center" style="padding:0;">
+        <table role="presentation" style="width:900px;border-collapse:collapse;border:1px solid #cccccc;border-spacing:0;text-align:left;">
+
+          <!-- ── Header ── -->
+          <tr>
+            <td align="center" style="padding:10px 0 10px 0;background:#003a55;">
+              <h1 style="color:#ffffff;font-family:Arial,sans-serif;font-size:24px;margin:0 0 8px 0;">
+                Report a Concern Monthly Report
+              </h1>
+              <h2 style="color:#ffffff;font-family:Arial,sans-serif;font-size:18px;font-weight:normal;margin:0 0 12px 0;">
+                {month} {year}
+              </h2>
+              <img
+                src="{org_logo_url}"
+                alt="{org_logo_alt}"
+                width="300"
+                style="height:auto;display:block;margin:0 auto;" />
+            </td>
+          </tr>
+
+          <!-- ── Body ── -->
+          <tr>
+            <td style="padding:36px 30px 42px 30px;">
+              <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
+                <tr>
+                  <td style="padding:0 0 36px 0;color:#1a1a1a;">
+
+                    <!-- Report Period Summary -->
+                    <div role="heading" aria-level="3" class="section-bar">
+                      {month} {year} Monthly Report
+                    </div>
+
+                    <p style="margin:8px 0;">
+                      <strong>Tickets Submitted in {month}:</strong> {submitted_count}
+                    </p>
+                    <p style="margin:8px 0;">
+                      <strong>Tickets Closed in {month}:</strong> {closed_count}
+                    </p>
+
+                    <p style="text-align:center;margin:20px 0 8px 0;">
+                      <strong>Top 5 Ticket Categories by Department</strong>
+                    </p>
+                    {top_depts_table}
+
+                    <p style="text-align:center;margin:20px 0 8px 0;">
+                      <strong>Top 10 Ticket Categories by Type</strong>
+                    </p>
+                    {top_types_table}
+
+                    <br>
+
+                    <!-- All Tickets Summary -->
+                    <div role="heading" aria-level="3" class="section-bar">
+                      All Tickets Summary
+                    </div>
+
+                    <p style="margin:8px 0;">
+                      <strong>Tickets Currently Open:</strong> {open_count}
+                    </p>
+
+                    <p style="text-align:center;margin:20px 0 8px 0;">
+                      <strong>Open Tickets by Department</strong>
+                    </p>
+                    {open_by_dept_table}
+
+                    <p style="text-align:center;margin:20px 0 8px 0;">
+                      <strong>10 Oldest Open Tickets</strong>
+                    </p>
+                    {oldest_open_table}
+
+                    <br>
+
+                    <!-- Contact -->
+                    <p style="text-align:center;margin:24px 0 0 0;">
+                      Questions about this report? Contact
+                      <a href="mailto:{contact_email}"
+                         style="color:#003a55;text-decoration:underline;">
+                        {contact_name}
+                      </a>
+                    </p>
+
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- ── Footer ── -->
+          <tr>
+            <td style="padding:30px;background:#003a55;">
+              <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
+                <tr>
+                  <td style="padding:0;width:50%;" align="left">
+                    <p class="footer-text">
+                      &copy; <a href="{org_website}"
+                                style="color:#ffffff;text-decoration:underline;">
+                               {org_name}
+                             </a> {Year}
+                    </p>
+                  </td>
+                  <td style="padding:0;width:50%;" align="right">
+                    <table role="presentation" style="border-collapse:collapse;border:0;border-spacing:0;">
+                      <tr>
+                        <td style="padding:0 0 0 10px;">
+                          <a href="{org_website}">
+                            <img src="{org_logo_url}"
+                                 alt="{org_logo_alt}"
+                                 width="100"
+                                 style="height:auto;display:block;border:0;" />
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

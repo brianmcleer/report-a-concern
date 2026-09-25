@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Visual Studio / VS Code caches
+.vs/
+*.user
+*.suo
+
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# Build output
+dist/
+
+# Cowork working folder and release zips never ship
+Claude outputs/
+*.zip

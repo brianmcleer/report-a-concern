@@ -1,0 +1,18 @@
+{
+  "name": "rac-manager",
+  "version": "1.1.4",
+  "description": "Staff-side ticket management widget for a Report a Concern system: ticket review, status updates, comments, photos, survey data and Excel export.",
+  "keywords": [
+    "exb-widget",
+    "experience-builder",
+    "exb",
+    "report-a-concern",
+    "ticket-management"
+  ],
+  "license": "Apache-2.0",
+  "author": "Brian McLeer",
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "dependencies": {}
+}
