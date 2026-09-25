@@ -2,7 +2,7 @@
   "name": "rac-manager",
   "label": "RAC Ticket Manager",
   "type": "widget",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "exbVersion": "1.21.0",
   "author": "Brian McLeer",
   "description": "Report A Concern ticket management widget.",

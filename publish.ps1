@@ -146,8 +146,15 @@ try {
         Write-Host "==> First run: creating GitHub repo ($RepoVisibility) and pushing..."
         gh repo create $RepoName "--$RepoVisibility" --source="." --remote="origin" --push
     } else {
+        # Bring in anything that landed on GitHub since the last run (Dependabot, web edits,
+        # merged pull requests) so the push is a fast-forward.
+        $branch = (git rev-parse --abbrev-ref HEAD).Trim()
+        Write-Host "==> Pulling origin/$branch (rebase)..."
+        git pull --rebase origin $branch
+        if ($LASTEXITCODE -ne 0) { throw "git pull --rebase failed. Resolve the conflict, then re-run." }
         Write-Host "==> Pushing..."
         git push
+        if ($LASTEXITCODE -ne 0) { throw "git push failed." }
     }
 
     # Repo metadata and security settings, idempotent, same as the other repos.

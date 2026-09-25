@@ -1,6 +1,6 @@
 {
   "name": "rac-manager",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "description": "Staff-side ticket management widget for a Report a Concern system: ticket review, status updates, comments, photos, survey data and Excel export.",
   "keywords": [
     "exb-widget",
