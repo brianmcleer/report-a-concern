@@ -1,3 +1,3 @@
 # The scripts run in a cloned ArcGIS Pro conda environment (arcpy is not on PyPI).
 # Everything below is already in that environment; listed for reference and Dependabot.
-requests>=2.31
+requests>=2.34.2
