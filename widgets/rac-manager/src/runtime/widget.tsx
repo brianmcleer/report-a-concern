@@ -103,6 +103,18 @@ const SIDEBAR_PERSIST_DEBOUNCE_MS = 400;
 // a value that would render the sidebar collapsed on next load.
 const SIDEBAR_MIN_WIDTH = 200;
 const SIDEBAR_MAX_WIDTH = 1600;
+// Tablet/phone guard. The saved width comes from a desktop drag
+// (often 800px+). Pinning that on a tablet or phone pushed the
+// sidebar past the screen edge and clipped the widget. Below this
+// viewport width the pin is released so ExB's own per-device layout
+// sizes the sidebar, and nothing is saved.
+const SIDEBAR_DESKTOP_MIN_VIEWPORT = 1025;
+// Keep at least this many px of the map visible when a pinned or
+// dragged width is clamped to the window.
+const SIDEBAR_VIEWPORT_MARGIN = 48;
+// Widget width below which the list header switches to its
+// compact (phone) layout.
+const COMPACT_WIDTH = 480;
 
 interface SavedFilters {
     search: string;
@@ -1072,6 +1084,7 @@ type TabId = "details" | "comments" | "photos" | "survey";
 type FilterPanel = "none" | "status" | "category" | "priority" | "assigned";
 
 interface St {
+    compact: boolean;
     mode: "list" | "detail"; tickets: any[]; sel: any; comments: any[]; photos: any[]; survey: any;
     loading: boolean; saving: boolean; exporting: boolean; err: string; ok: string;
     search: string; fS: number[]; fC: number[]; fP: number[]; fA: string[];
@@ -1169,6 +1182,13 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
     private _sidebarMouseDownHandler: ((e: MouseEvent) => void) | null = null;
     private _sidebarMouseMoveHandler: ((e: MouseEvent) => void) | null = null;
     private _sidebarMouseUpHandler: ((e: MouseEvent) => void) | null = null;
+    // Width saved from localStorage, re-applied when the viewport
+    // grows back to desktop size (rotate, window resize).
+    private _sidebarSavedWidth: number | null = null;
+    private _viewportHandler: (() => void) | null = null;
+    private _viewportTimer: any = null;
+    // Watches the widget's own width for the compact layout.
+    private _rootRO: ResizeObserver | null = null;
     // Tracks the last-applied definitionExpression so select() and back() can
     // reapply it after goTo() and React re-renders. ExB's rendering pipeline
     // can interact with the map layer between setState and goTo completion,
@@ -1176,6 +1196,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
     _defExpr: string = "";
 
     state: St = {
+        compact: typeof window !== "undefined" && window.innerWidth < COMPACT_WIDTH,
         mode: "list", tickets: [], sel: null, comments: [], photos: [], survey: null,
         loading: false, saving: false, exporting: false, err: "", ok: "",
         search: "", fS: [], fC: [], fP: [], fA: [],
@@ -1265,11 +1286,18 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
         }
 
         // Inject shimmer keyframe once.
-        if (!document.getElementById("rac-shimmer-style")) {
+        if (!document.getElementById("rac-shimmer-style-v2")) {
+            document.getElementById("rac-shimmer-style")?.remove();
             const style = document.createElement("style");
-            style.id = "rac-shimmer-style";
+            style.id = "rac-shimmer-style-v2";
             style.textContent = `@keyframes rac-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-@media (prefers-reduced-motion: reduce) { .${ROOT_CLASS} *, .${ROOT_CLASS} *::before, .${ROOT_CLASS} *::after { animation: none !important; transition: none !important; } }`;
+@media (prefers-reduced-motion: reduce) { .${ROOT_CLASS} *, .${ROOT_CLASS} *::before, .${ROOT_CLASS} *::after { animation: none !important; transition: none !important; } }
+.${ROOT_CLASS}, .${ROOT_CLASS} * { box-sizing: border-box; }
+.${ROOT_CLASS} img, .${ROOT_CLASS} video { max-width: 100%; }
+@media (pointer: coarse) {
+  .${ROOT_CLASS} select, .${ROOT_CLASS} input:not([type=checkbox]):not([type=radio]), .${ROOT_CLASS} [role=toolbar] button, .${ROOT_CLASS} [role=radiogroup] button, .${ROOT_CLASS} [role=tablist] button { min-height: 36px; }
+  .${ROOT_CLASS} input, .${ROOT_CLASS} select, .${ROOT_CLASS} textarea { font-size: 16px !important; }
+}`;
             document.head.appendChild(style);
         }
 
@@ -1281,6 +1309,28 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
         // sometimes finishes constructing the sidebar parent AFTER
         // its child widgets have mounted.
         this.setupSidebarWidthTracking();
+
+        // Re-check the sidebar pin on rotate / window resize so a
+        // tablet turned to portrait (or a desktop window made narrow)
+        // never keeps a width wider than the screen.
+        this._viewportHandler = () => {
+            if (this._viewportTimer) clearTimeout(this._viewportTimer);
+            this._viewportTimer = setTimeout(() => this.applySidebarPin(), 120);
+        };
+        window.addEventListener("resize", this._viewportHandler);
+        window.addEventListener("orientationchange", this._viewportHandler);
+
+        // Compact layout follows the widget's own width (sidebar,
+        // panel or full page), not just the device.
+        try {
+            this._rootRO = new ResizeObserver(entries => {
+                const w = entries[0]?.contentRect?.width ?? 0;
+                if (w <= 0) return;
+                const compact = w < COMPACT_WIDTH;
+                if (compact !== this.state.compact) this.setState({ compact });
+            });
+            if (this.rootRef.current) this._rootRO.observe(this.rootRef.current);
+        } catch { this._rootRO = null; }
     }
 
     componentDidUpdate(_prevProps: AllWidgetProps<any>, prevState: St) {
@@ -1366,6 +1416,16 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
         }
         // Tear down sidebar drag-release listeners.
         this.uninstallSidebarDragRelease();
+        if (this._viewportHandler) {
+            window.removeEventListener("resize", this._viewportHandler);
+            window.removeEventListener("orientationchange", this._viewportHandler);
+            this._viewportHandler = null;
+        }
+        if (this._viewportTimer) { clearTimeout(this._viewportTimer); this._viewportTimer = null; }
+        if (this._rootRO) {
+            try { this._rootRO.disconnect(); } catch { /* ignore */ }
+            this._rootRO = null;
+        }
     }
 
     // ── Sidebar width tracking helpers ────────────────────────
@@ -1462,15 +1522,10 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
             }
         } catch { /* localStorage may be disabled; ignore */ }
 
-        if (savedWidth !== null) {
-            // Pin the sidebar to the restored width. ExB's layout pass
-            // would otherwise revert to its configured default. The
-            // installSidebarDragRelease helper handles drag by running
-            // its own resize logic — the pin stays in place and just
-            // gets updated to track the cursor.
-            sidebar.style.width = `${savedWidth}px`;
-            this.installSidebarDragRelease();
-        }
+        this._sidebarSavedWidth = savedWidth;
+        // Pin (desktop only, clamped to the window) or release (tablet
+        // and phone). See applySidebarPin.
+        this.applySidebarPin();
 
         // Watch for resizes (during manual drag). Debounce the
         // localStorage write so we save once when motion stops.
@@ -1479,6 +1534,11 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                 if (!entries.length) return;
                 const w = Math.round(entries[0].contentRect.width);
                 if (w < SIDEBAR_MIN_WIDTH || w > SIDEBAR_MAX_WIDTH) return;
+                // Only remember widths set on a desktop screen. A
+                // tablet/phone width would shrink the desktop layout.
+                if (!this.isDesktopViewport()) return;
+                if (w > this.maxSidebarWidth()) return;
+                this._sidebarSavedWidth = w;
                 if (this._sidebarSaveTimer) clearTimeout(this._sidebarSaveTimer);
                 this._sidebarSaveTimer = setTimeout(() => {
                     try {
@@ -1491,6 +1551,36 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
             // ResizeObserver missing or sidebar not observable — fall
             // back silently. The restore on next load still works.
             this._sidebarRO = null;
+        }
+    };
+
+    private isDesktopViewport(): boolean {
+        return typeof window !== "undefined" && window.innerWidth >= SIDEBAR_DESKTOP_MIN_VIEWPORT;
+    }
+
+    // Widest the sidebar may be: never past the window edge.
+    private maxSidebarWidth(): number {
+        const vw = typeof window !== "undefined" ? window.innerWidth : SIDEBAR_MAX_WIDTH;
+        return Math.max(SIDEBAR_MIN_WIDTH, Math.min(SIDEBAR_MAX_WIDTH, vw - SIDEBAR_VIEWPORT_MARGIN));
+    }
+
+    // Desktop: pin the saved width, clamped to the window, and take
+    // over the splitter drag. Tablet/phone: remove the pin and cap
+    // the sidebar at the screen width so ExB's per-device layout
+    // drives it and nothing is cut off.
+    private applySidebarPin = () => {
+        const sb = this._sidebarEl;
+        if (!sb) return;
+        if (this.isDesktopViewport()) {
+            sb.style.maxWidth = "";
+            if (this._sidebarSavedWidth !== null) {
+                sb.style.width = `${Math.min(this._sidebarSavedWidth, this.maxSidebarWidth())}px`;
+                this.installSidebarDragRelease();
+            }
+        } else {
+            this.uninstallSidebarDragRelease();
+            sb.style.width = "";
+            sb.style.maxWidth = "100vw";
         }
     };
 
@@ -1562,7 +1652,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
 
             // Clamp to sensible bounds
             if (newWidth < SIDEBAR_MIN_WIDTH) newWidth = SIDEBAR_MIN_WIDTH;
-            else if (newWidth > SIDEBAR_MAX_WIDTH) newWidth = SIDEBAR_MAX_WIDTH;
+            else if (newWidth > this.maxSidebarWidth()) newWidth = this.maxSidebarWidth();
 
             this._sidebarEl.style.width = `${newWidth}px`;
 
@@ -3362,7 +3452,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
         const summary = count > 0 ? `${count} selected: ${selected.map(v => lookup[v]).join(", ")}` : "None selected";
 
         return (
-            <div style={{ flex: 1, minWidth: 90, position: "relative" }}>
+            <div style={{ flex: this.state.compact ? "1 1 calc(50% - 4px)" : 1, minWidth: 90, position: "relative" }}>
                 <button
                     type="button"
                     aria-expanded={isOpen}
@@ -3456,7 +3546,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
         const summary = count > 0 ? `${count} selected: ${fA.join(", ")}` : "None selected";
 
         return (
-            <div style={{ flex: 1, minWidth: 90, position: "relative" }}>
+            <div style={{ flex: this.state.compact ? "1 1 calc(50% - 4px)" : 1, minWidth: 90, position: "relative" }}>
                 <button
                     type="button"
                     aria-expanded={isOpen}
@@ -4508,7 +4598,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
     renderList() {
         const tk = this.tk;
         const { tickets, loading, exporting, total, off, search, fS, fC, fP, fA, fDateFrom, fDateTo,
-            fHasComments, fHasSurvey, fHasPhotos, ready, extentFilter, sortOrder } = this.state;
+            fHasComments, fHasSurvey, fHasPhotos, ready, extentFilter, sortOrder, compact } = this.state;
 
         const visibleTickets = tickets;
 
@@ -4696,7 +4786,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                             value={sortOrder}
                             aria-label="Sort tickets"
                             title="Choose sort order for ticket list"
-                            style={{ fontSize: 12, padding: "3px 8px", border: `1px solid ${tk.divider}`, borderRadius: 6, flex: 1, minWidth: 120, background: tk.surface, color: tk.text, outline: "none" }}
+                            style={{ fontSize: 12, padding: "3px 8px", border: `1px solid ${tk.divider}`, borderRadius: 6, flex: compact ? "1 1 calc(100% - 50px)" : 1, minWidth: 120, background: tk.surface, color: tk.text, outline: "none" }}
                             onChange={(e: any) => this.setState({ sortOrder: e.target.value, off: 0 }, () => { this.load(0); this.persistFilters(); })}
                         >
                             {SORT_OPTS.filter(o => {
@@ -4789,8 +4879,8 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                 </div>
 
                 {/* Result count + export + refresh */}
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "5px 10px", borderBottom: `1px solid ${tk.divider}`, background: tk.surface }}>
-                    <div role="status" aria-live="polite" style={{ fontSize: 11, color: tk.textSecondary }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 6, padding: "5px 10px", borderBottom: `1px solid ${tk.divider}`, background: tk.surface }}>
+                    <div role="status" aria-live="polite" style={{ fontSize: 11, color: tk.textSecondary, minWidth: 0 }}>
                         {total > 0
                             ? <><strong style={{ color: tk.text }}>{end - off}</strong> of <strong style={{ color: tk.text }}>{total.toLocaleString()}</strong> tickets &middot; pg {pageNum}/{totalPages}</>
                             : "No tickets found"

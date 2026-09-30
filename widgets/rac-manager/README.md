@@ -12,6 +12,7 @@ service and its related tables.
 - Related photo metadata and survey response display
 - Settings panel for the map widget, the related table names, the organization name used in exports, and the help guide switch
 - In-widget help guide with search and a first-run hint, following the app theme. Keyboard and screen reader friendly.
+- Works on tablets and phones: the remembered sidebar width is only applied on screens 1025px and wider (and never wider than the window), the list header switches to a compact layout under 480px, and controls grow to touch size on touch screens
 - Part of the [report-a-concern](https://github.com/brianmcleer/report-a-concern) repository (schema, proxy, scripts, docs)
 
 ## Requirements

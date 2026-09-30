@@ -11,7 +11,8 @@ Everything here is generalized. Hostnames, email addresses, department names and
 | Folder | What it holds |
 |--------|---------------|
 | [widgets/report-a-concern-submit](widgets/report-a-concern-submit) | Experience Builder widget: the public four-step submission wizard with geofencing, category filtering, photo upload, profanity filter and a ticket status view. |
-| [widgets/rac-manager](widgets/rac-manager) | Experience Builder widget: the staff ticket manager with status workflow, comments, photo lightbox, badge filters and Excel export. |
+| [widgets/rac-manager](widgets/rac-manager) | Experience Builder widget: the staff ticket manager with status workflow, comments, photo lightbox, badge filters and Excel export. Works on desktop, tablet and phone. |
+| [dashboard](dashboard) | Internal read-only dashboard (four static pages): KPIs, map, charts, satisfaction, survey responses, routing lookup and long-term history. Portal sign-in, automatic light and dark mode. |
 | [schema](schema) | Geodatabase builder (`build_schema.py`), data dictionary, attribute rule descriptions, XML workspace export helper and the SQL sequence. |
 | [proxy](proxy) | Flask submission proxy that fronts the public feature service: rate limiting, payload and image validation, CORS allow-list, audit log. IIS rewrite rules included. |
 | [scripts](scripts) | Seven Task Scheduler jobs: new-ticket notifications, reassignment notices, public comment mailer, survey invitation, survey pull from Survey123, directors report, monthly report. One shared `rac_common.py`. |
@@ -50,10 +51,11 @@ The [architecture doc](docs/architecture.md) has the full flow, the routing logi
 2. Build the geodatabase: `schema/build_schema.py` (ArcGIS Pro Python, `DRY_RUN = True` first).
 3. Publish the feature services and add the five attribute rules described in [schema/attribute_rules.md](schema/attribute_rules.md).
 4. Drop the two widgets into `client/your-extensions/widgets/` and build the two apps.
-5. Put the IIS rules from `proxy/web.config.example` at the site level, stand up the proxy.
-6. Copy `scripts/config.example.py` to `config.py`, `scripts/rac_secrets.example.py` to `rac_secrets.py`, fill them in.
-7. Import the Task Scheduler jobs from `tasks/`.
-8. Leave `TESTING_MODE = True` until a test ticket has gone all the way through, then flip it.
+5. Optional: fill in the `CONFIG` block at the top of each page in `dashboard/` and copy the folder to the internal web server (see [dashboard/README.md](dashboard/README.md)).
+6. Put the IIS rules from `proxy/web.config.example` at the site level, stand up the proxy.
+7. Copy `scripts/config.example.py` to `config.py`, `scripts/rac_secrets.example.py` to `rac_secrets.py`, fill them in.
+8. Import the Task Scheduler jobs from `tasks/`.
+9. Leave `TESTING_MODE = True` until a test ticket has gone all the way through, then flip it.
 
 ## Requirements
 
@@ -61,7 +63,7 @@ ArcGIS Enterprise 11.x or 12.x with an enterprise geodatabase on SQL Server, Exp
 
 ## Releases
 
-Each GitHub release carries one zip per widget (`rac-manager-<version>.zip`, `report-a-concern-submit-<version>.zip`). The zips are the widget folders only, with the Visual Studio type shims left out. Scripts, schema, proxy and docs are used from the repository.
+Each GitHub release carries one zip per widget (`rac-manager-<version>.zip`, `report-a-concern-submit-<version>.zip`) and a `rac-dashboard-<release>.zip` of the dashboard folder. The widget zips are the widget folders only, with the Visual Studio type shims left out. Scripts, schema, proxy and docs are used from the repository.
 
 ## Publishing (maintainer)
 

@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAC Survey Responses</title>
+
+<link rel="icon" type="image/png" sizes="32x32" href="./icon.png">
+<link rel="shortcut icon" type="image/png" href="./icon.png">
+<link rel="apple-touch-icon" href="./icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+<!-- ArcGIS JS API for OAuth — survey data is behind Portal auth -->
+<link rel="stylesheet" href="https://js.arcgis.com/4.34/esri/themes/light/main.css"
+      media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)">
+<link rel="stylesheet" href="https://js.arcgis.com/4.34/esri/themes/dark/main.css"
+      media="(prefers-color-scheme: dark)">
+<script src="https://js.arcgis.com/4.34/"></script>
+
+<!-- SheetJS for real .xlsx export — AMD-mask wrapper protects against
+     Dojo's loader rebinding define.amd to intercept the UMD bundle. -->
+<script>
+    window.__savedAmd = (typeof define !== "undefined") ? define.amd : undefined;
+    if (typeof define !== "undefined") define.amd = false;
+</script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script>
+    if (typeof define !== "undefined") define.amd = window.__savedAmd;
+</script>
+
+<style>
+    /* ================================================================
+       Brand tokens (replace the palette block with your organization's colors)
+       Light values are the organization palette. Dark values are
+       DERIVED from the same hues with color-mix(), so no off-palette
+       color is introduced; the page follows the OS light/dark setting.
+       Shared by index, historical-trends, survey-responses and
+       routing-lookup. Change a value in all four pages together.
+       ================================================================ */
+    @font-face {
+        font-family: 'Montserrat';
+        src: url('./fonts/montserrat-latin-wght-normal.woff2') format('woff2-variations');
+        font-weight: 100 900; font-style: normal; font-display: swap;
+    }
+    @font-face {
+        font-family: 'Open Sans';
+        src: url('./fonts/open-sans-latin-wght-normal.woff2') format('woff2-variations');
+        font-weight: 300 800; font-style: normal; font-display: swap;
+    }
+
+    :root {
+        color-scheme: light dark;
+
+        /* Palette (canonical hex) */
+        --cgj-navy:    #003A55;
+        --cgj-blue:    #0083BD;
+        --cgj-forest:  #3E5019;
+        --cgj-green:   #69812D;
+        --cgj-brown-1: #6D5F37;
+        --cgj-brown-2: #413628;
+        --cgj-brown-3: #885433;
+        --cgj-cream:   #F4EFE2;
+        --cgj-paper:   #FFFFFF;
+        --cgj-ink:     #1A1A1A;
+        --cgj-black:   #000000;
+        --cgj-gray-50:  #F7F6F2;
+        --cgj-gray-100: #ECEAE3;
+        --cgj-gray-200: #D8D5CB;
+        --cgj-gray-300: #B9B4A6;
+        --cgj-gray-400: #8E897B;
+        --cgj-gray-500: #6B6656;
+        --cgj-gray-700: #403C33;
+        --cgj-gray-900: #211E18;
+        --cgj-danger:  #9A2A18;
+
+        --cgj-font-display: 'Montserrat', 'Glacial Indifference', Arial, sans-serif;
+        --cgj-font-body:    'Open Sans', Arial, sans-serif;
+
+        /* Legacy names the page scripts and rules already use */
+        --city-blue-1:  var(--cgj-blue);
+        --city-blue-2:  var(--cgj-navy);
+        --city-green-1: var(--cgj-forest);
+        --city-green-2: var(--cgj-green);
+        --city-brown-1: var(--cgj-brown-1);
+        --city-brown-2: var(--cgj-brown-2);
+        --city-brown-3: var(--cgj-brown-3);
+        --city-mid:     var(--cgj-blue);
+
+        /* Surfaces and text */
+        --color-bg:          var(--cgj-gray-50);
+        --color-surface:     var(--cgj-paper);
+        --color-surface-2:   var(--cgj-gray-50);
+        --color-border:      var(--cgj-gray-200);
+        --color-border-soft: var(--cgj-gray-100);
+        --color-control:     var(--cgj-gray-500);   /* 3:1+ control edge (WCAG 1.4.11) */
+        --color-text:        var(--cgj-ink);
+        --color-text-soft:   var(--cgj-gray-700);
+        --color-text-mute:   var(--cgj-gray-500);
+        --color-heading:     var(--cgj-navy);
+        --color-primary:     var(--cgj-navy);
+        --color-accent:      var(--cgj-navy);       /* text-safe accent: links, active text */
+        --color-graphic:     var(--cgj-blue);       /* large graphics, rules, chart accent */
+        --color-fill:        var(--cgj-navy);       /* pressed / active button fill */
+        --color-on-fill:     var(--cgj-paper);      /* text on --color-fill and status fills */
+        --color-fill-hover:  color-mix(in oklab, var(--cgj-navy) 82%, var(--cgj-black));
+        --color-danger:      var(--cgj-danger);
+        --color-tint:        color-mix(in oklab, var(--cgj-navy) 6%, var(--cgj-paper));
+        --color-highlight:   color-mix(in oklab, var(--cgj-blue) 12%, var(--cgj-paper));
+        --color-rule:        var(--cgj-navy);       /* card top rule */
+
+        --header-bg:   var(--cgj-navy);
+        --header-text: var(--cgj-paper);
+        --bg-pattern-stroke:  var(--cgj-navy);
+        --bg-pattern-opacity: 0.05;
+
+        /* Ticket status: brand hues, body-safe on white, white text on fill */
+        --status-open:     var(--cgj-navy);
+        --status-received: var(--cgj-brown-1);
+        --status-progress: var(--cgj-brown-3);
+        --status-resolved: var(--cgj-forest);
+        --status-closed:   var(--cgj-gray-500);
+
+        /* Semantic good / middle / bad (surveys, word cloud, bands) */
+        --status-good:    var(--cgj-forest);
+        --status-neutral: var(--cgj-brown-3);
+        --status-bad:     var(--cgj-danger);
+
+        /* Routing lookup service types */
+        --status-water: var(--cgj-navy);
+        --status-roads: var(--cgj-brown-3);
+        --status-parks: var(--cgj-forest);
+        --status-sewer: var(--cgj-gray-500);
+
+        /* KPI accents */
+        --kpi-open:     var(--cgj-danger);
+        --kpi-progress: var(--cgj-brown-3);
+        --kpi-resolved: var(--cgj-forest);
+        --kpi-1: var(--cgj-navy);
+        --kpi-2: var(--cgj-forest);
+        --kpi-3: var(--cgj-brown-3);
+        --kpi-4: var(--cgj-brown-1);
+
+        /* Aging ramp (days open): fresh to stale */
+        --aging-0: var(--cgj-green);
+        --aging-1: var(--cgj-brown-1);
+        --aging-2: var(--cgj-brown-3);
+        --aging-3: var(--cgj-danger);
+        --aging-4: var(--cgj-brown-2);
+
+        /* Charts: Brand categorical order */
+        --chart-1: var(--cgj-navy);
+        --chart-2: var(--cgj-blue);
+        --chart-3: var(--cgj-forest);
+        --chart-4: var(--cgj-brown-3);
+        --chart-5: var(--cgj-green);
+        --chart-6: var(--cgj-brown-1);
+        --chart-muted: var(--cgj-gray-300);
+        --chart-grid:  var(--cgj-gray-200);
+        --chart-tick:  var(--cgj-gray-700);
+        --chart-label: var(--cgj-ink);
+        --tooltip-bg:   var(--cgj-navy);
+        --tooltip-text: var(--cgj-paper);
+
+        --shadow-sm:  0 1px 3px rgba(0, 58, 85, 0.10), 0 1px 2px rgba(0, 58, 85, 0.06);
+        --shadow-md:  0 4px 12px rgba(0, 58, 85, 0.10), 0 2px 4px rgba(0, 58, 85, 0.06);
+        --shadow-lg:  0 12px 32px rgba(0, 58, 85, 0.14), 0 4px 8px rgba(0, 58, 85, 0.06);
+        --shadow-hdr: 0 2px 4px rgba(0, 58, 85, 0.18);
+
+        --focus-ring:       var(--cgj-navy);
+        --focus-ring-inner: var(--cgj-paper);
+
+        --r-card: 8px;
+        --r-chip: 999px;
+        --ease: cubic-bezier(0.2, 0, 0.1, 1);
+        --tx:   160ms;
+    }
+
+    /* Dark mode: follows the OS / browser setting. Grounds are navy
+       mixed toward black; text is cream; accents are palette hues
+       lifted toward white so they stay readable on the dark ground. */
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --color-bg:          color-mix(in oklab, var(--cgj-navy) 48%, var(--cgj-black));
+            --color-surface:     color-mix(in oklab, var(--cgj-navy) 64%, var(--cgj-black));
+            --color-surface-2:   color-mix(in oklab, var(--cgj-navy) 76%, var(--cgj-black));
+            --color-border:      color-mix(in oklab, var(--cgj-cream) 22%, var(--color-surface));
+            --color-border-soft: color-mix(in oklab, var(--cgj-cream) 12%, var(--color-surface));
+            --color-control:     color-mix(in oklab, var(--cgj-cream) 50%, var(--color-surface));
+            --color-text:        var(--cgj-cream);
+            --color-text-soft:   color-mix(in oklab, var(--cgj-cream) 85%, var(--cgj-navy));
+            --color-text-mute:   color-mix(in oklab, var(--cgj-cream) 70%, var(--cgj-navy));
+            --color-heading:     var(--cgj-cream);
+            --color-primary:     var(--cgj-cream);
+            --color-accent:      color-mix(in oklab, var(--cgj-blue) 55%, var(--cgj-paper));
+            --color-graphic:     color-mix(in oklab, var(--cgj-blue) 70%, var(--cgj-paper));
+            --color-fill:        color-mix(in oklab, var(--cgj-blue) 55%, var(--cgj-paper));
+            --color-on-fill:     color-mix(in oklab, var(--cgj-navy) 60%, var(--cgj-black));
+            --color-fill-hover:  color-mix(in oklab, var(--cgj-blue) 40%, var(--cgj-paper));
+            --color-danger:      color-mix(in oklab, var(--cgj-danger) 45%, var(--cgj-paper));
+            --color-tint:        color-mix(in oklab, var(--cgj-blue) 10%, var(--color-surface));
+            --color-highlight:   color-mix(in oklab, var(--cgj-blue) 22%, var(--color-surface));
+            --color-rule:        var(--color-graphic);
+
+            --header-bg:   var(--cgj-navy);
+            --bg-pattern-stroke:  var(--cgj-cream);
+            --bg-pattern-opacity: 0.04;
+
+            --status-open:     color-mix(in oklab, var(--cgj-blue) 55%, var(--cgj-paper));
+            --status-received: color-mix(in oklab, var(--cgj-brown-1) 45%, var(--cgj-paper));
+            --status-progress: color-mix(in oklab, var(--cgj-brown-3) 45%, var(--cgj-paper));
+            --status-resolved: color-mix(in oklab, var(--cgj-green) 55%, var(--cgj-paper));
+            --status-closed:   var(--cgj-gray-300);
+
+            --status-good:    color-mix(in oklab, var(--cgj-green) 55%, var(--cgj-paper));
+            --status-neutral: color-mix(in oklab, var(--cgj-brown-3) 45%, var(--cgj-paper));
+            --status-bad:     color-mix(in oklab, var(--cgj-danger) 45%, var(--cgj-paper));
+
+            --status-water: color-mix(in oklab, var(--cgj-blue) 55%, var(--cgj-paper));
+            --status-roads: color-mix(in oklab, var(--cgj-brown-3) 45%, var(--cgj-paper));
+            --status-parks: color-mix(in oklab, var(--cgj-green) 55%, var(--cgj-paper));
+            --status-sewer: var(--cgj-gray-300);
+
+            --kpi-open:     color-mix(in oklab, var(--cgj-danger) 45%, var(--cgj-paper));
+            --kpi-progress: color-mix(in oklab, var(--cgj-brown-3) 45%, var(--cgj-paper));
+            --kpi-resolved: color-mix(in oklab, var(--cgj-green) 55%, var(--cgj-paper));
+            --kpi-1: color-mix(in oklab, var(--cgj-blue) 55%, var(--cgj-paper));
+            --kpi-2: color-mix(in oklab, var(--cgj-green) 55%, var(--cgj-paper));
+            --kpi-3: color-mix(in oklab, var(--cgj-brown-3) 45%, var(--cgj-paper));
+            --kpi-4: var(--cgj-gray-300);
+
+            --aging-0: color-mix(in oklab, var(--cgj-green) 70%, var(--cgj-paper));
+            --aging-1: color-mix(in oklab, var(--cgj-brown-1) 60%, var(--cgj-paper));
+            --aging-2: color-mix(in oklab, var(--cgj-brown-3) 60%, var(--cgj-paper));
+            --aging-3: color-mix(in oklab, var(--cgj-danger) 60%, var(--cgj-paper));
+            --aging-4: color-mix(in oklab, var(--cgj-danger) 80%, var(--cgj-paper));
+
+            --chart-1: color-mix(in oklab, var(--cgj-blue) 45%, var(--cgj-paper));
+            --chart-2: var(--cgj-blue);
+            --chart-3: color-mix(in oklab, var(--cgj-green) 60%, var(--cgj-paper));
+            --chart-4: color-mix(in oklab, var(--cgj-brown-3) 55%, var(--cgj-paper));
+            --chart-5: var(--cgj-green);
+            --chart-6: var(--cgj-gray-300);
+            --chart-muted: color-mix(in oklab, var(--cgj-cream) 25%, var(--color-surface));
+            --chart-grid:  color-mix(in oklab, var(--cgj-cream) 12%, var(--color-surface));
+            --chart-tick:  color-mix(in oklab, var(--cgj-cream) 80%, var(--cgj-navy));
+            --chart-label: var(--cgj-cream);
+            --tooltip-bg:   var(--cgj-cream);
+            --tooltip-text: var(--cgj-navy);
+
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+            --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.30);
+            --shadow-lg: 0 6px 16px rgba(0, 0, 0, 0.50), 0 2px 4px rgba(0, 0, 0, 0.40);
+
+            --focus-ring:       var(--cgj-cream);
+            --focus-ring-inner: var(--cgj-navy);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        :root { --tx: 1ms; }
+        *, *::before, *::after {
+            animation-duration: 1ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 1ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
+
+    /* Brand type: Open Sans body, Montserrat display */
+    body { font-family: var(--cgj-font-body); }
+    h1, h2, h3, h4, .kpi .value, .kpi-value { font-family: var(--cgj-font-display); }
+    button, input, select, textarea { font-family: inherit; }
+
+    /* Touch: every button meets the WCAG 2.2 24x24 target floor */
+    @media (pointer: coarse) {
+        button, [role="button"] { min-width: 24px; min-height: 24px; }
+    }
+
+    /* Skip link (first in tab order) */
+    .skip-link {
+        position: absolute; left: 8px; top: -60px; z-index: 1000;
+        padding: 10px 16px; min-height: 44px;
+        background: var(--color-surface); color: var(--color-accent);
+        border: 2px solid var(--focus-ring); border-radius: 8px;
+        font-weight: 600; text-decoration: underline;
+    }
+    .skip-link:focus { top: 8px; }
+
+
+    
+
+    @media (prefers-color-scheme: dark) {
+        
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+        font-family: var(--cgj-font-body);
+        font-size: 13px;
+        line-height: 1.45;
+        color: var(--color-text);
+        background: var(--color-bg);
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* ── Header ──────────────────────────────────────────── */
+    header.top {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        background: var(--header-bg);
+        color: var(--header-text);
+        padding: 10px 18px;
+        box-shadow: 0 2px 4px rgba(0, 58, 85, 0.18);
+    }
+    header.top h1 {
+        margin: 0;
+        font-family: var(--cgj-font-display);
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        line-height: 1.2;
+    }
+    header.top h1 .subtitle {
+        display: block;
+        font-size: 10px;
+        opacity: 0.7;
+        font-weight: 400;
+        margin-top: 2px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+    header.top .back-link {
+        margin-left: auto;
+        color: rgba(255, 255, 255, 0.85);
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 5px 10px;
+        border-radius: 3px;
+        transition: background var(--tx) var(--ease);
+    }
+    header.top .back-link:hover  { background: rgba(255, 255, 255, 0.12); color: #fff; }
+    header.top .back-link:focus-visible {
+        outline: 2px solid #fff;
+        outline-offset: 2px;
+    }
+
+    /* ── KPI strip — top of body ─────────────────────────── */
+    .kpi-strip {
+        flex: 0 0 auto;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        padding: 14px 18px 0;
+    }
+    .kpi {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-top: 3px solid var(--color-accent);
+        border-radius: var(--r-card);
+        padding: 10px 14px;
+        box-shadow: var(--shadow-sm);
+    }
+    .kpi h2 {
+        margin: 0 0 4px;
+        font-family: var(--cgj-font-display);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--color-text-soft);
+    }
+    .kpi .value {
+        font-family: var(--cgj-font-display);
+        font-size: 26px;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -0.025em;
+        color: var(--color-heading);
+        line-height: 1;
+    }
+    .kpi .sublabel {
+        margin-top: 3px;
+        font-size: 11px;
+        color: var(--color-text-mute);
+    }
+    .kpi.avg-rating { border-top-color: var(--status-good); }
+    .kpi.avg-rating .value { color: var(--status-good); }
+    .kpi.response-time { border-top-color: var(--status-neutral); }
+    .kpi.response-time .value { color: var(--status-neutral); }
+    @media (prefers-color-scheme: dark) {
+        .kpi .value { color: var(--color-text); }
+        .kpi.avg-rating .value     { color: var(--status-good); }
+        .kpi.response-time .value  { color: var(--status-neutral); }
+    }
+
+    /* ── Toolbar ─────────────────────────────────────────── */
+    .toolbar {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 14px 18px 10px;
+        background: var(--color-surface);
+        border-bottom: 1px solid var(--color-border);
+        margin-top: 14px;
+    }
+    .toolbar label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--color-text-soft);
+    }
+    .toolbar input[type="search"],
+    .toolbar select {
+        font-family: inherit;
+        font-size: 13px;
+        padding: 5px 9px;
+        border: 1px solid var(--color-border);
+        border-radius: 3px;
+        background: var(--color-surface);
+        color: var(--color-text);
+        min-width: 160px;
+        color-scheme: light dark;
+    }
+    .toolbar input[type="search"]:focus,
+    .toolbar select:focus {
+        outline: none;
+        border-color: var(--color-accent);
+        box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent) 30%, transparent);
+    }
+    .toolbar .summary {
+        margin-left: auto;
+        font-size: 12px;
+        color: var(--color-text-mute);
+        font-variant-numeric: tabular-nums;
+    }
+    .toolbar .summary b { color: var(--color-text); font-weight: 600; }
+    .toolbar button {
+        font-family: inherit;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 5px 12px;
+        border: 1px solid var(--color-border);
+        border-radius: 3px;
+        background: var(--color-surface);
+        color: var(--color-text);
+        cursor: pointer;
+        transition: all var(--tx) var(--ease);
+    }
+    .toolbar button:hover { background: var(--color-border-soft); }
+    .toolbar button.primary {
+        background: var(--city-blue-2);
+        border-color: var(--city-blue-2);
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .toolbar button.primary:hover { background: var(--color-fill-hover); border-color: var(--color-fill-hover); }
+    .toolbar button.primary svg { width: 13px; height: 13px; flex: 0 0 auto; }
+    .toolbar button.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    @media (prefers-color-scheme: dark) {
+        .toolbar button.primary {
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+            color: var(--color-on-fill);
+        }
+        .toolbar button.primary:hover { background: var(--color-fill-hover); border-color: var(--color-fill-hover); }
+    }
+
+    /* ── Table ───────────────────────────────────────────── */
+    main {
+        flex: 1 1 auto;
+        padding: 14px 18px 24px;
+        min-height: 0;
+    }
+    .table-wrap {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--r-card);
+        overflow: hidden;
+        box-shadow: var(--shadow-md);
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+    thead th {
+        text-align: left;
+        font-family: var(--cgj-font-display);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--color-heading);
+        background: var(--color-surface);
+        padding: 9px 12px;
+        border-bottom: 2px solid var(--color-border);
+        position: sticky;
+        top: 0;
+        cursor: pointer;
+        user-select: none;
+        white-space: nowrap;
+    }
+    @media (prefers-color-scheme: dark) {
+        thead th { color: var(--color-text); }
+    }
+    thead th .sort-arrow {
+        display: inline-block;
+        margin-left: 4px;
+        opacity: 0.4;
+        font-size: 9px;
+    }
+    thead th[aria-sort="ascending"]  .sort-arrow,
+    thead th[aria-sort="descending"] .sort-arrow { opacity: 1; }
+    thead th:hover .sort-arrow { opacity: 0.7; }
+
+    tbody td {
+        padding: 7px 12px;
+        border-bottom: 1px solid var(--color-border-soft);
+        vertical-align: top;
+    }
+    tbody tr:hover { background: var(--color-surface-2); }
+    tbody tr:last-child td { border-bottom: none; }
+
+    /* Star-rating cell */
+    .stars {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        font-family: "Open Sans", sans-serif;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+    }
+    .stars .glyphs {
+        letter-spacing: 1px;
+        font-size: 14px;
+        line-height: 1;
+    }
+    .stars .num {
+        font-weight: 700;
+        font-size: 12px;
+        margin-right: 4px;
+        font-variant-numeric: tabular-nums;
+    }
+    .stars.r5 .glyphs,
+    .stars.r4 .glyphs { color: var(--status-good); }
+    .stars.r3 .glyphs { color: var(--status-neutral); }
+    .stars.r2 .glyphs,
+    .stars.r1 .glyphs { color: var(--status-bad); }
+    .stars.unrated { color: var(--color-text-mute); font-style: italic; font-size: 12px; }
+
+    /* Follow-up column — Yes/No pill. "Yes" (a citizen asked for a
+       callback) is the actionable case, so it gets the strong color. */
+    td.followup { white-space: nowrap; }
+    .fu {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 1px 9px;
+        border-radius: 11px;
+        line-height: 1.6;
+    }
+    .fu-yes {
+        color: var(--color-on-fill);
+        background: var(--status-good);
+    }
+    .fu-no {
+        color: var(--color-text-mute);
+        background: var(--color-border-soft, rgba(127,127,127,0.14));
+    }
+
+    /* Ticket-number cell — clickable link to Manager */
+    td.ticket a {
+        color: var(--color-accent);
+        text-decoration: underline; text-underline-offset: 2px;
+        font-weight: 600;
+        font-family: "Open Sans", monospace;
+    }
+    td.ticket a:hover { text-decoration: underline; }
+
+    /* Comments column — narrow, truncate */
+    td.comments {
+        max-width: 380px;
+        overflow: hidden;
+        position: relative;
+    }
+    td.comments .comment-text {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        white-space: normal;
+        line-height: 1.4;
+        cursor: pointer;
+    }
+    td.comments .comment-text.expanded {
+        -webkit-line-clamp: unset;
+        display: block;
+        white-space: pre-wrap;
+    }
+    td.comments .comment-toggle {
+        display: inline-block;
+        margin-top: 3px;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--color-accent);
+        background: none;
+        border: none;
+        padding: 1px 0;
+        cursor: pointer;
+        font-family: inherit;
+    }
+    td.comments .comment-toggle:hover { text-decoration: underline; }
+    td.comments .comment-toggle:focus-visible {
+        outline: 2px solid var(--focus-ring);
+        outline-offset: 2px;
+        border-radius: 2px;
+    }
+    td.comments .empty-comment {
+        color: var(--color-text-mute);
+        font-style: italic;
+        font-size: 12px;
+    }
+
+    /* Legacy migration metadata — rendered below the citizen comment
+       in muted, smaller text. The pill prefix lets you spot which
+       rows are pre-migration at a glance without reading the text. */
+    td.comments .legacy-meta {
+        margin-top: 6px;
+        padding-top: 4px;
+        border-top: 1px dashed var(--color-border-soft);
+        color: var(--color-text-mute);
+        font-size: 11px;
+        line-height: 1.4;
+        font-style: italic;
+    }
+    td.comments .legacy-meta.only {
+        margin-top: 0;
+        padding-top: 0;
+        border-top: none;
+    }
+    td.comments .legacy-pill {
+        display: inline-block;
+        font-size: 9px;
+        font-weight: 700;
+        font-style: normal;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--color-text-soft);
+        background: var(--color-border-soft);
+        padding: 1px 5px;
+        border-radius: 8px;
+        margin-right: 6px;
+        vertical-align: 1px;
+    }
+
+    /* When */
+    td.when {
+        white-space: nowrap;
+        color: var(--color-text-soft);
+        font-size: 12px;
+    }
+
+    /* Response time pill */
+    .rtime {
+        display: inline-block;
+        padding: 1px 7px;
+        border-radius: 9px;
+        font-size: 11px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        color: var(--color-text);
+        background: var(--color-border-soft);
+    }
+    .rtime.fast   { color: var(--status-good); background: color-mix(in srgb, var(--status-good) 14%, transparent); }
+    .rtime.slow   { color: var(--status-bad);  background: color-mix(in srgb, var(--status-bad) 14%, transparent); }
+    .rtime-source {
+        display: inline-block;
+        margin-left: 1px;
+        font-size: 9px;
+        font-weight: 700;
+        opacity: 0.7;
+        cursor: help;
+        vertical-align: top;
+    }
+
+    /* Matched-search highlight */
+    mark.match {
+        background: color-mix(in srgb, var(--color-accent) 28%, transparent);
+        color: inherit;
+        padding: 0 1px;
+        border-radius: 2px;
+    }
+
+    /* States */
+    .state {
+        padding: 32px 18px;
+        text-align: center;
+        color: var(--color-text-mute);
+        font-size: 13px;
+    }
+    .state.error {
+        color: var(--status-bad);
+        background: color-mix(in srgb, var(--status-bad) 8%, transparent);
+        border-left: 3px solid var(--status-bad);
+        text-align: left;
+        padding: 14px 18px;
+        font-family: "Open Sans", monospace;
+        font-size: 12px;
+    }
+
+    /* ── Footer ──────────────────────────────────────────── */
+    footer {
+        flex: 0 0 auto;
+        padding: 8px 18px;
+        font-size: 11px;
+        color: var(--color-text-soft);
+        text-align: center;
+        background: var(--color-surface);
+        border-top: 1px solid var(--color-border-soft);
+    }
+    footer a {
+        color: var(--color-accent);
+        text-decoration: underline; text-underline-offset: 2px;
+        margin: 0 8px;
+    }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 900px) {
+        .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+        .kpi-strip { grid-template-columns: 1fr; }
+        .toolbar input[type="search"],
+        .toolbar select { min-width: 0; flex: 1 1 140px; }
+        .toolbar .summary { width: 100%; text-align: right; }
+    }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="top" role="banner">
+    <h1>
+        RAC Survey Responses
+        <span class="subtitle">Citizen satisfaction feedback · Report A Concern</span>
+    </h1>
+    <a class="back-link" href="./" aria-label="Back to dashboard">← Back to dashboard</a>
+</header>
+
+<div class="kpi-strip">
+    <div class="kpi">
+        <h2>Total responses</h2>
+        <div class="value" id="kpiTotal">—</div>
+        <div class="sublabel" id="kpiTotalSub">All time</div>
+    </div>
+    <div class="kpi avg-rating">
+        <h2>Average rating</h2>
+        <div class="value" id="kpiAvgRating">—</div>
+        <div class="sublabel" id="kpiAvgSub">Out of 5</div>
+    </div>
+    <div class="kpi response-time">
+        <h2>Avg response time</h2>
+        <div class="value" id="kpiAvgTime">—</div>
+        <div class="sublabel">Days between resolve &amp; survey submit</div>
+    </div>
+    <div class="kpi">
+        <h2>5-star responses</h2>
+        <div class="value" id="kpi5Star">—</div>
+        <div class="sublabel" id="kpi5StarSub">— % of responses</div>
+    </div>
+</div>
+
+<div class="toolbar" role="region" aria-label="Filter controls">
+    <label for="searchInput">Search</label>
+    <input type="search" id="searchInput" placeholder="Filter by ticket # or comment text…"
+           autocomplete="off" aria-label="Search ticket numbers and comments">
+
+    <label for="ratingFilter">Rating</label>
+    <select id="ratingFilter" aria-label="Filter by satisfaction rating">
+        <option value="">All</option>
+        <option value="5">★★★★★ (5)</option>
+        <option value="4">★★★★ (4)</option>
+        <option value="3">★★★ (3)</option>
+        <option value="2">★★ (2)</option>
+        <option value="1">★ (1)</option>
+        <option value="0">No rating</option>
+    </select>
+
+    <label for="followupFilter">Follow-up</label>
+    <select id="followupFilter" aria-label="Filter by staff follow-up requested">
+        <option value="">All</option>
+        <option value="Yes">Requested</option>
+        <option value="No">Not requested</option>
+    </select>
+
+    <label for="timeFilter">Time</label>
+    <select id="timeFilter" aria-label="Filter by submission date">
+        <option value="">All time</option>
+        <option value="7">Last 7 days</option>
+        <option value="30">Last 30 days</option>
+        <option value="90">Last 90 days</option>
+        <option value="ytd">Year to date</option>
+    </select>
+
+    <button id="resetBtn" type="button" title="Clear all filters (Esc)">✕ Clear</button>
+    <button id="exportBtn" type="button" class="primary"
+            title="Download the currently filtered rows as an Excel workbook (E)"
+            aria-label="Export to Excel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export
+    </button>
+
+    <span class="summary" id="summary" aria-live="polite">Loading…</span>
+</div>
+
+<main id="main">
+    <div class="table-wrap">
+        <table id="surveyTable" aria-describedby="summary">
+            <thead>
+                <tr>
+                    <th data-sort="ticket_number"  tabindex="0" aria-sort="none">Ticket #          <span class="sort-arrow">▲</span></th>
+                    <th data-sort="rating"         tabindex="0" aria-sort="none">Rating            <span class="sort-arrow">▲</span></th>
+                    <th data-sort="follow_up"      tabindex="0" aria-sort="none">Follow-up         <span class="sort-arrow">▲</span></th>
+                    <th data-sort="comments"       tabindex="0" aria-sort="none">Comments          <span class="sort-arrow">▲</span></th>
+                    <th data-sort="submitted_date" tabindex="0" aria-sort="descending">Submitted   <span class="sort-arrow">▲</span></th>
+                    <th data-sort="response_time"  tabindex="0" aria-sort="none">Response time     <span class="sort-arrow">▲</span></th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr><td colspan="6" class="state" id="loadingState">Authenticating with Portal…</td></tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer>
+    Internal use · GIS Division
+    <a href="./" title="Back to RAC Dashboard">Dashboard</a>
+    <a href="./routing-lookup.html" title="Category → department routing reference">Routing Lookup</a>
+    <a href="https://gis-internal.example.gov/reportaconcernmanager/" target="_blank" rel="noopener">Open Manager</a>
+</footer>
+
+<script>
+//================================================================
+//  Config
+//================================================================
+const CONFIG = {
+    serviceUrl:        "https://gis-internal.example.gov/arcgis/rest/services/RAC/ReportAConcern_Manager/MapServer",
+    surveyLayer:       5,
+    ticketsLayer:      0,
+    oauthAppId:        "YOUR_PORTAL_OAUTH_APP_ID",
+    portalUrl:         "https://portal.example.gov/portal",
+    oauthCallbackPath: "oauth-callback.html",
+    managerUrl:        "https://gis-internal.example.gov/reportaconcernmanager/",
+};
+
+const FIELDS = {
+    survey: {
+        responseId:       "response_id",
+        ticketId:         "ticket_id",
+        rating:           "satisfaction_rating",
+        comments:         "comments",
+        submittedDate:    "submitted_date",
+        responseTimeDays: "response_time_days",
+        staffFollowup:    "staff_followup",
+    },
+    tickets: {
+        ticketId:     "ticket_id",
+        ticketNumber: "ticket_number",
+        category:     "category",
+        createdDate:  "created_date",
+        resolvedDate: "resolved_date",
+    },
+};
+
+//================================================================
+//  State
+//================================================================
+let surveyLayer, ticketsLayer;
+let allRows = [];      // [{ response_id, ticket_id, rating, comments, submitted_date, response_time, ticket_number }]
+let viewRows = [];
+let sortKey = "submitted_date";
+let sortDir = "desc";
+let categoryMap = {};  // ticket_id → category text (for export context)
+
+//================================================================
+//  Auth + Layer construction — same pattern as the dashboard
+//================================================================
+require([
+    "esri/config",
+    "esri/identity/IdentityManager",
+    "esri/identity/OAuthInfo",
+    "esri/layers/FeatureLayer",
+], function (esriConfig, esriId, OAuthInfo, FeatureLayer) {
+
+    esriConfig.portalUrl = CONFIG.portalUrl;
+
+    if (CONFIG.oauthAppId) {
+        const callbackUrl = new URL(CONFIG.oauthCallbackPath, window.location.href).href;
+        esriId.registerOAuthInfos([new OAuthInfo({
+            appId:            CONFIG.oauthAppId,
+            portalUrl:        CONFIG.portalUrl,
+            popup:            true,
+            popupCallbackUrl: callbackUrl,
+            expiration:       60 * 8,
+        })]);
+        // serverRoot must use the actual hostname (the ArcGIS Server machine name), not
+        // any alias, or token generation fails — same federation gotcha
+        // as the dashboard.
+        const serverRoot = CONFIG.serviceUrl.replace(/\/rest\/services\/.*$/, "");
+        esriId.registerServers([{
+            server:          serverRoot,
+            tokenServiceUrl: `${CONFIG.portalUrl}/sharing/rest/generateToken`,
+        }]);
+        if (window.RAC_DEBUG === true) {
+            console.log("[OAuth] Registered:", {
+                appId: CONFIG.oauthAppId,
+                portalUrl: CONFIG.portalUrl,
+                callback: callbackUrl,
+            });
+        }
+    }
+
+    surveyLayer = new FeatureLayer({
+        url: `${CONFIG.serviceUrl}/${CONFIG.surveyLayer}`,
+        outFields: ["*"],
+    });
+    ticketsLayer = new FeatureLayer({
+        url: `${CONFIG.serviceUrl}/${CONFIG.ticketsLayer}`,
+        outFields: ["*"],
+    });
+
+    Promise.all([surveyLayer.load(), ticketsLayer.load()])
+        .then(() => loadAllResponses())
+        .catch(e => {
+            showError(`Couldn't load the survey service.\n\n${e.message || e}`);
+        });
+});
+
+//================================================================
+//  Fetch survey responses + the matching ticket-number lookup
+//================================================================
+async function loadAllResponses() {
+    const SF = FIELDS.survey;
+    const TF = FIELDS.tickets;
+
+    // 1. Pull every survey response
+    // staff_followup is a recently-added column; only request it if the
+    // published layer actually exposes it, so an un-refreshed service
+    // schema can't fail the whole query. When absent, follow_up stays null.
+    const hasFollowup = (surveyLayer.fields || []).some(f => f.name === SF.staffFollowup);
+    let surveyFeatures;
+    try {
+        const outFields = [SF.responseId, SF.ticketId, SF.rating, SF.comments,
+                           SF.submittedDate, SF.responseTimeDays];
+        if (hasFollowup) outFields.push(SF.staffFollowup);
+        const r = await surveyLayer.queryFeatures({
+            where: "1=1",
+            outFields,
+            returnGeometry: false,
+            orderByFields: [`${SF.submittedDate} DESC`],
+            num: 10000,
+        });
+        surveyFeatures = r.features || [];
+    } catch (e) {
+        showError(`Survey query failed.\n\n${e.message || e}`);
+        return;
+    }
+
+    if (surveyFeatures.length === 0) {
+        allRows = [];
+        viewRows = [];
+        document.getElementById("tableBody").innerHTML =
+            `<tr><td colspan="6" class="state">No survey responses yet.</td></tr>`;
+        updateKPIs();
+        document.getElementById("summary").textContent = "0 responses";
+        return;
+    }
+
+    // 2. Pull ticket numbers + categories for the responses we have.
+    // We only need rows we actually have surveys for. Build the IN clause
+    // from response ticket_ids, chunking to avoid SQL length limits.
+    const ticketIds = [...new Set(surveyFeatures
+        .map(f => f.attributes?.[SF.ticketId])
+        .filter(Boolean))];
+    const ticketLookup = await fetchTicketLookup(ticketIds);
+
+    allRows = surveyFeatures.map(f => {
+        const a = f.attributes || {};
+        const tid = a[SF.ticketId];
+        const t = ticketLookup[tid] || {};
+        const submitted = a[SF.submittedDate];
+
+        // response_time_days = days between when the ticket was resolved
+        // and when the citizen submitted their survey response.
+        //   1) Prefer the value already stored on Survey_Responses
+        //      (written by the survey endpoint when it knows both dates)
+        //   2) Fall back to computing it from Tickets.resolved_date
+        //      vs Survey_Responses.submitted_date — this catches rows
+        //      where the field was never populated by upstream pipes
+        //      (e.g. Survey123-sourced rows synced via rac_survey_pull.py)
+        let rtime = a[SF.responseTimeDays];
+        let rtimeSource = "stored";
+        if (typeof rtime !== "number" && t.resolved_date && submitted) {
+            const diffMs = submitted - t.resolved_date;
+            if (diffMs >= 0) {
+                rtime = diffMs / 86400000;
+                rtimeSource = "computed";
+            }
+        }
+
+        // Split the comment field into the actual citizen-written part
+        // and the legacy migration metadata. The migration script
+        // appended a structured block to every legacy row:
+        //   "<citizen comment> [Legacy Survey Data] Resolution Time: ...
+        //    | Customer Service: ... | Net Promoter Score: ..."
+        // The metadata is genuinely useful but it shouldn't bury the
+        // actual comment. We expose both pieces separately.
+        const rawComment = a[SF.comments] || "";
+        const legacyIdx = rawComment.search(/\[Legacy Survey Data\]/i);
+        const citizenComment = legacyIdx >= 0
+            ? rawComment.substring(0, legacyIdx).trim()
+            : rawComment.trim();
+        const legacyMeta = legacyIdx >= 0
+            ? rawComment.substring(legacyIdx).trim()
+            : "";
+
+        return {
+            response_id:     a[SF.responseId],
+            ticket_id:       tid,
+            ticket_number:   t.ticket_number || null,
+            category:        t.category || null,
+            created_date:    t.created_date || null,
+            resolved_date:   t.resolved_date || null,
+            rating:          a[SF.rating],
+            comments:        citizenComment,
+            legacy_meta:     legacyMeta,
+            comments_raw:    rawComment,    // preserved for export
+            submitted_date:  submitted,
+            response_time:   rtime,
+            response_time_source: rtimeSource,
+            // staff_followup: 1 = citizen asked for a callback, 0 = no,
+            // null/absent = not asked (legacy rows, or service not refreshed).
+            follow_up:       (function (v) {
+                                 if (v === 1 || v === "1" || v === true)  return "Yes";
+                                 if (v === 0 || v === "0" || v === false) return "No";
+                                 return null;
+                             })(a[SF.staffFollowup]),
+        };
+    });
+
+    // Log a quick summary of computed vs stored so you can tell if
+    // upstream pipelines need fixing
+    const computed = allRows.filter(r => r.response_time_source === "computed").length;
+    const stored   = allRows.filter(r => r.response_time_source === "stored" && typeof r.response_time === "number").length;
+    const missing  = allRows.filter(r => typeof r.response_time !== "number").length;
+    if (window.RAC_DEBUG === true) {
+        console.log(`[Survey] response_time_days source breakdown — stored: ${stored}, computed-on-the-fly: ${computed}, missing: ${missing}`);
+    }
+
+    updateKPIs();
+    // Apply any URL-parameter filters before the first render so the
+    // page lands on the requested filtered view. Currently we honor
+    // ?search=<term> so the dashboard's word-cloud word can deep-link
+    // straight to "comments containing this term."
+    const params = new URLSearchParams(window.location.search);
+    const initialSearch = params.get("search");
+    if (initialSearch) {
+        document.getElementById("searchInput").value = initialSearch;
+    }
+    render();
+}
+
+async function fetchTicketLookup(ticketIds) {
+    if (ticketIds.length === 0) return {};
+    const TF = FIELDS.tickets;
+    const lookup = {};
+    // Chunk to ~50 GUIDs per query so the SQL stays well under the
+    // service's WHERE length limit
+    const CHUNK = 50;
+    for (let i = 0; i < ticketIds.length; i += CHUNK) {
+        const chunk = ticketIds.slice(i, i + CHUNK);
+        const inList = chunk.map(t => `'${String(t).replace(/'/g, "''")}'`).join(",");
+        try {
+            const r = await ticketsLayer.queryFeatures({
+                where: `${TF.ticketId} IN (${inList})`,
+                outFields: [TF.ticketId, TF.ticketNumber, TF.category,
+                            TF.createdDate, TF.resolvedDate],
+                returnGeometry: false,
+                num: 10000,
+            });
+            for (const f of (r.features || [])) {
+                const a = f.attributes || {};
+                lookup[a[TF.ticketId]] = {
+                    ticket_number: a[TF.ticketNumber],
+                    category:      a[TF.category],
+                    created_date:  a[TF.createdDate],
+                    resolved_date: a[TF.resolvedDate],
+                };
+            }
+        } catch (e) {
+            console.warn("Ticket lookup chunk failed:", e);
+        }
+    }
+    return lookup;
+}
+
+function showError(msg) {
+    const body = document.getElementById("tableBody");
+    body.innerHTML = `<tr><td colspan="6" class="state error">${escapeHtml(msg)}</td></tr>`;
+    document.getElementById("summary").textContent = "Failed to load";
+}
+
+//================================================================
+//  KPI updates
+//================================================================
+function updateKPIs() {
+    const rated = allRows.filter(r => r.rating != null && r.rating >= 1 && r.rating <= 5);
+    const ratedAvg = rated.length
+        ? rated.reduce((s, r) => s + r.rating, 0) / rated.length
+        : null;
+    const timed = allRows.filter(r => typeof r.response_time === "number");
+    const timeAvg = timed.length
+        ? timed.reduce((s, r) => s + r.response_time, 0) / timed.length
+        : null;
+    const fiveCount = allRows.filter(r => r.rating === 5).length;
+    const fivePct = allRows.length ? (fiveCount / allRows.length * 100) : 0;
+
+    setText("kpiTotal", allRows.length);
+    setText("kpiAvgRating", ratedAvg == null ? "—" : ratedAvg.toFixed(2));
+    setText("kpiAvgSub", rated.length ? `Out of 5 · ${rated.length} rated` : "Out of 5");
+    setText("kpiAvgTime", timeAvg == null ? "—" : `${timeAvg.toFixed(1)}d`);
+    setText("kpi5Star", fiveCount);
+    setText("kpi5StarSub",
+        allRows.length ? `${fivePct.toFixed(0)}% of responses` : "—");
+}
+function setText(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = String(value);
+}
+
+//================================================================
+//  Render + filtering + sorting
+//================================================================
+function render() {
+    const search = document.getElementById("searchInput").value.trim().toLowerCase();
+    const rating = document.getElementById("ratingFilter").value;
+    const followup = document.getElementById("followupFilter").value;
+    const time   = document.getElementById("timeFilter").value;
+
+    let cutoff = null;
+    if (time === "ytd") {
+        const now = new Date();
+        cutoff = new Date(now.getFullYear(), 0, 1).getTime();
+    } else if (time) {
+        cutoff = Date.now() - Number(time) * 86400000;
+    }
+
+    viewRows = allRows.filter(r => {
+        if (rating) {
+            const ratingNum = Number(rating);
+            if (ratingNum === 0) {
+                if (r.rating != null && r.rating !== 0) return false;
+            } else {
+                if (r.rating !== ratingNum) return false;
+            }
+        }
+        if (cutoff && (!r.submitted_date || r.submitted_date < cutoff)) return false;
+        if (followup && r.follow_up !== followup) return false;
+        if (search) {
+            const hay = `${r.ticket_number || ""} ${r.comments || ""} ${r.legacy_meta || ""} ${r.category || ""}`.toLowerCase();
+            if (!hay.includes(search)) return false;
+        }
+        return true;
+    });
+
+    viewRows.sort((a, b) => {
+        let av, bv;
+        switch (sortKey) {
+            case "ticket_number": av = a.ticket_number || 0; bv = b.ticket_number || 0; break;
+            case "rating":        av = a.rating ?? -1;       bv = b.rating ?? -1;       break;
+            case "follow_up":     av = a.follow_up === "Yes" ? 2 : a.follow_up === "No" ? 1 : 0;
+                                  bv = b.follow_up === "Yes" ? 2 : b.follow_up === "No" ? 1 : 0; break;
+            case "comments":      av = (a.comments || "").toLowerCase();
+                                  bv = (b.comments || "").toLowerCase(); break;
+            case "submitted_date":av = a.submitted_date || 0; bv = b.submitted_date || 0; break;
+            case "response_time": av = a.response_time ?? Infinity;
+                                  bv = b.response_time ?? Infinity; break;
+            default: av = ""; bv = "";
+        }
+        if (av < bv) return sortDir === "asc" ? -1 : 1;
+        if (av > bv) return sortDir === "asc" ?  1 : -1;
+        return 0;
+    });
+
+    const body = document.getElementById("tableBody");
+    if (viewRows.length === 0) {
+        body.innerHTML = `<tr><td colspan="6" class="state">No responses match — try adjusting your filters.</td></tr>`;
+    } else {
+        body.innerHTML = viewRows.map(rowHtml).join("");
+    }
+
+    const summary = document.getElementById("summary");
+    summary.innerHTML = viewRows.length === allRows.length
+        ? `<b>${allRows.length}</b> responses`
+        : `<b>${viewRows.length}</b> of <b>${allRows.length}</b> responses`;
+
+    document.querySelectorAll("thead th[data-sort]").forEach(th => {
+        const arrow = th.querySelector(".sort-arrow");
+        if (th.dataset.sort === sortKey) {
+            th.setAttribute("aria-sort", sortDir === "asc" ? "ascending" : "descending");
+            arrow.textContent = sortDir === "asc" ? "▲" : "▼";
+        } else {
+            th.setAttribute("aria-sort", "none");
+            arrow.textContent = "▲";
+        }
+    });
+}
+
+function rowHtml(r) {
+    const search = document.getElementById("searchInput").value.trim().toLowerCase();
+    const ticketCell = r.ticket_number
+        ? `<a href="${CONFIG.managerUrl}?ticket_number=${encodeURIComponent(r.ticket_number)}"
+              target="_blank" rel="noopener" onclick="event.stopPropagation()"
+              aria-label="Open ticket ${r.ticket_number} in Manager">#${highlight(String(r.ticket_number), search)}</a>`
+        : '<span style="color:var(--color-text-mute)">—</span>';
+
+    const stars = renderStars(r.rating);
+    const commentsTxt = r.comments && r.comments.trim() ? r.comments.trim() : "";
+
+    // Comment rendering:
+    //   • Empty  → italic em-dash
+    //   • Short  → plain text, no toggle (≤ ~140 chars rarely clamps)
+    //   • Long   → clamped to 2 lines + a "Show more / Show less" button
+    //              that flips the .expanded class on the text span
+    //   • Legacy → if there's a [Legacy Survey Data] tail, render it
+    //              below the citizen comment in muted, smaller type
+    //              with a small "LEGACY" pill prefix so it's clearly
+    //              metadata rather than citizen-written content.
+    let commentsHtml;
+    if (!commentsTxt && !r.legacy_meta) {
+        commentsHtml = `<span class="empty-comment">— no comment —</span>`;
+    } else if (!commentsTxt && r.legacy_meta) {
+        // Migration-only rows — no citizen text, just the metadata.
+        // Render compactly so they don't fill the column.
+        commentsHtml = `<div class="legacy-meta only">
+            <span class="legacy-pill">legacy</span>${escapeHtml(formatLegacyMeta(r.legacy_meta))}
+        </div>`;
+    } else {
+        const isLong = commentsTxt.length > 140 || /\n/.test(commentsTxt);
+        const safe = highlight(commentsTxt, search);
+        if (!isLong) {
+            commentsHtml = `<div class="comment-text expanded">${safe}</div>`;
+        } else {
+            commentsHtml = `
+                <div class="comment-text" data-state="clamped"
+                     role="button" tabindex="0"
+                     aria-expanded="false"
+                     aria-label="Click to expand full comment">${safe}</div>
+                <button type="button" class="comment-toggle"
+                        aria-expanded="false"
+                        aria-label="Show full comment for ticket ${r.ticket_number || ""}">
+                    Show more
+                </button>`;
+        }
+        // Append the legacy metadata below if present
+        if (r.legacy_meta) {
+            commentsHtml += `<div class="legacy-meta">
+                <span class="legacy-pill">legacy</span>${escapeHtml(formatLegacyMeta(r.legacy_meta))}
+            </div>`;
+        }
+    }
+
+    const submitted = r.submitted_date ? fmtDateTime(r.submitted_date) : "—";
+    const rtimeHtml = renderResponseTime(r.response_time, r.response_time_source);
+
+    return `<tr>
+        <td class="ticket">${ticketCell}</td>
+        <td>${stars}</td>
+        <td class="followup">${renderFollowup(r.follow_up)}</td>
+        <td class="comments">${commentsHtml}</td>
+        <td class="when">${submitted}</td>
+        <td>${rtimeHtml}</td>
+    </tr>`;
+}
+
+function renderFollowup(v) {
+    if (v === "Yes") return `<span class="fu fu-yes" title="Citizen asked for a staff follow-up">Yes</span>`;
+    if (v === "No")  return `<span class="fu fu-no">No</span>`;
+    return `<span style="color:var(--color-text-mute)">—</span>`;
+}
+
+function renderStars(rating) {
+    if (rating == null || rating < 1 || rating > 5) {
+        return `<span class="stars unrated">No rating</span>`;
+    }
+    const n = Number(rating);
+    const glyphs = "★".repeat(n) + "☆".repeat(5 - n);
+    return `<span class="stars r${n}">
+        <span class="num">${n}</span><span class="glyphs">${glyphs}</span>
+    </span>`;
+}
+
+function renderResponseTime(days, source) {
+    if (typeof days !== "number") return `<span style="color:var(--color-text-mute)">—</span>`;
+    const cls = days <= 3 ? "fast" : days >= 14 ? "slow" : "";
+    // A subtle dotted underline + tooltip when the value was computed
+    // client-side rather than read from the stored field — helps you
+    // spot rows where the upstream pipeline didn't populate it.
+    const marker = source === "computed"
+        ? ` <span class="rtime-source" title="Calculated from ticket resolved_date and survey submitted_date — the stored response_time_days field was empty for this row." aria-label="Calculated client-side">~</span>`
+        : "";
+    return `<span class="rtime ${cls}">${days.toFixed(1)}d${marker}</span>`;
+}
+
+function fmtDateTime(ts) {
+    const d = new Date(ts);
+    return d.toLocaleString("en-US", {
+        year: "numeric", month: "short", day: "numeric",
+        hour: "numeric", minute: "2-digit",
+    });
+}
+
+function escapeHtml(s) {
+    return String(s ?? "").replace(/[&<>"']/g, c =>
+        ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+/** Format the migration-script's [Legacy Survey Data] tail into a
+ *  compact human-readable summary. Input looks like:
+ *    "[Legacy Survey Data] Resolution Time: Much shorter than expected
+ *     | Customer Service: Very positive | Net Promoter Score: 10/10"
+ *  Output strips the [Legacy Survey Data] prefix and keeps the
+ *  pipe-separated key/value pairs intact for display. */
+function formatLegacyMeta(text) {
+    if (!text) return "";
+    return text.replace(/^\[Legacy Survey Data\]\s*/i, "").trim();
+}
+function highlight(text, query) {
+    const safe = escapeHtml(text);
+    if (!query) return safe;
+    const re = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "ig");
+    return safe.replace(re, '<mark class="match">$1</mark>');
+}
+
+//================================================================
+//  Excel export
+//================================================================
+function exportToExcel() {
+    if (typeof XLSX === "undefined") {
+        alert("Excel export library failed to load. Please check your network and reload the page.");
+        return;
+    }
+    if (!viewRows.length) {
+        alert("Nothing to export — try clearing the filters first.");
+        return;
+    }
+
+    // Friendly column headers, all data flattened to plain values
+    // (Excel renders dates better when sent as JS Date objects).
+    const rows = viewRows.map(r => ({
+        "Ticket #":          r.ticket_number ?? "",
+        "Category":          r.category ?? "",
+        "Rating (1-5)":      r.rating ?? "",
+        "Follow-up requested": r.follow_up ?? "",
+        "Comments":          r.comments || "",
+        "Legacy Survey Data": r.legacy_meta ? formatLegacyMeta(r.legacy_meta) : "",
+        "Submitted":         r.submitted_date ? new Date(r.submitted_date) : "",
+        "Response time (days)": typeof r.response_time === "number"
+            ? Number(r.response_time.toFixed(2))
+            : "",
+        "Response ID":       r.response_id ?? "",
+        "Ticket ID (GUID)":  r.ticket_id ?? "",
+    }));
+
+    const headers = ["Ticket #", "Category", "Rating (1-5)", "Follow-up requested", "Comments",
+                     "Legacy Survey Data",
+                     "Submitted", "Response time (days)",
+                     "Response ID", "Ticket ID (GUID)"];
+
+    const ws = XLSX.utils.json_to_sheet(rows, { header: headers, cellDates: true });
+
+    // Auto-size based on content (capped). For the comments column we
+    // cap at 80 chars so a very chatty entry doesn't push out a 5000-
+    // wide column.
+    ws["!cols"] = headers.map(h => {
+        const headerLen = h.length;
+        const maxLen = rows.reduce((m, r) => {
+            const v = r[h];
+            const len = v instanceof Date
+                ? 20
+                : String(v ?? "").length;
+            return Math.max(m, len);
+        }, headerLen);
+        return { wch: Math.min(maxLen + 2, h === "Comments" ? 80 : 40) };
+    });
+
+    // Format the Submitted column as a real datetime, response-time as 2dp
+    // Header row is row 1 (index 0); data starts at row 2 (index 1)
+    const submittedColIdx = headers.indexOf("Submitted");
+    const rtimeColIdx = headers.indexOf("Response time (days)");
+    for (let i = 0; i < rows.length; i++) {
+        const rowExcel = i + 2;
+        const subAddr = XLSX.utils.encode_cell({ r: rowExcel - 1, c: submittedColIdx });
+        if (ws[subAddr]) ws[subAddr].z = "yyyy-mm-dd hh:mm";
+        const rtAddr = XLSX.utils.encode_cell({ r: rowExcel - 1, c: rtimeColIdx });
+        if (ws[rtAddr]) ws[rtAddr].z = "0.00";
+    }
+
+    if (!ws["!sheetView"]) ws["!sheetView"] = [{ state: "frozen", topLeftCell: "A2", ySplit: 1 }];
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Survey Responses");
+
+    // Metadata sheet — self-documenting export
+    const rated = viewRows.filter(r => r.rating != null && r.rating >= 1 && r.rating <= 5);
+    const ratedAvg = rated.length
+        ? (rated.reduce((s, r) => s + r.rating, 0) / rated.length).toFixed(2)
+        : "—";
+    const timed = viewRows.filter(r => typeof r.response_time === "number");
+    const timeAvg = timed.length
+        ? (timed.reduce((s, r) => s + r.response_time, 0) / timed.length).toFixed(2)
+        : "—";
+
+    const meta = [
+        ["RAC Survey Responses Export"],
+        ["Generated",            new Date().toLocaleString()],
+        ["Source",               `${CONFIG.serviceUrl}/${CONFIG.surveyLayer}`],
+        ["Filters applied",      describeActiveFilters() || "None — all responses"],
+        ["Rows in this export",  String(viewRows.length)],
+        ["Rows in source table", String(allRows.length)],
+        ["Average rating (filtered)", ratedAvg],
+        ["Average response time (days, filtered)", timeAvg],
+        ["Follow-up requested (filtered)", String(viewRows.filter(r => r.follow_up === "Yes").length)],
+    ];
+    const metaWs = XLSX.utils.aoa_to_sheet(meta);
+    metaWs["!cols"] = [{ wch: 36 }, { wch: 60 }];
+    XLSX.utils.book_append_sheet(wb, metaWs, "Metadata");
+
+    const today = new Date().toISOString().slice(0, 10);
+    const filterDesc = describeActiveFilters();
+    const filename = `survey_responses${filterDesc ? "_" + filterDesc : ""}_${today}.xlsx`;
+    XLSX.writeFile(wb, filename);
+}
+
+function describeActiveFilters() {
+    const search = document.getElementById("searchInput").value.trim();
+    const rating = document.getElementById("ratingFilter").value;
+    const followup = document.getElementById("followupFilter").value;
+    const time   = document.getElementById("timeFilter").value;
+    const bits = [];
+    if (rating === "0") bits.push("unrated");
+    else if (rating)    bits.push(`${rating}star`);
+    if (followup === "Yes") bits.push("followup");
+    else if (followup === "No") bits.push("nofollowup");
+    if (time === "ytd") bits.push("ytd");
+    else if (time)      bits.push(`${time}d`);
+    if (search) bits.push("search-" + search.toLowerCase().replace(/[^a-z0-9]+/g, "").slice(0, 16));
+    return bits.join("-");
+}
+
+//================================================================
+//  Wire up controls
+//================================================================
+document.getElementById("searchInput").addEventListener("input", render);
+document.getElementById("ratingFilter").addEventListener("change", render);
+document.getElementById("followupFilter").addEventListener("change", render);
+document.getElementById("timeFilter").addEventListener("change", render);
+document.getElementById("resetBtn").addEventListener("click", () => {
+    document.getElementById("searchInput").value = "";
+    document.getElementById("ratingFilter").value = "";
+    document.getElementById("followupFilter").value = "";
+    document.getElementById("timeFilter").value = "";
+    render();
+});
+document.getElementById("exportBtn").addEventListener("click", exportToExcel);
+
+// Delegate clicks on comment toggles / comment text. Using a single
+// listener on the tbody so re-renders don't drop handlers.
+document.getElementById("tableBody").addEventListener("click", (e) => {
+    const btn = e.target.closest(".comment-toggle");
+    const txt = e.target.closest(".comment-text");
+    let target;
+    if (btn) {
+        target = btn.previousElementSibling;
+    } else if (txt && txt.dataset.state === "clamped") {
+        // Clicking the truncated text itself also expands — easier UX
+        target = txt;
+    } else {
+        return;
+    }
+    toggleComment(target);
+});
+// Keyboard activation on the focusable text element
+document.getElementById("tableBody").addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const txt = e.target.closest(".comment-text[role='button']");
+    if (!txt) return;
+    e.preventDefault();
+    toggleComment(txt);
+});
+
+function toggleComment(target) {
+    if (!target || !target.classList.contains("comment-text")) return;
+    const nowExpanded = !target.classList.contains("expanded");
+    target.classList.toggle("expanded", nowExpanded);
+    target.dataset.state = nowExpanded ? "expanded" : "clamped";
+    target.setAttribute("aria-expanded", nowExpanded ? "true" : "false");
+    target.setAttribute("aria-label",
+        nowExpanded ? "Click to collapse comment" : "Click to expand full comment");
+    const toggle = target.nextElementSibling?.classList?.contains("comment-toggle")
+        ? target.nextElementSibling : null;
+    if (toggle) {
+        toggle.textContent = nowExpanded ? "Show less" : "Show more";
+        toggle.setAttribute("aria-expanded", nowExpanded ? "true" : "false");
+    }
+}
+
+document.querySelectorAll("thead th[data-sort]").forEach(th => {
+    const click = () => {
+        const key = th.dataset.sort;
+        if (sortKey === key) {
+            sortDir = sortDir === "asc" ? "desc" : "asc";
+        } else {
+            sortKey = key;
+            // Date fields default to descending (newest first)
+            sortDir = (key === "submitted_date") ? "desc" : "asc";
+        }
+        render();
+    };
+    th.addEventListener("click", click);
+    th.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            click();
+        }
+    });
+});
+
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+        document.getElementById("resetBtn").click();
+    } else if (e.key === "/" && document.activeElement.tagName !== "INPUT") {
+        e.preventDefault();
+        document.getElementById("searchInput").focus();
+    } else if ((e.key === "e" || e.key === "E") &&
+               document.activeElement.tagName !== "INPUT" &&
+               document.activeElement.tagName !== "SELECT") {
+        e.preventDefault();
+        document.getElementById("exportBtn").click();
+    }
+});
+</script>
+</body>
+</html>

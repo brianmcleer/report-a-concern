@@ -10,6 +10,11 @@
   4. (Optional) -Release vX.Y.Z tags the repo and creates a GitHub Release with one zip per
      widget, built from a staging copy with the editor-only files in $ReleaseOnlyExclude
      removed (Visual Studio type shims). Each zip is named <widget>-<widgetVersion>.zip.
+     The dashboard folder is zipped as rac-dashboard-<release>.zip.
+
+  The dashboard\ folder is NOT mirrored. It is a sanitized copy of the deployed dashboard
+  (example.gov placeholders, no logo, no OAuth app id), rebuilt by hand when the deployed
+  pages change. The organization-string gate below covers it like everything else.
 
   This repo is published on its own, not by publish-all.ps1 (that script expects one widget per
   repo and reads $WidgetName; this file defines none on purpose, so publish-all skips it).
@@ -216,7 +221,21 @@ try {
             $assets += $zip
         }
 
-        $notes = "Report a Concern $Release. Widget zips: extract and drop the widget folder into client\your-extensions\widgets so manifest.json sits directly inside it, then pnpm install in the client folder and restart. Visual Studio type shims are left out of the zips on purpose. Scripts, proxy, schema and docs are in the repository."
+        $dash = Join-Path $RepoPath "dashboard"
+        if (Test-Path $dash) {
+            $dzip   = Join-Path $env:TEMP "rac-dashboard-$Release.zip"
+            $dstage = Join-Path $env:TEMP "rac-dashboard-release-stage"
+            if (Test-Path $dzip)   { Remove-Item $dzip -Force }
+            if (Test-Path $dstage) { Remove-Item $dstage -Recurse -Force }
+            New-Item -ItemType Directory -Path $dstage | Out-Null
+            robocopy "$dash" (Join-Path $dstage "rac-dashboard") /E /NFL /NDL /NJH /NJS /NP | Out-Null
+            if ($LASTEXITCODE -ge 8) { throw "robocopy (dashboard release stage) failed" }
+            Compress-Archive -Path (Join-Path $dstage "rac-dashboard") -DestinationPath $dzip
+            Remove-Item $dstage -Recurse -Force
+            $assets += $dzip
+        }
+
+        $notes = "Report a Concern $Release. Dashboard zip: extract, fill in the CONFIG block in each page, copy the folder (with fonts) to the internal web server; see dashboard/README.md. Widget zips: extract and drop the widget folder into client\your-extensions\widgets so manifest.json sits directly inside it, then pnpm install in the client folder and restart. Visual Studio type shims are left out of the zips on purpose. Scripts, proxy, schema and docs are in the repository."
         $branch = (git rev-parse --abbrev-ref HEAD).Trim()
         Write-Host "==> Creating release $Release with $($assets.Count) zip(s)..."
         gh release create $Release @assets --title "$RepoName $Release" --notes $notes --target $branch

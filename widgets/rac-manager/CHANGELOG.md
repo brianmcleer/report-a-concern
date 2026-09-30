@@ -5,6 +5,12 @@ All notable changes to the RAC Ticket Manager widget are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.2.1 (2026-09-30)
+
+- Fixed: widget clipped on tablet and phone. The sidebar width saved from a desktop drag was pinned on every device, pushing the sidebar past the screen edge. The pin now applies only on screens 1025px and wider, is clamped to the window width, and is re-checked on rotate and window resize. Below 1025px the pin is removed, the sidebar is capped at the screen width, and no width is saved, so the Builder tablet/phone layout sizes it.
+- Added: compact layout when the widget is under 480px wide (filter buttons in a 2x2 grid, sort select on its own row, result count row wraps).
+- Added: touch sizing on coarse-pointer devices (36px minimum controls, 16px inputs so iOS does not zoom on focus); box-sizing border-box and max-width on media inside the widget.
+
 ## 1.2.0 (2026-09-25)
 
 Playbook audit and retrofit (see `AUDIT.md`). No version bump yet: bump `manifest.json` and `package.json` together at release.

@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAC Routing Lookup</title>
+
+<link rel="icon" type="image/png" sizes="32x32" href="./icon.png">
+<link rel="shortcut icon" type="image/png" href="./icon.png">
+<link rel="apple-touch-icon" href="./icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+<!-- ArcGIS JS API for OAuth — published service requires a Portal
+     token even though the table contains no sensitive data. Same
+     federation token model as the rest of the RAC apps. -->
+<link rel="stylesheet" href="https://js.arcgis.com/4.34/esri/themes/light/main.css"
+      media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)">
+<link rel="stylesheet" href="https://js.arcgis.com/4.34/esri/themes/dark/main.css"
+      media="(prefers-color-scheme: dark)">
+<script src="https://js.arcgis.com/4.34/"></script>
+
+<!-- SheetJS for real .xlsx export. Loaded inside an AMD-masking
+     wrapper because some pages on this dashboard share a Dojo loader,
+     and Dojo's define.amd intercepts SheetJS's UMD bundle and rebinds
+     it to undefined. Stashing define.amd before the script tag and
+     restoring it after keeps SheetJS attached to window.XLSX. -->
+<script>
+    window.__savedAmd = (typeof define !== "undefined") ? define.amd : undefined;
+    if (typeof define !== "undefined") define.amd = false;
+</script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script>
+    if (typeof define !== "undefined") define.amd = window.__savedAmd;
+</script>
+
+<style>
+    /* ================================================================
+       Brand tokens (replace the palette block with your organization's colors)
+       Light values are the organization palette. Dark values are
+       DERIVED from the same hues with color-mix(), so no off-palette
+       color is introduced; the page follows the OS light/dark setting.
+       Shared by index, historical-trends, survey-responses and
+       routing-lookup. Change a value in all four pages together.
+       ================================================================ */
+    @font-face {
+        font-family: 'Montserrat';
+        src: url('./fonts/montserrat-latin-wght-normal.woff2') format('woff2-variations');
+        font-weight: 100 900; font-style: normal; font-display: swap;
+    }
+    @font-face {
+        font-family: 'Open Sans';
+        src: url('./fonts/open-sans-latin-wght-normal.woff2') format('woff2-variations');
+        font-weight: 300 800; font-style: normal; font-display: swap;
+    }
+
+    :root {
+        color-scheme: light dark;
+
+        /* Palette (canonical hex) */
+        --cgj-navy:    #003A55;
+        --cgj-blue:    #0083BD;
+        --cgj-forest:  #3E5019;
+        --cgj-green:   #69812D;
+        --cgj-brown-1: #6D5F37;
+        --cgj-brown-2: #413628;
+        --cgj-brown-3: #885433;
+        --cgj-cream:   #F4EFE2;
+        --cgj-paper:   #FFFFFF;
+        --cgj-ink:     #1A1A1A;
+        --cgj-black:   #000000;
+        --cgj-gray-50:  #F7F6F2;
+        --cgj-gray-100: #ECEAE3;
+        --cgj-gray-200: #D8D5CB;
+        --cgj-gray-300: #B9B4A6;
+        --cgj-gray-400: #8E897B;
+        --cgj-gray-500: #6B6656;
+        --cgj-gray-700: #403C33;
+        --cgj-gray-900: #211E18;
+        --cgj-danger:  #9A2A18;
+
+        --cgj-font-display: 'Montserrat', 'Glacial Indifference', Arial, sans-serif;
+        --cgj-font-body:    'Open Sans', Arial, sans-serif;
+
+        /* Legacy names the page scripts and rules already use */
+        --city-blue-1:  var(--cgj-blue);
+        --city-blue-2:  var(--cgj-navy);
+        --city-green-1: var(--cgj-forest);
+        --city-green-2: var(--cgj-green);
+        --city-brown-1: var(--cgj-brown-1);
+        --city-brown-2: var(--cgj-brown-2);
+        --city-brown-3: var(--cgj-brown-3);
+        --city-mid:     var(--cgj-blue);
+
+        /* Surfaces and text */
+        --color-bg:          var(--cgj-gray-50);
+        --color-surface:     var(--cgj-paper);
+        --color-surface-2:   var(--cgj-gray-50);
+        --color-border:      var(--cgj-gray-200);
+        --color-border-soft: var(--cgj-gray-100);
+        --color-control:     var(--cgj-gray-500);   /* 3:1+ control edge (WCAG 1.4.11) */
+        --color-text:        var(--cgj-ink);
+        --color-text-soft:   var(--cgj-gray-700);
+        --color-text-mute:   var(--cgj-gray-500);
+        --color-heading:     var(--cgj-navy);
+        --color-primary:     var(--cgj-navy);
+        --color-accent:      var(--cgj-navy);       /* text-safe accent: links, active text */
+        --color-graphic:     var(--cgj-blue);       /* large graphics, rules, chart accent */
+        --color-fill:        var(--cgj-navy);       /* pressed / active button fill */
+        --color-on-fill:     var(--cgj-paper);      /* text on --color-fill and status fills */
+        --color-fill-hover:  color-mix(in oklab, var(--cgj-navy) 82%, var(--cgj-black));
+        --color-danger:      var(--cgj-danger);
+        --color-tint:        color-mix(in oklab, var(--cgj-navy) 6%, var(--cgj-paper));
+        --color-highlight:   color-mix(in oklab, var(--cgj-blue) 12%, var(--cgj-paper));
+        --color-rule:        var(--cgj-navy);       /* card top rule */
+
+        --header-bg:   var(--cgj-navy);
+        --header-text: var(--cgj-paper);
+        --bg-pattern-stroke:  var(--cgj-navy);
+        --bg-pattern-opacity: 0.05;
+
+        /* Ticket status: brand hues, body-safe on white, white text on fill */
+        --status-open:     var(--cgj-navy);
+        --status-received: var(--cgj-brown-1);
+        --status-progress: var(--cgj-brown-3);
+        --status-resolved: var(--cgj-forest);
+        --status-closed:   var(--cgj-gray-500);
+
+        /* Semantic good / middle / bad (surveys, word cloud, bands) */
+        --status-good:    var(--cgj-forest);
+        --status-neutral: var(--cgj-brown-3);
+        --status-bad:     var(--cgj-danger);
+
+        /* Routing lookup service types */
+        --status-water: var(--cgj-navy);
+        --status-roads: var(--cgj-brown-3);
+        --status-parks: var(--cgj-forest);
+        --status-sewer: var(--cgj-gray-500);
+
+        /* KPI accents */
+        --kpi-open:     var(--cgj-danger);
+        --kpi-progress: var(--cgj-brown-3);
+        --kpi-resolved: var(--cgj-forest);
+        --kpi-1: var(--cgj-navy);
+        --kpi-2: var(--cgj-forest);
+        --kpi-3: var(--cgj-brown-3);
+        --kpi-4: var(--cgj-brown-1);
+
+        /* Aging ramp (days open): fresh to stale */
+        --aging-0: var(--cgj-green);
+        --aging-1: var(--cgj-brown-1);
+        --aging-2: var(--cgj-brown-3);
+        --aging-3: var(--cgj-danger);
+        --aging-4: var(--cgj-brown-2);
+
+        /* Charts: Brand categorical order */
+        --chart-1: var(--cgj-navy);
+        --chart-2: var(--cgj-blue);
+        --chart-3: var(--cgj-forest);
+        --chart-4: var(--cgj-brown-3);
+        --chart-5: var(--cgj-green);
+        --chart-6: var(--cgj-brown-1);
+        --chart-muted: var(--cgj-gray-300);
+        --chart-grid:  var(--cgj-gray-200);
+        --chart-tick:  var(--cgj-gray-700);
+        --chart-label: var(--cgj-ink);
+        --tooltip-bg:   var(--cgj-navy);
+        --tooltip-text: var(--cgj-paper);
+
+        --shadow-sm:  0 1px 3px rgba(0, 58, 85, 0.10), 0 1px 2px rgba(0, 58, 85, 0.06);
+        --shadow-md:  0 4px 12px rgba(0, 58, 85, 0.10), 0 2px 4px rgba(0, 58, 85, 0.06);
+        --shadow-lg:  0 12px 32px rgba(0, 58, 85, 0.14), 0 4px 8px rgba(0, 58, 85, 0.06);
+        --shadow-hdr: 0 2px 4px rgba(0, 58, 85, 0.18);
+
+        --focus-ring:       var(--cgj-navy);
+        --focus-ring-inner: var(--cgj-paper);
+
+        --r-card: 8px;
+        --r-chip: 999px;
+        --ease: cubic-bezier(0.2, 0, 0.1, 1);
+        --tx:   160ms;
+    }
+
+    /* Dark mode: follows the OS / browser setting. Grounds are navy
+       mixed toward black; text is cream; accents are palette hues
+       lifted toward white so they stay readable on the dark ground. */
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --color-bg:          color-mix(in oklab, var(--cgj-navy) 48%, var(--cgj-black));
+            --color-surface:     color-mix(in oklab, var(--cgj-navy) 64%, var(--cgj-black));
+            --color-surface-2:   color-mix(in oklab, var(--cgj-navy) 76%, var(--cgj-black));
+            --color-border:      color-mix(in oklab, var(--cgj-cream) 22%, var(--color-surface));
+            --color-border-soft: color-mix(in oklab, var(--cgj-cream) 12%, var(--color-surface));
+            --color-control:     color-mix(in oklab, var(--cgj-cream) 50%, var(--color-surface));
+            --color-text:        var(--cgj-cream);
+            --color-text-soft:   color-mix(in oklab, var(--cgj-cream) 85%, var(--cgj-navy));
+            --color-text-mute:   color-mix(in oklab, var(--cgj-cream) 70%, var(--cgj-navy));
+            --color-heading:     var(--cgj-cream);
+            --color-primary:     var(--cgj-cream);
+            --color-accent:      color-mix(in oklab, var(--cgj-blue) 55%, var(--cgj-paper));
+            --color-graphic:     color-mix(in oklab, var(--cgj-blue) 70%, var(--cgj-paper));
+            --color-fill:        color-mix(in oklab, var(--cgj-blue) 55%, var(--cgj-paper));
+            --color-on-fill:     color-mix(in oklab, var(--cgj-navy) 60%, var(--cgj-black));
+            --color-fill-hover:  color-mix(in oklab, var(--cgj-blue) 40%, var(--cgj-paper));
+            --color-danger:      color-mix(in oklab, var(--cgj-danger) 45%, var(--cgj-paper));
+            --color-tint:        color-mix(in oklab, var(--cgj-blue) 10%, var(--color-surface));
+            --color-highlight:   color-mix(in oklab, var(--cgj-blue) 22%, var(--color-surface));
+            --color-rule:        var(--color-graphic);
+
+            --header-bg:   var(--cgj-navy);
+            --bg-pattern-stroke:  var(--cgj-cream);
+            --bg-pattern-opacity: 0.04;
+
+            --status-open:     color-mix(in oklab, var(--cgj-blue) 55%, var(--cgj-paper));
+            --status-received: color-mix(in oklab, var(--cgj-brown-1) 45%, var(--cgj-paper));
+            --status-progress: color-mix(in oklab, var(--cgj-brown-3) 45%, var(--cgj-paper));
+            --status-resolved: color-mix(in oklab, var(--cgj-green) 55%, var(--cgj-paper));
+            --status-closed:   var(--cgj-gray-300);
+
+            --status-good:    color-mix(in oklab, var(--cgj-green) 55%, var(--cgj-paper));
+            --status-neutral: color-mix(in oklab, var(--cgj-brown-3) 45%, var(--cgj-paper));
+            --status-bad:     color-mix(in oklab, var(--cgj-danger) 45%, var(--cgj-paper));
+
+            --status-water: color-mix(in oklab, var(--cgj-blue) 55%, var(--cgj-paper));
+            --status-roads: color-mix(in oklab, var(--cgj-brown-3) 45%, var(--cgj-paper));
+            --status-parks: color-mix(in oklab, var(--cgj-green) 55%, var(--cgj-paper));
+            --status-sewer: var(--cgj-gray-300);
+
+            --kpi-open:     color-mix(in oklab, var(--cgj-danger) 45%, var(--cgj-paper));
+            --kpi-progress: color-mix(in oklab, var(--cgj-brown-3) 45%, var(--cgj-paper));
+            --kpi-resolved: color-mix(in oklab, var(--cgj-green) 55%, var(--cgj-paper));
+            --kpi-1: color-mix(in oklab, var(--cgj-blue) 55%, var(--cgj-paper));
+            --kpi-2: color-mix(in oklab, var(--cgj-green) 55%, var(--cgj-paper));
+            --kpi-3: color-mix(in oklab, var(--cgj-brown-3) 45%, var(--cgj-paper));
+            --kpi-4: var(--cgj-gray-300);
+
+            --aging-0: color-mix(in oklab, var(--cgj-green) 70%, var(--cgj-paper));
+            --aging-1: color-mix(in oklab, var(--cgj-brown-1) 60%, var(--cgj-paper));
+            --aging-2: color-mix(in oklab, var(--cgj-brown-3) 60%, var(--cgj-paper));
+            --aging-3: color-mix(in oklab, var(--cgj-danger) 60%, var(--cgj-paper));
+            --aging-4: color-mix(in oklab, var(--cgj-danger) 80%, var(--cgj-paper));
+
+            --chart-1: color-mix(in oklab, var(--cgj-blue) 45%, var(--cgj-paper));
+            --chart-2: var(--cgj-blue);
+            --chart-3: color-mix(in oklab, var(--cgj-green) 60%, var(--cgj-paper));
+            --chart-4: color-mix(in oklab, var(--cgj-brown-3) 55%, var(--cgj-paper));
+            --chart-5: var(--cgj-green);
+            --chart-6: var(--cgj-gray-300);
+            --chart-muted: color-mix(in oklab, var(--cgj-cream) 25%, var(--color-surface));
+            --chart-grid:  color-mix(in oklab, var(--cgj-cream) 12%, var(--color-surface));
+            --chart-tick:  color-mix(in oklab, var(--cgj-cream) 80%, var(--cgj-navy));
+            --chart-label: var(--cgj-cream);
+            --tooltip-bg:   var(--cgj-cream);
+            --tooltip-text: var(--cgj-navy);
+
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+            --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.30);
+            --shadow-lg: 0 6px 16px rgba(0, 0, 0, 0.50), 0 2px 4px rgba(0, 0, 0, 0.40);
+
+            --focus-ring:       var(--cgj-cream);
+            --focus-ring-inner: var(--cgj-navy);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        :root { --tx: 1ms; }
+        *, *::before, *::after {
+            animation-duration: 1ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 1ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
+
+    /* Brand type: Open Sans body, Montserrat display */
+    body { font-family: var(--cgj-font-body); }
+    h1, h2, h3, h4, .kpi .value, .kpi-value { font-family: var(--cgj-font-display); }
+    button, input, select, textarea { font-family: inherit; }
+
+    /* Touch: every button meets the WCAG 2.2 24x24 target floor */
+    @media (pointer: coarse) {
+        button, [role="button"] { min-width: 24px; min-height: 24px; }
+    }
+
+    /* Skip link (first in tab order) */
+    .skip-link {
+        position: absolute; left: 8px; top: -60px; z-index: 1000;
+        padding: 10px 16px; min-height: 44px;
+        background: var(--color-surface); color: var(--color-accent);
+        border: 2px solid var(--focus-ring); border-radius: 8px;
+        font-weight: 600; text-decoration: underline;
+    }
+    .skip-link:focus { top: 8px; }
+
+
+    
+
+    /* Inherits OS / browser theme automatically */
+    @media (prefers-color-scheme: dark) {
+        
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+        font-family: var(--cgj-font-body);
+        font-size: 13px;
+        line-height: 1.45;
+        color: var(--color-text);
+        background: var(--color-bg);
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* ── Header — matches the dashboard ──────────────────── */
+    header.top {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        background: var(--header-bg);
+        color: var(--header-text);
+        padding: 10px 18px;
+        box-shadow: 0 2px 4px rgba(0, 58, 85, 0.18);
+    }
+    header.top h1 {
+        margin: 0;
+        font-family: var(--cgj-font-display);
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        line-height: 1.2;
+    }
+    header.top .subtitle {
+        font-size: 11px;
+        font-weight: 400;
+        opacity: 0.85;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+    header.top .back-link {
+        margin-left: auto;
+        color: rgba(255, 255, 255, 0.85);
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 5px 10px;
+        border-radius: 3px;
+        transition: background var(--tx) var(--ease);
+    }
+    header.top .back-link:hover  { background: rgba(255, 255, 255, 0.12); color: #fff; }
+    header.top .back-link:focus-visible {
+        outline: 2px solid #fff;
+        outline-offset: 2px;
+    }
+
+    /* ── Toolbar — search + filter + summary ─────────────── */
+    .toolbar {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px 18px;
+        background: var(--color-surface);
+        border-bottom: 1px solid var(--color-border);
+    }
+    .toolbar label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--color-text-soft);
+    }
+    .toolbar input[type="search"],
+    .toolbar select {
+        font-family: inherit;
+        font-size: 13px;
+        padding: 5px 9px;
+        border: 1px solid var(--color-border);
+        border-radius: 3px;
+        background: var(--color-surface);
+        color: var(--color-text);
+        min-width: 180px;
+        color-scheme: light dark;
+    }
+    .toolbar input[type="search"]:focus,
+    .toolbar select:focus {
+        outline: none;
+        border-color: var(--color-accent);
+        box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent) 30%, transparent);
+    }
+    .toolbar .summary {
+        margin-left: auto;
+        font-size: 12px;
+        color: var(--color-text-mute);
+        font-variant-numeric: tabular-nums;
+    }
+    .toolbar .summary b { color: var(--color-text); font-weight: 600; }
+    .toolbar button {
+        font-family: inherit;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 5px 12px;
+        border: 1px solid var(--color-border);
+        border-radius: 3px;
+        background: var(--color-surface);
+        color: var(--color-text);
+        cursor: pointer;
+        transition: all var(--tx) var(--ease);
+    }
+    .toolbar button:hover { background: var(--color-border-soft); }
+    .toolbar button.primary {
+        background: var(--city-blue-2);
+        border-color: var(--city-blue-2);
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .toolbar button.primary:hover {
+        background: var(--color-fill-hover);
+        border-color: var(--color-fill-hover);
+    }
+    .toolbar button.primary svg {
+        width: 13px;
+        height: 13px;
+        flex: 0 0 auto;
+    }
+    .toolbar button.primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    @media (prefers-color-scheme: dark) {
+        .toolbar button.primary {
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+            color: var(--color-on-fill);
+        }
+        .toolbar button.primary:hover {
+            background: var(--color-fill-hover);
+            border-color: var(--color-fill-hover);
+        }
+    }
+
+    /* ── Table — sortable, sticky header ─────────────────── */
+    main {
+        flex: 1 1 auto;
+        padding: 14px 18px 24px;
+        min-height: 0;
+    }
+    .table-wrap {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--r-card);
+        overflow: hidden;
+        box-shadow: var(--shadow-md);
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+    thead th {
+        text-align: left;
+        font-family: var(--cgj-font-display);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--color-heading);
+        background: var(--color-surface);
+        padding: 9px 12px;
+        border-bottom: 2px solid var(--color-border);
+        position: sticky;
+        top: 0;
+        cursor: pointer;
+        user-select: none;
+        white-space: nowrap;
+    }
+    @media (prefers-color-scheme: dark) {
+        thead th { color: var(--color-text); }
+    }
+    thead th .sort-arrow {
+        display: inline-block;
+        margin-left: 4px;
+        opacity: 0.4;
+        font-size: 9px;
+        transition: opacity var(--tx) var(--ease);
+    }
+    thead th[aria-sort="ascending"]  .sort-arrow,
+    thead th[aria-sort="descending"] .sort-arrow { opacity: 1; }
+    thead th:hover .sort-arrow { opacity: 0.7; }
+
+    tbody td {
+        padding: 7px 12px;
+        border-bottom: 1px solid var(--color-border-soft);
+        vertical-align: top;
+    }
+    tbody tr:hover { background: var(--color-surface-2); }
+    tbody tr:last-child td { border-bottom: none; }
+
+    /* Category badge — colored left border per category */
+    .cat-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-weight: 600;
+        background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+        color: var(--color-text);
+        border-left: 3px solid var(--color-accent);
+        white-space: nowrap;
+    }
+
+    /* Email = clickable mailto */
+    td.email a {
+        color: var(--color-accent);
+        text-decoration: underline; text-underline-offset: 2px;
+        font-family: "Open Sans", monospace;
+        font-size: 12px;
+    }
+    td.email a:hover { text-decoration: underline; }
+
+    /* Highlight matched text from the search box */
+    mark.match {
+        background: color-mix(in srgb, var(--color-accent) 28%, transparent);
+        color: inherit;
+        padding: 0 1px;
+        border-radius: 2px;
+    }
+
+    /* Empty / loading / error states */
+    .state {
+        padding: 32px 18px;
+        text-align: center;
+        color: var(--color-text-mute);
+        font-size: 13px;
+    }
+    .state.error {
+        color: var(--status-bad);
+        background: color-mix(in srgb, var(--status-bad) 8%, transparent);
+        border-left: 3px solid var(--status-bad);
+        text-align: left;
+        padding: 14px 18px;
+        font-family: "Open Sans", monospace;
+        font-size: 12px;
+    }
+
+    /* ── Footer ──────────────────────────────────────────── */
+    footer {
+        flex: 0 0 auto;
+        padding: 8px 18px;
+        font-size: 11px;
+        color: var(--color-text-soft);
+        text-align: center;
+        background: var(--color-surface);
+        border-top: 1px solid var(--color-border-soft);
+    }
+    footer a {
+        color: var(--color-accent);
+        text-decoration: underline; text-underline-offset: 2px;
+        margin: 0 8px;
+    }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 700px) {
+        .toolbar input[type="search"],
+        .toolbar select { min-width: 0; flex: 1 1 140px; }
+        .toolbar .summary { width: 100%; text-align: right; }
+        tbody td { padding: 6px 8px; font-size: 12px; }
+        thead th { padding: 7px 8px; }
+    }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="top" role="banner">
+    <h1>
+        RAC Routing Lookup
+        <span class="subtitle" style="display:block; font-size:10px; opacity:0.7; font-weight:400; margin-top:2px;">Report A Concern · Category → Department routing</span>
+    </h1>
+    <a class="back-link" href="./" aria-label="Back to dashboard">← Back to dashboard</a>
+</header>
+
+<div class="toolbar" role="region" aria-label="Filter controls">
+    <label for="searchInput">Search</label>
+    <input type="search" id="searchInput" placeholder="Filter by any field…"
+           autocomplete="off" aria-label="Search across all fields">
+
+    <label for="categoryFilter">Category</label>
+    <select id="categoryFilter" aria-label="Filter by category">
+        <option value="">All</option>
+    </select>
+
+    <label for="departmentFilter">Department</label>
+    <select id="departmentFilter" aria-label="Filter by department">
+        <option value="">All</option>
+    </select>
+
+    <button id="resetBtn" type="button" title="Clear all filters (Esc)">✕ Clear</button>
+    <button id="exportBtn" type="button" class="primary"
+            title="Download the currently filtered rows as an Excel workbook"
+            aria-label="Export to Excel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export
+    </button>
+
+    <span class="summary" id="summary" aria-live="polite">Loading…</span>
+</div>
+
+<main id="main">
+    <div class="table-wrap">
+        <table id="routingTable" aria-describedby="summary">
+            <thead>
+                <tr>
+                    <th data-sort="category"    tabindex="0" aria-sort="ascending">Category    <span class="sort-arrow">▲</span></th>
+                    <th data-sort="subcategory" tabindex="0" aria-sort="none">Type of Problem  <span class="sort-arrow">▲</span></th>
+                    <th data-sort="department"  tabindex="0" aria-sort="none">Routing Dept     <span class="sort-arrow">▲</span></th>
+                    <th data-sort="email_to"    tabindex="0" aria-sort="none">Email            <span class="sort-arrow">▲</span></th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr><td colspan="4" class="state" id="loadingState">Authenticating with Portal…</td></tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer>
+    Internal use · GIS Division
+    <a href="./" title="Back to RAC Dashboard">Dashboard</a>
+    <a href="./survey-responses.html" title="View citizen satisfaction survey responses">Survey Responses</a>
+    <a href="https://gis-internal.example.gov/reportaconcernmanager/" target="_blank" rel="noopener">Open Manager</a>
+    <a href="https://gis.example.gov/reportaconcern/" target="_blank" rel="noopener">Public Submit</a>
+</footer>
+
+<script>
+//================================================================
+//  Config
+//================================================================
+const CONFIG = {
+    serviceUrl:        "https://gis-internal.example.gov/arcgis/rest/services/RAC/ReportAConcern_Routing_Lookup/MapServer/0",
+    oauthAppId:        "YOUR_PORTAL_OAUTH_APP_ID",
+    portalUrl:         "https://portal.example.gov/portal",
+    oauthCallbackPath: "oauth-callback.html",
+};
+
+const FIELDS = ["category", "subcategory", "department", "email_to"];
+
+//================================================================
+//  State
+//================================================================
+let routingLayer;
+let allRows = [];
+let viewRows = [];
+let sortKey = "category";
+let sortDir = "asc";
+
+//================================================================
+//  Auth + Layer construction — same pattern as the dashboard
+//================================================================
+require([
+    "esri/config",
+    "esri/identity/IdentityManager",
+    "esri/identity/OAuthInfo",
+    "esri/layers/FeatureLayer",
+], function (esriConfig, esriId, OAuthInfo, FeatureLayer) {
+
+    esriConfig.portalUrl = CONFIG.portalUrl;
+
+    if (CONFIG.oauthAppId) {
+        const callbackUrl = new URL(CONFIG.oauthCallbackPath, window.location.href).href;
+        esriId.registerOAuthInfos([new OAuthInfo({
+            appId:            CONFIG.oauthAppId,
+            portalUrl:        CONFIG.portalUrl,
+            popup:            true,
+            popupCallbackUrl: callbackUrl,
+            expiration:       60 * 8,
+        })]);
+        // serverRoot must use the actual hostname (the ArcGIS Server machine name), not
+        // any alias, or token generation fails — same federation gotcha
+        // as the dashboard.
+        const serverRoot = CONFIG.serviceUrl.replace(/\/rest\/services\/.*$/, "");
+        esriId.registerServers([{
+            server:          serverRoot,
+            tokenServiceUrl: `${CONFIG.portalUrl}/sharing/rest/generateToken`,
+        }]);
+        if (window.RAC_DEBUG === true) {
+            console.log("[OAuth] Registered:", {
+                appId: CONFIG.oauthAppId,
+                portalUrl: CONFIG.portalUrl,
+                callback: callbackUrl,
+            });
+        }
+    }
+
+    routingLayer = new FeatureLayer({
+        url: CONFIG.serviceUrl,
+        outFields: ["*"],
+    });
+
+    routingLayer.load()
+        .then(() => loadRoutingRules())
+        .catch(e => {
+            showError(`Couldn't connect to the routing service.\n\n${e.message || e}`);
+        });
+});
+
+//================================================================
+//  Fetch the table — IdentityManager auto-attaches the token
+//================================================================
+async function loadRoutingRules() {
+    let features;
+    try {
+        const result = await routingLayer.queryFeatures({
+            where: "1=1",
+            outFields: FIELDS,
+            returnGeometry: false,
+            orderByFields: ["category ASC", "subcategory ASC"],
+            num: 10000,
+        });
+        features = result.features || [];
+    } catch (e) {
+        showError(`Couldn't load the routing table.\n\n${e.message || e}`);
+        return;
+    }
+    allRows = features.map(f => ({
+        category:    f.attributes.category    || "",
+        subcategory: f.attributes.subcategory || "",
+        department:  f.attributes.department  || "",
+        email_to:    f.attributes.email_to    || "",
+    }));
+    populateFilters();
+    render();
+}
+
+function showError(msg) {
+    const body = document.getElementById("tableBody");
+    body.innerHTML = `<tr><td colspan="4" class="state error">${escapeHtml(msg)}</td></tr>`;
+    document.getElementById("summary").textContent = "Failed to load";
+}
+
+//================================================================
+//  Populate the dropdown filters from the loaded data
+//================================================================
+function populateFilters() {
+    const cats = [...new Set(allRows.map(r => r.category))].sort();
+    const depts = [...new Set(allRows.map(r => r.department))].sort();
+    const catSel = document.getElementById("categoryFilter");
+    const deptSel = document.getElementById("departmentFilter");
+    for (const c of cats) {
+        const opt = document.createElement("option");
+        opt.value = c;
+        opt.textContent = c;
+        catSel.appendChild(opt);
+    }
+    for (const d of depts) {
+        const opt = document.createElement("option");
+        opt.value = d;
+        opt.textContent = d;
+        deptSel.appendChild(opt);
+    }
+}
+
+//================================================================
+//  Render — apply search + filters, sort, paint rows
+//================================================================
+function render() {
+    const search = document.getElementById("searchInput").value.trim().toLowerCase();
+    const cat   = document.getElementById("categoryFilter").value;
+    const dept  = document.getElementById("departmentFilter").value;
+
+    viewRows = allRows.filter(r => {
+        if (cat  && r.category !== cat)   return false;
+        if (dept && r.department !== dept) return false;
+        if (search) {
+            const hay = `${r.category} ${r.subcategory} ${r.department} ${r.email_to}`.toLowerCase();
+            if (!hay.includes(search)) return false;
+        }
+        return true;
+    });
+
+    viewRows.sort((a, b) => {
+        const av = (a[sortKey] || "").toLowerCase();
+        const bv = (b[sortKey] || "").toLowerCase();
+        if (av < bv) return sortDir === "asc" ? -1 : 1;
+        if (av > bv) return sortDir === "asc" ?  1 : -1;
+        return 0;
+    });
+
+    const body = document.getElementById("tableBody");
+    if (viewRows.length === 0) {
+        body.innerHTML = `<tr><td colspan="4" class="state">No rules match — try adjusting your filters.</td></tr>`;
+    } else {
+        body.innerHTML = viewRows.map(r => `
+            <tr>
+                <td><span class="cat-badge">${highlight(r.category, search)}</span></td>
+                <td>${highlight(r.subcategory, search)}</td>
+                <td>${highlight(r.department, search)}</td>
+                <td class="email">
+                    <a href="mailto:${encodeURIComponent(r.email_to)}"
+                       title="Send email to ${escapeHtml(r.email_to)}">
+                        ${highlight(r.email_to, search)}
+                    </a>
+                </td>
+            </tr>
+        `).join("");
+    }
+
+    const summary = document.getElementById("summary");
+    if (viewRows.length === allRows.length) {
+        summary.innerHTML = `<b>${allRows.length}</b> routing rules`;
+    } else {
+        summary.innerHTML = `<b>${viewRows.length}</b> of <b>${allRows.length}</b> rules`;
+    }
+
+    // Update header sort indicators
+    document.querySelectorAll("thead th[data-sort]").forEach(th => {
+        const arrow = th.querySelector(".sort-arrow");
+        if (th.dataset.sort === sortKey) {
+            th.setAttribute("aria-sort", sortDir === "asc" ? "ascending" : "descending");
+            arrow.textContent = sortDir === "asc" ? "▲" : "▼";
+        } else {
+            th.setAttribute("aria-sort", "none");
+            arrow.textContent = "▲";
+        }
+    });
+}
+
+//================================================================
+//  Helpers
+//================================================================
+function escapeHtml(s) {
+    return String(s ?? "").replace(/[&<>"']/g, c =>
+        ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+function highlight(text, query) {
+    const safe = escapeHtml(text);
+    if (!query) return safe;
+    const re = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "ig");
+    return safe.replace(re, '<mark class="match">$1</mark>');
+}
+
+//================================================================
+//  Wire up controls
+//================================================================
+document.getElementById("searchInput").addEventListener("input", render);
+document.getElementById("categoryFilter").addEventListener("change", render);
+document.getElementById("departmentFilter").addEventListener("change", render);
+document.getElementById("resetBtn").addEventListener("click", () => {
+    document.getElementById("searchInput").value = "";
+    document.getElementById("categoryFilter").value = "";
+    document.getElementById("departmentFilter").value = "";
+    render();
+});
+
+document.getElementById("exportBtn").addEventListener("click", exportToExcel);
+
+//================================================================
+//  Excel export — uses SheetJS to produce a real .xlsx
+//================================================================
+function exportToExcel() {
+    if (typeof XLSX === "undefined") {
+        alert("Excel export library failed to load. Please check your network and reload the page.");
+        return;
+    }
+    if (!viewRows.length) {
+        alert("Nothing to export — try clearing the filters first.");
+        return;
+    }
+
+    // Build the worksheet data with friendly header labels (matching
+    // the column aliases in the published service).
+    const rows = viewRows.map(r => ({
+        "Category":               r.category,
+        "Type of Problem":        r.subcategory,
+        "Routing Dept / Division": r.department,
+        "Routing Email":          r.email_to,
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(rows, {
+        header: ["Category", "Type of Problem", "Routing Dept / Division", "Routing Email"],
+    });
+
+    // Set sensible column widths based on the longest value in each
+    // column — Excel won't auto-fit on open, but explicit widths render
+    // immediately and look professional.
+    const cols = ["Category", "Type of Problem", "Routing Dept / Division", "Routing Email"];
+    ws["!cols"] = cols.map(name => {
+        const headerLen = name.length;
+        const maxLen = rows.reduce((m, r) =>
+            Math.max(m, String(r[name] ?? "").length), headerLen);
+        return { wch: Math.min(maxLen + 2, 60) };
+    });
+
+    // Freeze the header row so it stays put when scrolling in Excel.
+    ws["!freeze"] = { xSplit: 0, ySplit: 1 };
+    if (!ws["!sheetView"]) ws["!sheetView"] = [{ state: "frozen", topLeftCell: "A2", ySplit: 1 }];
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Routing Lookup");
+
+    // Add a small metadata sheet so the file is self-describing — who
+    // generated it, when, and which filters were applied.
+    const meta = [
+        ["RAC Routing Lookup Export"],
+        ["Generated", new Date().toLocaleString()],
+        ["Source",    CONFIG.serviceUrl],
+        ["Filters applied",
+            describeActiveFilters() || "None — full table"],
+        ["Rows in this export", String(viewRows.length)],
+        ["Rows in source table", String(allRows.length)],
+    ];
+    const metaWs = XLSX.utils.aoa_to_sheet(meta);
+    metaWs["!cols"] = [{ wch: 22 }, { wch: 60 }];
+    XLSX.utils.book_append_sheet(wb, metaWs, "Metadata");
+
+    // Filename includes the active filter description and date so
+    // multiple exports don't overwrite each other.
+    const today = new Date().toISOString().slice(0, 10);
+    const filterDesc = describeActiveFilters();
+    const filename = `routing_lookup${filterDesc ? "_" + filterDesc : ""}_${today}.xlsx`;
+
+    XLSX.writeFile(wb, filename);
+}
+
+/** Builds a short, filesystem-safe description of the active filters,
+ *  suitable for use in a download filename. */
+function describeActiveFilters() {
+    const search = document.getElementById("searchInput").value.trim();
+    const cat    = document.getElementById("categoryFilter").value;
+    const dept   = document.getElementById("departmentFilter").value;
+    const bits = [];
+    if (cat)    bits.push(cat.toLowerCase().replace(/[^a-z0-9]+/g, ""));
+    if (dept)   bits.push(dept.toLowerCase().replace(/[^a-z0-9]+/g, ""));
+    if (search) bits.push("search-" + search.toLowerCase().replace(/[^a-z0-9]+/g, "").slice(0, 16));
+    return bits.join("-");
+}
+
+document.querySelectorAll("thead th[data-sort]").forEach(th => {
+    const click = () => {
+        const key = th.dataset.sort;
+        if (sortKey === key) {
+            sortDir = sortDir === "asc" ? "desc" : "asc";
+        } else {
+            sortKey = key;
+            sortDir = "asc";
+        }
+        render();
+    };
+    th.addEventListener("click", click);
+    th.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            click();
+        }
+    });
+});
+
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+        document.getElementById("resetBtn").click();
+    } else if (e.key === "/" && document.activeElement.tagName !== "INPUT") {
+        e.preventDefault();
+        document.getElementById("searchInput").focus();
+    } else if ((e.key === "e" || e.key === "E") &&
+               document.activeElement.tagName !== "INPUT" &&
+               document.activeElement.tagName !== "SELECT") {
+        e.preventDefault();
+        document.getElementById("exportBtn").click();
+    }
+});
+
+//================================================================
+//  Boot is handled by the require() callback above, which signs the
+//  user in via OAuth, loads the layer, and then calls loadRoutingRules().
+//================================================================
+</script>
+</body>
+</html>

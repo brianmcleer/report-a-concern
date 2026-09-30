@@ -158,6 +158,10 @@ If the page is served from an alias, every one of these must use the alias too. 
 
 Publish the submit app to a folder under Default Web Site and make it an IIS application named `ReportAConcern`. Program: **IIS Manager (Run as administrator)**. Do not add any URL Rewrite rule or header inside that application; the next publish wipes it.
 
+### Internal dashboard (optional)
+
+The [dashboard](../dashboard) folder is four static pages with no build step. Set the `CONFIG` block at the top of each page (service URLs, Portal URL, OAuth app id), register `oauth-callback.html` as a redirect URI on a Portal OAuth app, and copy the whole folder, including `fonts/`, to the internal web server next to the Manager app. Full steps in [dashboard/README.md](../dashboard/README.md).
+
 ## 8. IIS site-level rules
 
 The rewrite rules, the direct-POST block, the no-cache outbound rule and the security headers all live on **Default Web Site**, never on the `ReportAConcern` application. See [../proxy/web.config.example](../proxy/web.config.example) for the exact XML.

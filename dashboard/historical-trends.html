@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAC Historical Trends</title>
+
+<link rel="icon" type="image/png" sizes="32x32" href="./icon.png">
+<link rel="shortcut icon" type="image/png" href="./icon.png">
+<link rel="apple-touch-icon" href="./icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+<!-- Chart.js — same version as the main dashboard. -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+<!-- ArcGIS JS API for OAuth. The retention ledger is published as a
+     read-only table layer in Enterprise; even though it holds only
+     de-identified aggregates, the federated service still requires a
+     Portal token. Same federation model as the rest of the RAC apps.
+     If you instead point CONFIG.ledger at a static JSON export, the
+     ArcGIS API is loaded but never used for a token. -->
+<link rel="stylesheet" href="https://js.arcgis.com/4.34/esri/themes/light/main.css"
+      media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)">
+<link rel="stylesheet" href="https://js.arcgis.com/4.34/esri/themes/dark/main.css"
+      media="(prefers-color-scheme: dark)">
+<script src="https://js.arcgis.com/4.34/"></script>
+
+<!-- SheetJS for real .xlsx export. AMD-masking wrapper for the same
+     reason as the other RAC pages — Dojo's define.amd would otherwise
+     rebind the SheetJS UMD bundle to undefined. -->
+<script>
+    window.__savedAmd = (typeof define !== "undefined") ? define.amd : undefined;
+    if (typeof define !== "undefined") define.amd = false;
+</script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script>
+    if (typeof define !== "undefined") define.amd = window.__savedAmd;
+</script>
+
+<style>
+    /* ================================================================
+       Brand tokens (replace the palette block with your organization's colors)
+       Light values are the organization palette. Dark values are
+       DERIVED from the same hues with color-mix(), so no off-palette
+       color is introduced; the page follows the OS light/dark setting.
+       Shared by index, historical-trends, survey-responses and
+       routing-lookup. Change a value in all four pages together.
+       ================================================================ */
+    @font-face {
+        font-family: 'Montserrat';
+        src: url('./fonts/montserrat-latin-wght-normal.woff2') format('woff2-variations');
+        font-weight: 100 900; font-style: normal; font-display: swap;
+    }
+    @font-face {
+        font-family: 'Open Sans';
+        src: url('./fonts/open-sans-latin-wght-normal.woff2') format('woff2-variations');
+        font-weight: 300 800; font-style: normal; font-display: swap;
+    }
+
+    :root {
+        color-scheme: light dark;
+
+        /* Palette (canonical hex) */
+        --cgj-navy:    #003A55;
+        --cgj-blue:    #0083BD;
+        --cgj-forest:  #3E5019;
+        --cgj-green:   #69812D;
+        --cgj-brown-1: #6D5F37;
+        --cgj-brown-2: #413628;
+        --cgj-brown-3: #885433;
+        --cgj-cream:   #F4EFE2;
+        --cgj-paper:   #FFFFFF;
+        --cgj-ink:     #1A1A1A;
+        --cgj-black:   #000000;
+        --cgj-gray-50:  #F7F6F2;
+        --cgj-gray-100: #ECEAE3;
+        --cgj-gray-200: #D8D5CB;
+        --cgj-gray-300: #B9B4A6;
+        --cgj-gray-400: #8E897B;
+        --cgj-gray-500: #6B6656;
+        --cgj-gray-700: #403C33;
+        --cgj-gray-900: #211E18;
+        --cgj-danger:  #9A2A18;
+
+        --cgj-font-display: 'Montserrat', 'Glacial Indifference', Arial, sans-serif;
+        --cgj-font-body:    'Open Sans', Arial, sans-serif;
+
+        /* Legacy names the page scripts and rules already use */
+        --city-blue-1:  var(--cgj-blue);
+        --city-blue-2:  var(--cgj-navy);
+        --city-green-1: var(--cgj-forest);
+        --city-green-2: var(--cgj-green);
+        --city-brown-1: var(--cgj-brown-1);
+        --city-brown-2: var(--cgj-brown-2);
+        --city-brown-3: var(--cgj-brown-3);
+        --city-mid:     var(--cgj-blue);
+
+        /* Surfaces and text */
+        --color-bg:          var(--cgj-gray-50);
+        --color-surface:     var(--cgj-paper);
+        --color-surface-2:   var(--cgj-gray-50);
+        --color-border:      var(--cgj-gray-200);
+        --color-border-soft: var(--cgj-gray-100);
+        --color-control:     var(--cgj-gray-500);   /* 3:1+ control edge (WCAG 1.4.11) */
+        --color-text:        var(--cgj-ink);
+        --color-text-soft:   var(--cgj-gray-700);
+        --color-text-mute:   var(--cgj-gray-500);
+        --color-heading:     var(--cgj-navy);
+        --color-primary:     var(--cgj-navy);
+        --color-accent:      var(--cgj-navy);       /* text-safe accent: links, active text */
+        --color-graphic:     var(--cgj-blue);       /* large graphics, rules, chart accent */
+        --color-fill:        var(--cgj-navy);       /* pressed / active button fill */
+        --color-on-fill:     var(--cgj-paper);      /* text on --color-fill and status fills */
+        --color-fill-hover:  color-mix(in oklab, var(--cgj-navy) 82%, var(--cgj-black));
+        --color-danger:      var(--cgj-danger);
+        --color-tint:        color-mix(in oklab, var(--cgj-navy) 6%, var(--cgj-paper));
+        --color-highlight:   color-mix(in oklab, var(--cgj-blue) 12%, var(--cgj-paper));
+        --color-rule:        var(--cgj-navy);       /* card top rule */
+
+        --header-bg:   var(--cgj-navy);
+        --header-text: var(--cgj-paper);
+        --bg-pattern-stroke:  var(--cgj-navy);
+        --bg-pattern-opacity: 0.05;
+
+        /* Ticket status: brand hues, body-safe on white, white text on fill */
+        --status-open:     var(--cgj-navy);
+        --status-received: var(--cgj-brown-1);
+        --status-progress: var(--cgj-brown-3);
+        --status-resolved: var(--cgj-forest);
+        --status-closed:   var(--cgj-gray-500);
+
+        /* Semantic good / middle / bad (surveys, word cloud, bands) */
+        --status-good:    var(--cgj-forest);
+        --status-neutral: var(--cgj-brown-3);
+        --status-bad:     var(--cgj-danger);
+
+        /* Routing lookup service types */
+        --status-water: var(--cgj-navy);
+        --status-roads: var(--cgj-brown-3);
+        --status-parks: var(--cgj-forest);
+        --status-sewer: var(--cgj-gray-500);
+
+        /* KPI accents */
+        --kpi-open:     var(--cgj-danger);
+        --kpi-progress: var(--cgj-brown-3);
+        --kpi-resolved: var(--cgj-forest);
+        --kpi-1: var(--cgj-navy);
+        --kpi-2: var(--cgj-forest);
+        --kpi-3: var(--cgj-brown-3);
+        --kpi-4: var(--cgj-brown-1);
+
+        /* Aging ramp (days open): fresh to stale */
+        --aging-0: var(--cgj-green);
+        --aging-1: var(--cgj-brown-1);
+        --aging-2: var(--cgj-brown-3);
+        --aging-3: var(--cgj-danger);
+        --aging-4: var(--cgj-brown-2);
+
+        /* Charts: Brand categorical order */
+        --chart-1: var(--cgj-navy);
+        --chart-2: var(--cgj-blue);
+        --chart-3: var(--cgj-forest);
+        --chart-4: var(--cgj-brown-3);
+        --chart-5: var(--cgj-green);
+        --chart-6: var(--cgj-brown-1);
+        --chart-muted: var(--cgj-gray-300);
+        --chart-grid:  var(--cgj-gray-200);
+        --chart-tick:  var(--cgj-gray-700);
+        --chart-label: var(--cgj-ink);
+        --tooltip-bg:   var(--cgj-navy);
+        --tooltip-text: var(--cgj-paper);
+
+        --shadow-sm:  0 1px 3px rgba(0, 58, 85, 0.10), 0 1px 2px rgba(0, 58, 85, 0.06);
+        --shadow-md:  0 4px 12px rgba(0, 58, 85, 0.10), 0 2px 4px rgba(0, 58, 85, 0.06);
+        --shadow-lg:  0 12px 32px rgba(0, 58, 85, 0.14), 0 4px 8px rgba(0, 58, 85, 0.06);
+        --shadow-hdr: 0 2px 4px rgba(0, 58, 85, 0.18);
+
+        --focus-ring:       var(--cgj-navy);
+        --focus-ring-inner: var(--cgj-paper);
+
+        --r-card: 8px;
+        --r-chip: 999px;
+        --ease: cubic-bezier(0.2, 0, 0.1, 1);
+        --tx:   160ms;
+    }
+
+    /* Dark mode: follows the OS / browser setting. Grounds are navy
+       mixed toward black; text is cream; accents are palette hues
+       lifted toward white so they stay readable on the dark ground. */
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --color-bg:          color-mix(in oklab, var(--cgj-navy) 48%, var(--cgj-black));
+            --color-surface:     color-mix(in oklab, var(--cgj-navy) 64%, var(--cgj-black));
+            --color-surface-2:   color-mix(in oklab, var(--cgj-navy) 76%, var(--cgj-black));
+            --color-border:      color-mix(in oklab, var(--cgj-cream) 22%, var(--color-surface));
+            --color-border-soft: color-mix(in oklab, var(--cgj-cream) 12%, var(--color-surface));
+            --color-control:     color-mix(in oklab, var(--cgj-cream) 50%, var(--color-surface));
+            --color-text:        var(--cgj-cream);
+            --color-text-soft:   color-mix(in oklab, var(--cgj-cream) 85%, var(--cgj-navy));
+            --color-text-mute:   color-mix(in oklab, var(--cgj-cream) 70%, var(--cgj-navy));
+            --color-heading:     var(--cgj-cream);
+            --color-primary:     var(--cgj-cream);
+            --color-accent:      color-mix(in oklab, var(--cgj-blue) 55%, var(--cgj-paper));
+            --color-graphic:     color-mix(in oklab, var(--cgj-blue) 70%, var(--cgj-paper));
+            --color-fill:        color-mix(in oklab, var(--cgj-blue) 55%, var(--cgj-paper));
+            --color-on-fill:     color-mix(in oklab, var(--cgj-navy) 60%, var(--cgj-black));
+            --color-fill-hover:  color-mix(in oklab, var(--cgj-blue) 40%, var(--cgj-paper));
+            --color-danger:      color-mix(in oklab, var(--cgj-danger) 45%, var(--cgj-paper));
+            --color-tint:        color-mix(in oklab, var(--cgj-blue) 10%, var(--color-surface));
+            --color-highlight:   color-mix(in oklab, var(--cgj-blue) 22%, var(--color-surface));
+            --color-rule:        var(--color-graphic);
+
+            --header-bg:   var(--cgj-navy);
+            --bg-pattern-stroke:  var(--cgj-cream);
+            --bg-pattern-opacity: 0.04;
+
+            --status-open:     color-mix(in oklab, var(--cgj-blue) 55%, var(--cgj-paper));
+            --status-received: color-mix(in oklab, var(--cgj-brown-1) 45%, var(--cgj-paper));
+            --status-progress: color-mix(in oklab, var(--cgj-brown-3) 45%, var(--cgj-paper));
+            --status-resolved: color-mix(in oklab, var(--cgj-green) 55%, var(--cgj-paper));
+            --status-closed:   var(--cgj-gray-300);
+
+            --status-good:    color-mix(in oklab, var(--cgj-green) 55%, var(--cgj-paper));
+            --status-neutral: color-mix(in oklab, var(--cgj-brown-3) 45%, var(--cgj-paper));
+            --status-bad:     color-mix(in oklab, var(--cgj-danger) 45%, var(--cgj-paper));
+
+            --status-water: color-mix(in oklab, var(--cgj-blue) 55%, var(--cgj-paper));
+            --status-roads: color-mix(in oklab, var(--cgj-brown-3) 45%, var(--cgj-paper));
+            --status-parks: color-mix(in oklab, var(--cgj-green) 55%, var(--cgj-paper));
+            --status-sewer: var(--cgj-gray-300);
+
+            --kpi-open:     color-mix(in oklab, var(--cgj-danger) 45%, var(--cgj-paper));
+            --kpi-progress: color-mix(in oklab, var(--cgj-brown-3) 45%, var(--cgj-paper));
+            --kpi-resolved: color-mix(in oklab, var(--cgj-green) 55%, var(--cgj-paper));
+            --kpi-1: color-mix(in oklab, var(--cgj-blue) 55%, var(--cgj-paper));
+            --kpi-2: color-mix(in oklab, var(--cgj-green) 55%, var(--cgj-paper));
+            --kpi-3: color-mix(in oklab, var(--cgj-brown-3) 45%, var(--cgj-paper));
+            --kpi-4: var(--cgj-gray-300);
+
+            --aging-0: color-mix(in oklab, var(--cgj-green) 70%, var(--cgj-paper));
+            --aging-1: color-mix(in oklab, var(--cgj-brown-1) 60%, var(--cgj-paper));
+            --aging-2: color-mix(in oklab, var(--cgj-brown-3) 60%, var(--cgj-paper));
+            --aging-3: color-mix(in oklab, var(--cgj-danger) 60%, var(--cgj-paper));
+            --aging-4: color-mix(in oklab, var(--cgj-danger) 80%, var(--cgj-paper));
+
+            --chart-1: color-mix(in oklab, var(--cgj-blue) 45%, var(--cgj-paper));
+            --chart-2: var(--cgj-blue);
+            --chart-3: color-mix(in oklab, var(--cgj-green) 60%, var(--cgj-paper));
+            --chart-4: color-mix(in oklab, var(--cgj-brown-3) 55%, var(--cgj-paper));
+            --chart-5: var(--cgj-green);
+            --chart-6: var(--cgj-gray-300);
+            --chart-muted: color-mix(in oklab, var(--cgj-cream) 25%, var(--color-surface));
+            --chart-grid:  color-mix(in oklab, var(--cgj-cream) 12%, var(--color-surface));
+            --chart-tick:  color-mix(in oklab, var(--cgj-cream) 80%, var(--cgj-navy));
+            --chart-label: var(--cgj-cream);
+            --tooltip-bg:   var(--cgj-cream);
+            --tooltip-text: var(--cgj-navy);
+
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+            --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.30);
+            --shadow-lg: 0 6px 16px rgba(0, 0, 0, 0.50), 0 2px 4px rgba(0, 0, 0, 0.40);
+
+            --focus-ring:       var(--cgj-cream);
+            --focus-ring-inner: var(--cgj-navy);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        :root { --tx: 1ms; }
+        *, *::before, *::after {
+            animation-duration: 1ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 1ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
+
+    /* Brand type: Open Sans body, Montserrat display */
+    body { font-family: var(--cgj-font-body); }
+    h1, h2, h3, h4, .kpi .value, .kpi-value { font-family: var(--cgj-font-display); }
+    button, input, select, textarea { font-family: inherit; }
+
+    /* Touch: every button meets the WCAG 2.2 24x24 target floor */
+    @media (pointer: coarse) {
+        button, [role="button"] { min-width: 24px; min-height: 24px; }
+    }
+
+    /* Skip link (first in tab order) */
+    .skip-link {
+        position: absolute; left: 8px; top: -60px; z-index: 1000;
+        padding: 10px 16px; min-height: 44px;
+        background: var(--color-surface); color: var(--color-accent);
+        border: 2px solid var(--focus-ring); border-radius: 8px;
+        font-weight: 600; text-decoration: underline;
+    }
+    .skip-link:focus { top: 8px; }
+
+
+    
+
+    @media (prefers-color-scheme: dark) {
+        
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+        font-family: var(--cgj-font-body);
+        font-size: 13px;
+        line-height: 1.45;
+        color: var(--color-text);
+        background: var(--color-bg);
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* ── Header ───────────────────────────────────────────── */
+    header.top {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        background: var(--header-bg);
+        color: var(--header-text);
+        padding: 10px 18px;
+        box-shadow: 0 2px 4px rgba(0, 58, 85, 0.18);
+    }
+    header.top h1 {
+        margin: 0;
+        font-family: var(--cgj-font-display);
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        line-height: 1.2;
+    }
+    header.top .subtitle {
+        display: block;
+        font-size: 10px;
+        opacity: 0.7;
+        font-weight: 400;
+        margin-top: 2px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+    header.top .back-link {
+        margin-left: auto;
+        color: rgba(255, 255, 255, 0.85);
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 5px 10px;
+        border-radius: 3px;
+        transition: background var(--tx) var(--ease);
+    }
+    header.top .back-link:hover  { background: rgba(255, 255, 255, 0.12); color: #fff; }
+    header.top .back-link:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+    /* ── Data-scope note banner ───────────────────────────── */
+    .scope-note {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 8px 18px;
+        background: color-mix(in srgb, var(--city-blue-1) 8%, var(--color-surface));
+        border-bottom: 1px solid var(--color-border);
+        font-size: 11.5px;
+        color: var(--color-text-soft);
+        line-height: 1.4;
+    }
+    .scope-note svg { width: 15px; height: 15px; flex: 0 0 auto; margin-top: 1px; color: var(--color-accent); }
+    .scope-note b { color: var(--color-text); font-weight: 600; }
+
+    /* ── Toolbar ──────────────────────────────────────────── */
+    .toolbar {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px 18px;
+        background: var(--color-surface);
+        border-bottom: 1px solid var(--color-border);
+    }
+    .toolbar label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--color-text-soft);
+    }
+    .toolbar select {
+        font-family: inherit;
+        font-size: 13px;
+        padding: 5px 9px;
+        border: 1px solid var(--color-border);
+        border-radius: 3px;
+        background: var(--color-surface);
+        color: var(--color-text);
+        min-width: 120px;
+        color-scheme: light dark;
+    }
+    .toolbar select:focus {
+        outline: none;
+        border-color: var(--color-accent);
+        box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent) 30%, transparent);
+    }
+    .toolbar .seg {
+        display: inline-flex;
+        border: 1px solid var(--color-border);
+        border-radius: 3px;
+        overflow: hidden;
+    }
+    .toolbar .seg button {
+        font-family: inherit;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        padding: 5px 11px;
+        border: none;
+        background: var(--color-surface);
+        color: var(--color-text-soft);
+        cursor: pointer;
+        transition: all var(--tx) var(--ease);
+    }
+    .toolbar .seg button + button { border-left: 1px solid var(--color-border); }
+    .toolbar .seg button[aria-pressed="true"] {
+        background: var(--city-blue-2);
+        color: #fff;
+    }
+    @media (prefers-color-scheme: dark) {
+        .toolbar .seg button[aria-pressed="true"] { background: var(--color-accent); color: var(--color-on-fill); }
+    }
+    .toolbar .summary {
+        margin-left: auto;
+        font-size: 12px;
+        color: var(--color-text-mute);
+        font-variant-numeric: tabular-nums;
+    }
+    .toolbar .summary b { color: var(--color-text); font-weight: 600; }
+    .toolbar button.act {
+        font-family: inherit;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 5px 12px;
+        border: 1px solid var(--color-border);
+        border-radius: 3px;
+        background: var(--color-surface);
+        color: var(--color-text);
+        cursor: pointer;
+        transition: all var(--tx) var(--ease);
+    }
+    .toolbar button.act:hover { background: var(--color-border-soft); }
+    .toolbar button.primary {
+        background: var(--city-blue-2);
+        border-color: var(--city-blue-2);
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .toolbar button.primary:hover { background: var(--color-fill-hover); border-color: var(--color-fill-hover); }
+    .toolbar button.primary svg { width: 13px; height: 13px; flex: 0 0 auto; }
+    .toolbar button.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    @media (prefers-color-scheme: dark) {
+        .toolbar button.primary { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-on-fill); }
+        .toolbar button.primary:hover { background: var(--color-fill-hover); border-color: var(--color-fill-hover); }
+    }
+
+    /* ── Main grid ────────────────────────────────────────── */
+    main {
+        flex: 1 1 auto;
+        padding: 14px 18px 28px;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 14px;
+        align-content: start;
+    }
+
+    .kpi-row {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+    }
+    .kpi {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-top: 3px solid var(--kpi-1);
+        border-radius: var(--r-card);
+        padding: 12px 14px;
+        box-shadow: var(--shadow-sm);
+    }
+    .kpi:nth-child(2) { border-top-color: var(--kpi-2); }
+    .kpi:nth-child(3) { border-top-color: var(--kpi-3); }
+    .kpi:nth-child(4) { border-top-color: var(--kpi-4); }
+    .kpi .label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-text-mute);
+    }
+    .kpi .value {
+        font-family: var(--cgj-font-display);
+        font-size: 26px;
+        font-weight: 700;
+        line-height: 1.1;
+        margin-top: 4px;
+        color: var(--kpi-1);
+        font-variant-numeric: tabular-nums;
+    }
+    .kpi:nth-child(2) .value { color: var(--kpi-2); }
+    .kpi:nth-child(3) .value { color: var(--kpi-3); }
+    .kpi:nth-child(4) .value { color: var(--kpi-4); }
+    .kpi .sublabel { font-size: 11px; color: var(--color-text-soft); margin-top: 3px; }
+
+    .card {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--r-card);
+        box-shadow: var(--shadow-md);
+        padding: 12px 14px 14px;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
+    .card h2 {
+        margin: 0 0 10px;
+        font-family: var(--cgj-font-display);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--color-heading);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    @media (prefers-color-scheme: dark) { .card h2 { color: var(--color-text); } }
+    .card h2 .h2-rule { flex: 1 1 auto; height: 1px; background: var(--color-border-soft); }
+    .chart-box { position: relative; flex: 1 1 auto; min-height: 240px; }
+
+    .col-12 { grid-column: 1 / -1; }
+    .col-8  { grid-column: span 8; }
+    .col-6  { grid-column: span 6; }
+    .col-4  { grid-column: span 4; }
+    @media (max-width: 1000px) {
+        .col-8, .col-6, .col-4 { grid-column: 1 / -1; }
+        .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* States */
+    .state {
+        grid-column: 1 / -1;
+        padding: 40px 18px;
+        text-align: center;
+        color: var(--color-text-mute);
+        font-size: 13px;
+    }
+    .state.error {
+        color: var(--status-bad);
+        background: color-mix(in srgb, var(--status-bad) 8%, transparent);
+        border: 1px solid color-mix(in srgb, var(--status-bad) 30%, transparent);
+        border-left: 3px solid var(--status-bad);
+        border-radius: var(--r-card);
+        text-align: left;
+        padding: 18px 20px;
+        font-size: 12.5px;
+        line-height: 1.5;
+    }
+    .state.error b { font-family: var(--cgj-font-display); }
+    .state.error code {
+        font-family: "Open Sans", monospace;
+        background: color-mix(in srgb, var(--status-bad) 12%, transparent);
+        padding: 1px 5px;
+        border-radius: 2px;
+        font-size: 11.5px;
+    }
+    .skeleton {
+        display: inline-block;
+        background: linear-gradient(90deg,
+            var(--color-border-soft) 25%, var(--color-surface-2) 50%, var(--color-border-soft) 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.3s infinite;
+        border-radius: 3px;
+        color: transparent;
+    }
+    @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+    /* ── Footer ───────────────────────────────────────────── */
+    footer {
+        flex: 0 0 auto;
+        padding: 8px 18px;
+        font-size: 11px;
+        color: var(--color-text-soft);
+        text-align: center;
+        background: var(--color-surface);
+        border-top: 1px solid var(--color-border-soft);
+    }
+    footer a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; margin: 0 8px; }
+    footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="top" role="banner">
+    <h1>
+        RAC Historical Trends
+        <span class="subtitle">Report A Concern · Long-term history</span>
+    </h1>
+    <a class="back-link" href="./" aria-label="Back to dashboard">← Back to dashboard</a>
+</header>
+
+<div class="scope-note" role="note">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+    <span>
+        This page reflects the <b>retention ledger</b>: de-identified monthly aggregates of tickets that have been
+        <b>closed/resolved and aged past the 4-year retention window</b>, after the source records were purged. It covers
+        only closed/resolved history at monthly granularity, with no map, no per-ticket detail, and no individual identifiers.
+        Recent and still-open activity lives on the <a href="./" style="color:var(--color-accent);">live dashboard</a>.
+    </span>
+</div>
+
+<div class="toolbar" role="region" aria-label="Filter controls">
+    <label for="basisToggle">Period basis</label>
+    <span class="seg" id="basisToggle" role="group" aria-label="Period basis">
+        <button type="button" data-basis="closed"   aria-pressed="true">Closed</button>
+        <button type="button" data-basis="reported" aria-pressed="false">Reported</button>
+    </span>
+
+    <label for="yearFrom">Years</label>
+    <select id="yearFrom" aria-label="From year"></select>
+    <span aria-hidden="true" style="color:var(--color-text-mute);">→</span>
+    <select id="yearTo" aria-label="To year"></select>
+
+    <label for="categoryFilter">Category</label>
+    <select id="categoryFilter" aria-label="Filter by category"><option value="">All</option></select>
+
+    <label for="unitFilter">Unit</label>
+    <select id="unitFilter" aria-label="Filter by responsible unit"><option value="">All</option></select>
+
+    <button id="resetBtn" type="button" class="act" title="Clear all filters (Esc)">✕ Clear</button>
+    <button id="exportBtn" type="button" class="primary"
+            title="Download the filtered ledger as an Excel workbook" aria-label="Export to Excel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export
+    </button>
+
+    <span class="summary" id="summary" aria-live="polite">Loading…</span>
+</div>
+
+<main id="main">
+    <div class="state" id="bootState">Authenticating with Portal…</div>
+</main>
+
+<footer>
+    Internal use · GIS Division
+    <a href="./" title="Back to RAC Dashboard">Dashboard</a>
+    <a href="./survey-responses.html" title="Citizen satisfaction survey responses">Survey Responses</a>
+    <a href="./routing-lookup.html" title="Category to department routing">Routing Lookup</a>
+    <a href="https://gis-internal.example.gov/reportaconcernmanager/" target="_blank" rel="noopener">Open Manager</a>
+</footer>
+
+<script>
+//================================================================
+//  CONFIG
+//
+//  Two ways to feed this page. Pick ONE by setting ledger.mode:
+//
+//   "service" — RECOMMENDED. Publish dbo.Ticket_Retention_Summary as a
+//               read-only table layer in Enterprise (same SDE the
+//               Manager service already uses). Set ledger.serviceUrl to
+//               the layer endpoint (…/MapServer/<index>). Queried over
+//               REST with the shared Portal token, exactly like the
+//               routing-lookup page. No new auth, no new infrastructure.
+//
+//   "json"    — ZERO new infrastructure. Have the monthly purge job (or
+//               a tiny companion) export the whole ledger to a static
+//               JSON file next to this page and set ledger.jsonUrl. The
+//               ledger only changes once a month, aggregate counts are
+//               not sensitive, and this page is internal — so a static
+//               export is a legitimate option, not a hack. Expected
+//               shape: { "features": [ { "attributes": { …row… } } ] }
+//               OR a bare array of row objects. Field names must match
+//               the ledger columns in FIELDS below.
+//================================================================
+/* ── Brand color bridge ───────────────────────────────────────
+   Chart.js and the Esri renderers need concrete colors, but the brand
+   tokens live in CSS (and dark mode derives them with color-mix()).
+   cssColor() resolves a CSS custom property through the browser, paints
+   it on a 1x1 canvas and returns rgba(), so charts always match the
+   current light/dark tokens with no hex duplicated in script. */
+const __cgjProbe = (() => {
+    const c = document.createElement("canvas"); c.width = c.height = 1;
+    return { ctx: c.getContext("2d", { willReadFrequently: true }), el: null };
+})();
+function cssColor(varName, alpha) {
+    if (!__cgjProbe.el) {
+        __cgjProbe.el = document.createElement("span");
+        __cgjProbe.el.style.display = "none";
+        document.body.appendChild(__cgjProbe.el);
+    }
+    __cgjProbe.el.style.color = `var(${varName})`;
+    const resolved = getComputedStyle(__cgjProbe.el).color;
+    const ctx = __cgjProbe.ctx;
+    ctx.clearRect(0, 0, 1, 1);
+    ctx.fillStyle = "rgba(0,0,0,0)";
+    ctx.fillStyle = resolved;
+    ctx.fillRect(0, 0, 1, 1);
+    const [r, g, b, a] = ctx.getImageData(0, 0, 1, 1).data;
+    const outA = alpha == null ? +(a / 255).toFixed(3) : alpha;
+    return `rgba(${r}, ${g}, ${b}, ${outA})`;
+}
+function brandPalette() {
+    return ["--chart-1", "--chart-2", "--chart-3", "--chart-4", "--chart-5", "--chart-6"].map(v => cssColor(v));
+}
+
+const CONFIG = {
+    // --- Auth (shared with the rest of the RAC apps) ---
+    oauthAppId:        "YOUR_PORTAL_OAUTH_APP_ID",
+    portalUrl:         "https://portal.example.gov/portal",
+    oauthCallbackPath: "oauth-callback.html",
+
+    ledger: {
+        mode: "service",   // "service" | "json"
+
+        // mode === "service": the published ledger table layer endpoint.
+        // Replace <index> with the layer/table id once it is published.
+        serviceUrl: "https://gis-internal.example.gov/arcgis/rest/services/RAC/ReportAConcern_Retention/MapServer/0",
+
+        // mode === "json": a static export sitting next to this page.
+        jsonUrl: "./retention_ledger.json",
+    },
+
+    // Top-N caps so long-tail dimensions stay legible.
+    topSubcategories: 15,
+    topUnits: 12,
+
+    // Brand palette — matches the main dashboard's chartPalette.
+    // Brand categorical series (--chart-1..6), resolved live from CSS.
+    get palette() { return brandPalette(); },
+};
+
+// Real ledger columns (schema_version 2, closure-anchored). These are
+// the exact field names created by rac_retention_schema.sql and written
+// by rac_retention_purge.py.
+const FIELDS = [
+    "closed_year", "closed_month", "created_year", "created_month",
+    "category_code", "category_label", "subcategory",
+    "final_status_code", "final_status_label", "responsible_unit",
+    "ticket_count", "resolution_days_sum",
+    "survey_response_count", "survey_rated_count", "survey_rating_sum",
+    "survey_rating_1", "survey_rating_2", "survey_rating_3",
+    "survey_rating_4", "survey_rating_5",
+];
+
+//================================================================
+//  State
+//================================================================
+let allRows = [];          // every ledger row, normalized
+let viewRows = [];         // rows after the active filters
+const charts = {};         // chartId -> Chart instance
+const filters = {
+    basis:    "closed",    // "closed" | "reported"
+    yearFrom: null,
+    yearTo:   null,
+    category: "",          // category_label
+    unit:     "",          // responsible_unit
+};
+
+//================================================================
+//  Theme (mirrors the dashboard's getChartTheme)
+//================================================================
+const darkMql = window.matchMedia("(prefers-color-scheme: dark)");
+function isDark() { return darkMql.matches; }
+function chartTheme() {
+    return {
+        accent:     cssColor("--color-graphic"),
+        accentFill: cssColor("--color-graphic", 0.16),
+        surface:    cssColor("--color-surface"),
+        tickColor:  cssColor("--chart-tick"),
+        labelColor: cssColor("--chart-label"),
+        gridColor:  cssColor("--chart-grid"),
+        tooltipBg:  cssColor("--tooltip-bg"),
+        tooltipText: cssColor("--tooltip-text"),
+    };
+}
+function applyChartDefaults() {
+    if (typeof Chart === "undefined") return;
+    Chart.defaults.font.family = "'Open Sans', Arial, sans-serif";
+    Chart.defaults.font.size = 11;
+}
+
+//================================================================
+//  Boot — auth (service mode) or direct fetch (json mode)
+//================================================================
+applyChartDefaults();
+
+if (CONFIG.ledger.mode === "json") {
+    bootFromJson();
+} else {
+    bootFromService();
+}
+
+function bootFromJson() {
+    fetch(CONFIG.ledger.jsonUrl, { credentials: "same-origin" })
+        .then(r => {
+            if (!r.ok) throw new Error(`HTTP ${r.status} fetching ${CONFIG.ledger.jsonUrl}`);
+            return r.json();
+        })
+        .then(data => {
+            const feats = Array.isArray(data) ? data
+                        : Array.isArray(data.features) ? data.features.map(f => f.attributes || f)
+                        : null;
+            if (!feats) throw new Error("Unexpected JSON shape — expected an array of rows or { features: [...] }.");
+            ingest(feats);
+        })
+        .catch(e => showLoadError(e, "json"));
+}
+
+function bootFromService() {
+    require([
+        "esri/config",
+        "esri/identity/IdentityManager",
+        "esri/identity/OAuthInfo",
+        "esri/layers/FeatureLayer",
+    ], function (esriConfig, esriId, OAuthInfo, FeatureLayer) {
+
+        esriConfig.portalUrl = CONFIG.portalUrl;
+
+        if (CONFIG.oauthAppId) {
+            const callbackUrl = new URL(CONFIG.oauthCallbackPath, window.location.href).href;
+            esriId.registerOAuthInfos([new OAuthInfo({
+                appId:            CONFIG.oauthAppId,
+                portalUrl:        CONFIG.portalUrl,
+                popup:            true,
+                popupCallbackUrl: callbackUrl,
+                expiration:       60 * 8,
+            })]);
+            // serverRoot must use the real hostname (the ArcGIS Server machine name), not
+            // an alias, or token generation fails — same federation gotcha
+            // as the dashboard and routing-lookup pages.
+            const serverRoot = CONFIG.ledger.serviceUrl.replace(/\/rest\/services\/.*$/, "");
+            esriId.registerServers([{
+                server:          serverRoot,
+                tokenServiceUrl: `${CONFIG.portalUrl}/sharing/rest/generateToken`,
+            }]);
+        }
+
+        const ledgerLayer = new FeatureLayer({ url: CONFIG.ledger.serviceUrl, outFields: ["*"] });
+        ledgerLayer.load()
+            .then(() => queryAllLedgerRows(ledgerLayer))
+            .then(feats => ingest(feats))
+            .catch(e => showLoadError(e, "service"));
+    });
+}
+
+// Pull every ledger row. The ledger is small (one row per
+// closed-month × reported-month × category × subcategory × status ×
+// unit bucket), so paging through all of it once and aggregating in the
+// browser keeps every panel and filter instant with no server round
+// trips. Pages defensively in case it ever grows past one batch.
+async function queryAllLedgerRows(layer) {
+    const out = [];
+    const pageSize = 2000;
+    let offset = 0;
+    for (let guard = 0; guard < 50; guard++) {
+        const res = await layer.queryFeatures({
+            where: "1=1",
+            outFields: FIELDS,
+            returnGeometry: false,
+            start: offset,
+            num: pageSize,
+            orderByFields: ["closed_year", "closed_month"],
+        });
+        const feats = res.features || [];
+        out.push(...feats);
+        if (feats.length < pageSize) break;
+        offset += pageSize;
+    }
+    return out;
+}
+
+//================================================================
+//  Ingest + normalize
+//================================================================
+function ingest(features) {
+    allRows = features.map(f => {
+        const a = f.attributes || f;
+        const num = (v) => { const n = Number(v); return isFinite(n) ? n : 0; };
+        return {
+            closed_year:    num(a.closed_year),
+            closed_month:   num(a.closed_month),
+            created_year:   num(a.created_year),
+            created_month:  num(a.created_month),
+            category_code:  a.category_code,
+            category_label: a.category_label || `Code ${a.category_code}`,
+            subcategory:    a.subcategory || "(none)",
+            status_label:   a.final_status_label || ({4:"Resolved",5:"Closed"}[a.final_status_code] || `Status ${a.final_status_code}`),
+            unit:           a.responsible_unit || "(unassigned)",
+            ticket_count:   num(a.ticket_count),
+            res_days_sum:   num(a.resolution_days_sum),
+            srv_response:   num(a.survey_response_count),
+            srv_rated:      num(a.survey_rated_count),
+            srv_rating_sum: num(a.survey_rating_sum),
+            r1: num(a.survey_rating_1), r2: num(a.survey_rating_2), r3: num(a.survey_rating_3),
+            r4: num(a.survey_rating_4), r5: num(a.survey_rating_5),
+        };
+    });
+
+    if (allRows.length === 0) {
+        showEmpty();
+        return;
+    }
+
+    buildScaffold();
+    populateFilters();
+    refreshAll();
+}
+
+function yearOf(row)  { return filters.basis === "reported" ? row.created_year : row.closed_year; }
+function monthOf(row) { return filters.basis === "reported" ? row.created_month : row.closed_month; }
+
+//================================================================
+//  Filters
+//================================================================
+function populateFilters() {
+    const years = [...new Set(allRows.flatMap(r => [r.closed_year, r.created_year]))]
+        .filter(y => y > 0).sort((a, b) => a - b);
+    const cats  = [...new Set(allRows.map(r => r.category_label))].sort();
+    const units = [...new Set(allRows.map(r => r.unit))].sort();
+
+    const yf = document.getElementById("yearFrom");
+    const yt = document.getElementById("yearTo");
+    yf.innerHTML = ""; yt.innerHTML = "";
+    for (const y of years) {
+        yf.appendChild(new Option(String(y), String(y)));
+        yt.appendChild(new Option(String(y), String(y)));
+    }
+    filters.yearFrom = years[0];
+    filters.yearTo   = years[years.length - 1];
+    yf.value = String(filters.yearFrom);
+    yt.value = String(filters.yearTo);
+
+    const catSel = document.getElementById("categoryFilter");
+    for (const c of cats) catSel.appendChild(new Option(c, c));
+    const unitSel = document.getElementById("unitFilter");
+    for (const u of units) unitSel.appendChild(new Option(u, u));
+}
+
+function applyFilters() {
+    viewRows = allRows.filter(r => {
+        const y = yearOf(r);
+        if (filters.yearFrom != null && y < filters.yearFrom) return false;
+        if (filters.yearTo   != null && y > filters.yearTo)   return false;
+        if (filters.category && r.category_label !== filters.category) return false;
+        if (filters.unit     && r.unit !== filters.unit)              return false;
+        return true;
+    });
+}
+
+//================================================================
+//  Aggregation helpers
+//================================================================
+function sumBy(rows, keyFn, valFn) {
+    const m = new Map();
+    for (const r of rows) {
+        const k = keyFn(r);
+        m.set(k, (m.get(k) || 0) + valFn(r));
+    }
+    return m;
+}
+
+function totals(rows) {
+    let tickets = 0, resDays = 0, rated = 0, ratingSum = 0, responses = 0;
+    const hist = [0, 0, 0, 0, 0];
+    for (const r of rows) {
+        tickets   += r.ticket_count;
+        resDays   += r.res_days_sum;
+        rated     += r.srv_rated;
+        ratingSum += r.srv_rating_sum;
+        responses += r.srv_response;
+        hist[0] += r.r1; hist[1] += r.r2; hist[2] += r.r3; hist[3] += r.r4; hist[4] += r.r5;
+    }
+    return {
+        tickets, resDays, rated, ratingSum, responses, hist,
+        avgRes:  tickets ? resDays / tickets : null,
+        avgRate: rated   ? ratingSum / rated : null,
+    };
+}
+
+//================================================================
+//  Render
+//================================================================
+function refreshAll() {
+    applyFilters();
+    renderKpis();
+    renderYearVolume();
+    renderMonthTrend();
+    renderCategory();
+    renderSubcategory();
+    renderUnit();
+    renderStatus();
+    renderResolution();
+    renderSatisfaction();
+    renderSatByYear();
+    renderSatByCategory();
+    updateSummary();
+    updateBasisLabels();
+}
+
+function renderKpis() {
+    const t = totals(viewRows);
+    setText("kpiTickets", t.tickets.toLocaleString());
+    setText("kpiRes",  t.avgRes  == null ? "—" : t.avgRes.toFixed(1) + "d");
+    setText("kpiSat",  t.avgRate == null ? "—" : t.avgRate.toFixed(2) + " ★");
+    const months = new Set(viewRows.map(r => `${yearOf(r)}-${monthOf(r)}`)).size;
+    setText("kpiMonths", months.toLocaleString());
+    if (!t.rated) {
+        setText("kpiSatSub", "no survey data");
+    } else {
+        const respPct = t.tickets ? Math.round((100 * t.responses) / t.tickets) : 0;
+        setText("kpiSatSub", `${t.rated.toLocaleString()} ratings · ${respPct}% of closed responded`);
+    }
+}
+
+function renderYearVolume() {
+    const m = sumBy(viewRows, yearOf, r => r.ticket_count);
+    const years = [...m.keys()].filter(y => y > 0).sort((a, b) => a - b);
+    drawBar("yearChart", years.map(String), years.map(y => m.get(y)), "Tickets", false);
+}
+
+function renderMonthTrend() {
+    const m = sumBy(viewRows, r => `${yearOf(r)}-${String(monthOf(r)).padStart(2, "0")}`, r => r.ticket_count);
+    const keys = [...m.keys()].filter(k => !k.startsWith("0-") && !k.endsWith("-00")).sort();
+    drawLine("monthChart", keys, keys.map(k => m.get(k)));
+}
+
+function renderCategory() {
+    const m = sumBy(viewRows, r => r.category_label, r => r.ticket_count);
+    const rows = [...m.entries()].filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1]);
+    drawBar("catChart", rows.map(r => r[0]), rows.map(r => r[1]), "Tickets", true);
+}
+
+// Generic catch-all subcategory values that exist under every category
+// and otherwise collapse into one meaningless mega-bar. Excluded from the
+// "problem types" chart so the real reported issues are visible; the
+// excluded total is surfaced in the card subtitle, not hidden.
+const GENERIC_SUBCATS = new Set(["other", "(none)", "none", "", "n/a", "na", "unspecified"]);
+function isGenericSubcat(s) { return GENERIC_SUBCATS.has(String(s || "").trim().toLowerCase()); }
+
+function renderSubcategory() {
+    // When no category filter is active, qualify each problem type with its
+    // category ("Water · Leak") so the same type under different categories
+    // doesn't merge. With a category selected, the type alone is unambiguous.
+    const qualify = !filters.category;
+    const keyFn = (r) => qualify ? `${r.category_label} · ${prettySub(r.subcategory)}` : prettySub(r.subcategory);
+
+    const specific = viewRows.filter(r => !isGenericSubcat(r.subcategory));
+    const genericN = viewRows.filter(r => isGenericSubcat(r.subcategory))
+                             .reduce((s, r) => s + r.ticket_count, 0);
+
+    const m = sumBy(specific, keyFn, r => r.ticket_count);
+    let rows = [...m.entries()].filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1]);
+    if (rows.length > CONFIG.topSubcategories) {
+        const top = rows.slice(0, CONFIG.topSubcategories);
+        const restN = rows.slice(CONFIG.topSubcategories).reduce((s, r) => s + r[1], 0);
+        if (restN > 0) top.push(["(remaining types)", restN]);
+        rows = top;
+    }
+    drawBar("subcatChart", rows.map(r => r[0]), rows.map(r => r[1]), "Tickets", true);
+
+    const note = document.getElementById("subcatNote");
+    if (note) {
+        note.textContent = genericN > 0
+            ? `excludes ${genericN.toLocaleString()} generic "Other"`
+            : "";
+    }
+}
+
+// Title-case the SCREAMING_SNAKE subcategory codes for display
+// (POTHOLE -> Pothole, LIGHT_OUT -> Light Out). Leaves real labels alone.
+function prettySub(s) {
+    const t = String(s || "").trim();
+    if (!t) return "(none)";
+    if (/^[A-Z0-9_]+$/.test(t)) {
+        return t.toLowerCase().split("_").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+    }
+    return t;
+}
+
+function renderUnit() {
+    const m = sumBy(viewRows, r => r.unit, r => r.ticket_count);
+    let rows = [...m.entries()].filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1]);
+    if (rows.length > CONFIG.topUnits) {
+        const top = rows.slice(0, CONFIG.topUnits);
+        const restN = rows.slice(CONFIG.topUnits).reduce((s, r) => s + r[1], 0);
+        if (restN > 0) top.push(["(other)", restN]);
+        rows = top;
+    }
+    drawDoughnut("unitChart", rows.map(r => r[0]), rows.map(r => r[1]));
+}
+
+function renderStatus() {
+    const m = sumBy(viewRows, r => r.status_label, r => r.ticket_count);
+    const rows = [...m.entries()].filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1]);
+    drawDoughnut("statusChart", rows.map(r => r[0]), rows.map(r => r[1]));
+}
+
+function renderResolution() {
+    // Avg resolution days per category = sum(res_days_sum)/sum(ticket_count).
+    const days = sumBy(viewRows, r => r.category_label, r => r.res_days_sum);
+    const cnt  = sumBy(viewRows, r => r.category_label, r => r.ticket_count);
+    const rows = [...cnt.entries()]
+        .map(([k, n]) => [k, n ? (days.get(k) || 0) / n : 0])
+        .filter(r => r[1] > 0)
+        .sort((a, b) => b[1] - a[1]);
+    drawBar("resChart", rows.map(r => r[0]), rows.map(r => +r[1].toFixed(1)), "Avg days", true);
+}
+
+function renderSatisfaction() {
+    const t = totals(viewRows);
+    drawBar("satChart", ["1 ★", "2 ★", "3 ★", "4 ★", "5 ★"], t.hist, "Responses", false, true);
+}
+
+// Weighted satisfaction by an arbitrary key: { ratingSum, rated, responses }.
+// Average is sum(rating_sum)/sum(rated_count) per group — never an average
+// of per-row averages, which would mis-weight small buckets.
+function satBy(rows, keyFn) {
+    const m = new Map();
+    for (const r of rows) {
+        const k = keyFn(r);
+        let o = m.get(k);
+        if (!o) { o = { ratingSum: 0, rated: 0, responses: 0 }; m.set(k, o); }
+        o.ratingSum += r.srv_rating_sum;
+        o.rated     += r.srv_rated;
+        o.responses += r.srv_response;
+    }
+    return m;
+}
+
+function renderSatByYear() {
+    const m = satBy(viewRows, yearOf);
+    const years = [...m.keys()].filter(y => y > 0).sort((a, b) => a - b);
+    const labels = [], avgs = [], counts = [];
+    for (const y of years) {
+        const o = m.get(y);
+        if (o.rated > 0) { labels.push(String(y)); avgs.push(+(o.ratingSum / o.rated).toFixed(2)); counts.push(o.rated); }
+    }
+    drawRatingBar("satYearChart", labels, avgs, counts, false);
+}
+
+function renderSatByCategory() {
+    const m = satBy(viewRows, r => r.category_label);
+    const rows = [...m.entries()]
+        .filter(([, o]) => o.rated > 0)
+        .map(([k, o]) => [k, o.ratingSum / o.rated, o.rated])
+        .sort((a, b) => b[1] - a[1]);
+    drawRatingBar("satCatChart", rows.map(r => r[0]), rows.map(r => +r[1].toFixed(2)), rows.map(r => r[2]), true);
+}
+
+//================================================================
+//  Chart drawing primitives
+//================================================================
+function destroy(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+function drawBar(id, labels, data, seriesLabel, horizontal, ratingColors) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    destroy(id);
+    const th = chartTheme();
+    let bg;
+    if (ratingColors) {
+        bg = ["--status-bad", "--aging-2", "--aging-1", "--aging-0", "--status-good"].map(v => cssColor(v));
+    } else {
+        bg = data.map((_, i) => CONFIG.palette[i % CONFIG.palette.length]);
+        if (!horizontal) bg = th.accent;
+    }
+    charts[id] = new Chart(el, {
+        type: "bar",
+        data: { labels, datasets: [{ label: seriesLabel, data, backgroundColor: bg,
+            hoverBackgroundColor: th.accent, borderRadius: 3, maxBarThickness: 30 }] },
+        options: {
+            indexAxis: horizontal ? "y" : "x",
+            responsive: true, maintainAspectRatio: false, animation: { duration: 300 },
+            plugins: {
+                legend: { display: false },
+                tooltip: { backgroundColor: th.tooltipBg, titleColor: th.tooltipText, bodyColor: th.tooltipText, padding: 10,
+                    callbacks: { label: ctx => `${(horizontal ? ctx.parsed.x : ctx.parsed.y).toLocaleString()}` } },
+            },
+            scales: {
+                x: { beginAtZero: true, ticks: { color: th.tickColor, precision: 0, autoSkip: true, maxRotation: horizontal ? 0 : 0 },
+                     grid: { color: horizontal ? th.gridColor : "transparent" } },
+                y: { beginAtZero: true, ticks: { color: th.tickColor, precision: 0 },
+                     grid: { color: horizontal ? "transparent" : th.gridColor } },
+            },
+        },
+    });
+}
+
+// Rating bar: fixed 0–5 axis, bars colored by score (danger → forest), and
+// the number of rated responses shown in the tooltip so a high average
+// resting on a tiny sample is never read as solid.
+function ratingColor(a) {
+    return cssColor(a < 2 ? "--status-bad" : a < 3 ? "--aging-2" : a < 3.5 ? "--aging-1" : a < 4 ? "--aging-0" : "--status-good");
+}
+function drawRatingBar(id, labels, avgs, counts, horizontal) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    destroy(id);
+    const th = chartTheme();
+    if (!labels.length) {
+        charts[id] = new Chart(el, {
+            type: "bar",
+            data: { labels: ["No rated responses in scope"], datasets: [{ data: [0], backgroundColor: th.gridColor }] },
+            options: { indexAxis: horizontal ? "y" : "x", responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                scales: { x: { display: false }, y: { display: false } } },
+        });
+        return;
+    }
+    const bg = avgs.map(ratingColor);
+    const ratingAxis = { min: 0, max: 5, ticks: { color: th.tickColor, stepSize: 1, callback: v => v + "★" }, grid: { color: th.gridColor } };
+    const catAxis    = { ticks: { color: th.tickColor }, grid: { color: "transparent" } };
+    charts[id] = new Chart(el, {
+        type: "bar",
+        data: { labels, datasets: [{ label: "Avg rating", data: avgs, backgroundColor: bg,
+            hoverBackgroundColor: bg, borderRadius: 3, maxBarThickness: 30 }] },
+        options: {
+            indexAxis: horizontal ? "y" : "x",
+            responsive: true, maintainAspectRatio: false, animation: { duration: 300 },
+            plugins: {
+                legend: { display: false },
+                tooltip: { backgroundColor: th.tooltipBg, titleColor: th.tooltipText, bodyColor: th.tooltipText, padding: 10,
+                    callbacks: { label: ctx => {
+                        const v = horizontal ? ctx.parsed.x : ctx.parsed.y;
+                        const n = counts[ctx.dataIndex] || 0;
+                        return `${v.toFixed(2)} ★ · ${n.toLocaleString()} rated`;
+                    } } },
+            },
+            scales: horizontal
+                ? { x: ratingAxis, y: catAxis }
+                : { x: catAxis, y: ratingAxis },
+        },
+    });
+}
+
+function drawLine(id, labels, data) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    destroy(id);
+    const th = chartTheme();
+    charts[id] = new Chart(el, {
+        type: "line",
+        data: { labels, datasets: [{ label: "Tickets", data, borderColor: th.accent,
+            backgroundColor: th.accentFill, borderWidth: 2, pointRadius: 0, pointHoverRadius: 5,
+            tension: 0.28, fill: true }] },
+        options: {
+            responsive: true, maintainAspectRatio: false, animation: { duration: 400 },
+            plugins: {
+                legend: { display: false },
+                tooltip: { intersect: false, mode: "index", backgroundColor: th.tooltipBg,
+                    titleColor: th.tooltipText, bodyColor: th.tooltipText, padding: 10 },
+            },
+            scales: {
+                x: { ticks: { color: th.tickColor, maxRotation: 0, autoSkip: true, maxTicksLimit: 10 }, grid: { display: false } },
+                y: { beginAtZero: true, ticks: { color: th.tickColor, precision: 0 }, grid: { color: th.gridColor } },
+            },
+        },
+    });
+}
+
+function drawDoughnut(id, labels, data) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    destroy(id);
+    const th = chartTheme();
+    const colors = data.map((_, i) => CONFIG.palette[i % CONFIG.palette.length]);
+    charts[id] = new Chart(el, {
+        type: "doughnut",
+        data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: th.surface, hoverOffset: 4 }] },
+        options: {
+            responsive: true, maintainAspectRatio: false, cutout: "58%", animation: { duration: 350 },
+            layout: { padding: { bottom: 4 } },
+            plugins: {
+                legend: { position: "bottom", align: "start",
+                    labels: { color: th.labelColor, boxWidth: 8, boxHeight: 8, padding: 7,
+                        usePointStyle: true, pointStyle: "circle", font: { size: 10.5 },
+                        generateLabels: (chart) => chart.data.labels.map((raw, i) => ({
+                            text: raw && raw.length > 22 ? raw.slice(0, 21) + "…" : raw,
+                            fillStyle: chart.data.datasets[0].backgroundColor[i],
+                            strokeStyle: chart.data.datasets[0].backgroundColor[i],
+                            fontColor: th.labelColor, lineWidth: 0, hidden: false, index: i,
+                        })) } },
+                tooltip: { backgroundColor: th.tooltipBg, titleColor: th.tooltipText, bodyColor: th.tooltipText, padding: 10,
+                    callbacks: { label: ctx => `${ctx.label}: ${ctx.parsed.toLocaleString()}` } },
+            },
+        },
+    });
+}
+
+//================================================================
+//  Scaffold (cards) — built once after data loads
+//================================================================
+function buildScaffold() {
+    const main = document.getElementById("main");
+    main.innerHTML = `
+        <div class="kpi-row">
+            <div class="kpi"><div class="label">Tickets in scope</div><div class="value" id="kpiTickets">—</div><div class="sublabel">closed/resolved &amp; purged</div></div>
+            <div class="kpi"><div class="label">Avg resolution</div><div class="value" id="kpiRes">—</div><div class="sublabel">days, created → resolved</div></div>
+            <div class="kpi"><div class="label">Avg satisfaction</div><div class="value" id="kpiSat">—</div><div class="sublabel" id="kpiSatSub">—</div></div>
+            <div class="kpi"><div class="label">Months covered</div><div class="value" id="kpiMonths">—</div><div class="sublabel" id="basisHint">by closed month</div></div>
+        </div>
+
+        <section class="card col-8"><h2><span id="trendTitle">Volume by month</span><span class="h2-rule"></span></h2><div class="chart-box"><canvas id="monthChart"></canvas></div></section>
+        <section class="card col-4"><h2><span id="yearTitle">Volume by year</span><span class="h2-rule"></span></h2><div class="chart-box"><canvas id="yearChart"></canvas></div></section>
+
+        <section class="card col-6"><h2>By category<span class="h2-rule"></span></h2><div class="chart-box"><canvas id="catChart"></canvas></div></section>
+        <section class="card col-6"><h2>Avg resolution days by category<span class="h2-rule"></span></h2><div class="chart-box"><canvas id="resChart"></canvas></div></section>
+
+        <section class="card col-6"><h2>Top reported problem types<span class="h2-note" id="subcatNote" style="font-weight:400;font-size:10px;letter-spacing:0;text-transform:none;color:var(--color-text-mute);"></span><span class="h2-rule"></span></h2><div class="chart-box"><canvas id="subcatChart"></canvas></div></section>
+        <section class="card col-6"><h2>By responsible unit<span class="h2-rule"></span></h2><div class="chart-box"><canvas id="unitChart"></canvas></div></section>
+
+        <section class="card col-6"><h2>Satisfaction by year<span class="h2-rule"></span></h2><div class="chart-box"><canvas id="satYearChart"></canvas></div></section>
+        <section class="card col-6"><h2>Satisfaction by category<span class="h2-rule"></span></h2><div class="chart-box"><canvas id="satCatChart"></canvas></div></section>
+
+        <section class="card col-4"><h2>Final status<span class="h2-rule"></span></h2><div class="chart-box"><canvas id="statusChart"></canvas></div></section>
+        <section class="card col-8"><h2>Satisfaction rating distribution<span class="h2-rule"></span></h2><div class="chart-box"><canvas id="satChart"></canvas></div></section>
+    `;
+}
+
+function updateBasisLabels() {
+    const word = filters.basis === "reported" ? "reported" : "closed";
+    setText("basisHint", `by ${word} month`);
+    setTextSafe("trendTitle", `Volume by month · ${word}`);
+    setTextSafe("yearTitle", `Volume by year · ${word}`);
+}
+
+//================================================================
+//  Summary + small helpers
+//================================================================
+function updateSummary() {
+    const t = totals(viewRows);
+    const span = filters.yearFrom === filters.yearTo
+        ? `${filters.yearFrom}` : `${filters.yearFrom}–${filters.yearTo}`;
+    document.getElementById("summary").innerHTML =
+        `<b>${t.tickets.toLocaleString()}</b> tickets · <b>${viewRows.length.toLocaleString()}</b> ledger rows · ${span}`;
+}
+
+function setText(id, text) { const el = document.getElementById(id); if (el) el.textContent = text; }
+function setTextSafe(id, text) { const el = document.getElementById(id); if (el) el.textContent = text; }
+
+function showEmpty() {
+    document.getElementById("main").innerHTML =
+        `<div class="state">The retention ledger is empty. Once the monthly purge has run at least once, historical aggregates will appear here.</div>`;
+    document.getElementById("summary").textContent = "No data yet";
+}
+
+function showLoadError(e, mode) {
+    const msg = (e && (e.message || e.toString())) || "Unknown error";
+    let hint;
+    if (mode === "service") {
+        hint = `The page tried to query the published retention layer at:<br><code>${escapeHtml(CONFIG.ledger.serviceUrl)}</code><br><br>
+            If that layer isn't published yet, publish <code>dbo.Ticket_Retention_Summary</code> as a read-only table layer
+            (same SDE the Manager service uses) and set <code>CONFIG.ledger.serviceUrl</code> to its endpoint. Or switch
+            <code>CONFIG.ledger.mode</code> to <code>"json"</code> and point <code>jsonUrl</code> at a static export.`;
+    } else {
+        hint = `The page tried to fetch the static ledger export at:<br><code>${escapeHtml(CONFIG.ledger.jsonUrl)}</code><br><br>
+            Make sure that file exists next to this page and contains the ledger rows.`;
+    }
+    document.getElementById("main").innerHTML =
+        `<div class="state error"><b>Couldn't load the retention ledger.</b><br><br>${hint}<br><br><b>Detail:</b> ${escapeHtml(msg)}</div>`;
+    document.getElementById("summary").textContent = "Failed to load";
+}
+
+function escapeHtml(s) {
+    return String(s ?? "").replace(/[&<>"']/g, c =>
+        ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+//================================================================
+//  Controls
+//================================================================
+document.getElementById("basisToggle").addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-basis]");
+    if (!btn) return;
+    filters.basis = btn.dataset.basis;
+    document.querySelectorAll("#basisToggle button").forEach(b =>
+        b.setAttribute("aria-pressed", b === btn ? "true" : "false"));
+    refreshAll();
+});
+document.getElementById("yearFrom").addEventListener("change", (e) => {
+    filters.yearFrom = Number(e.target.value);
+    if (filters.yearTo < filters.yearFrom) {
+        filters.yearTo = filters.yearFrom;
+        document.getElementById("yearTo").value = String(filters.yearTo);
+    }
+    refreshAll();
+});
+document.getElementById("yearTo").addEventListener("change", (e) => {
+    filters.yearTo = Number(e.target.value);
+    if (filters.yearFrom > filters.yearTo) {
+        filters.yearFrom = filters.yearTo;
+        document.getElementById("yearFrom").value = String(filters.yearFrom);
+    }
+    refreshAll();
+});
+document.getElementById("categoryFilter").addEventListener("change", (e) => { filters.category = e.target.value; refreshAll(); });
+document.getElementById("unitFilter").addEventListener("change", (e) => { filters.unit = e.target.value; refreshAll(); });
+document.getElementById("resetBtn").addEventListener("click", () => {
+    filters.category = ""; filters.unit = "";
+    document.getElementById("categoryFilter").value = "";
+    document.getElementById("unitFilter").value = "";
+    const years = [...new Set(allRows.flatMap(r => [r.closed_year, r.created_year]))].filter(y => y > 0).sort((a, b) => a - b);
+    filters.yearFrom = years[0]; filters.yearTo = years[years.length - 1];
+    document.getElementById("yearFrom").value = String(filters.yearFrom);
+    document.getElementById("yearTo").value = String(filters.yearTo);
+    refreshAll();
+});
+document.getElementById("exportBtn").addEventListener("click", exportToExcel);
+
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") document.getElementById("resetBtn").click();
+    else if ((e.key === "e" || e.key === "E") && document.activeElement.tagName !== "SELECT") {
+        e.preventDefault(); document.getElementById("exportBtn").click();
+    }
+});
+
+// Repaint charts on OS theme flip so colors track light/dark.
+darkMql.addEventListener("change", () => { if (allRows.length) refreshAll(); });
+
+//================================================================
+//  Excel export — filtered ledger rows + a derived-summary sheet
+//================================================================
+function exportToExcel() {
+    if (typeof XLSX === "undefined") { alert("Excel export library failed to load. Reload the page and try again."); return; }
+    if (!viewRows.length) { alert("Nothing to export — try clearing the filters first."); return; }
+
+    const detail = viewRows.map(r => ({
+        "Closed Year": r.closed_year, "Closed Month": r.closed_month,
+        "Reported Year": r.created_year, "Reported Month": r.created_month,
+        "Category": r.category_label, "Subcategory": r.subcategory,
+        "Final Status": r.status_label, "Responsible Unit": r.unit,
+        "Tickets": r.ticket_count,
+        "Resolution Days (sum)": r.res_days_sum,
+        "Avg Resolution Days": r.ticket_count ? +(r.res_days_sum / r.ticket_count).toFixed(2) : "",
+        "Survey Responses": r.srv_response, "Survey Rated": r.srv_rated,
+        "Rating Sum": r.srv_rating_sum,
+        "Rating 1": r.r1, "Rating 2": r.r2, "Rating 3": r.r3, "Rating 4": r.r4, "Rating 5": r.r5,
+    }));
+    const ws = XLSX.utils.json_to_sheet(detail);
+    ws["!freeze"] = { xSplit: 0, ySplit: 1 };
+    if (!ws["!sheetView"]) ws["!sheetView"] = [{ state: "frozen", topLeftCell: "A2", ySplit: 1 }];
+
+    const t = totals(viewRows);
+    const span = filters.yearFrom === filters.yearTo ? `${filters.yearFrom}` : `${filters.yearFrom}-${filters.yearTo}`;
+    const meta = [
+        ["RAC Historical Trends Export"],
+        ["Source", "De-identified retention ledger (Ticket_Retention_Summary)"],
+        ["Generated", new Date().toLocaleString()],
+        ["Period basis", filters.basis === "reported" ? "Reported (created) month/year" : "Closed (resolved) month/year"],
+        ["Year range", span],
+        ["Category filter", filters.category || "All"],
+        ["Unit filter", filters.unit || "All"],
+        [""],
+        ["Tickets in scope", t.tickets],
+        ["Avg resolution days", t.avgRes == null ? "n/a" : +t.avgRes.toFixed(2)],
+        ["Avg satisfaction (of rated)", t.avgRate == null ? "n/a" : +t.avgRate.toFixed(3)],
+        ["Survey responses", t.responses],
+        ["Survey rated", t.rated],
+        ["Rating 1 / 2 / 3 / 4 / 5", t.hist.join(" / ")],
+        ["Ledger rows in export", viewRows.length],
+    ];
+    const metaWs = XLSX.utils.aoa_to_sheet(meta);
+    metaWs["!cols"] = [{ wch: 28 }, { wch: 52 }];
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, metaWs, "Summary");
+    XLSX.utils.book_append_sheet(wb, ws, "Ledger Detail");
+
+    const today = new Date().toISOString().slice(0, 10);
+    XLSX.writeFile(wb, `rac_historical_${filters.basis}_${span}_${today}.xlsx`);
+}
+</script>
+</body>
+</html>
