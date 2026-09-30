@@ -115,6 +115,8 @@ const SIDEBAR_VIEWPORT_MARGIN = 48;
 // Widget width below which the list header switches to its
 // compact (phone) layout.
 const COMPACT_WIDTH = 480;
+// How long a success banner stays up before clearing itself.
+const OK_DISMISS_MS = 5000;
 
 interface SavedFilters {
     search: string;
@@ -1189,6 +1191,8 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
     private _viewportTimer: any = null;
     // Watches the widget's own width for the compact layout.
     private _rootRO: ResizeObserver | null = null;
+    // Auto-dismiss timer for the green success banner.
+    private _okTimer: any = null;
     // Tracks the last-applied definitionExpression so select() and back() can
     // reapply it after goTo() and React re-renders. ExB's rendering pipeline
     // can interact with the map layer between setState and goTo completion,
@@ -1334,6 +1338,15 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
     }
 
     componentDidUpdate(_prevProps: AllWidgetProps<any>, prevState: St) {
+        // Success banners clear themselves after OK_DISMISS_MS. Every new
+        // message restarts the timer; errors stay until dismissed.
+        if (prevState.ok !== this.state.ok) {
+            if (this._okTimer) { clearTimeout(this._okTimer); this._okTimer = null; }
+            if (this.state.ok) {
+                this._okTimer = setTimeout(() => { this._okTimer = null; this.setState({ ok: "" }); }, OK_DISMISS_MS);
+            }
+        }
+
         // Persist + reload on column-filter changes.
         const a = prevState.tableColFilters;
         const b = this.state.tableColFilters;
@@ -1416,6 +1429,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
         }
         // Tear down sidebar drag-release listeners.
         this.uninstallSidebarDragRelease();
+        if (this._okTimer) { clearTimeout(this._okTimer); this._okTimer = null; }
         if (this._viewportHandler) {
             window.removeEventListener("resize", this._viewportHandler);
             window.removeEventListener("orientationchange", this._viewportHandler);
@@ -3424,7 +3438,6 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                 exporting: false,
                 ok: `Export complete — ${allTickets.length.toLocaleString()} ticket${allTickets.length !== 1 ? "s" : ""} saved to RAC_Export_${dateStr}.xlsx`
             });
-            setTimeout(() => this.setState({ ok: "" }), 5000);
 
         } catch (e: any) {
             console.error("RAC Manager: Excel export failed:", e);
@@ -3436,8 +3449,17 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
     renderMsg() {
         const tk = this.tk;
         const { err, ok } = this.state;
-        if (err) return <div role="alert" style={{ padding: "7px 12px", margin: "4px 8px", background: "#fff5f5", border: "1px solid #fecaca", borderLeft: `3px solid ${tk.danger}`, color: tk.danger, borderRadius: 6, fontSize: 12, fontWeight: 500 }}>{err}</div>;
-        if (ok) return <div role="status" style={{ padding: "7px 12px", margin: "4px 8px", background: "#f0fdf4", border: "1px solid #bbf7d0", borderLeft: "3px solid #16a34a", color: "#14532d", borderRadius: 6, fontSize: 12, fontWeight: 500 }}>{ok}</div>;
+        // Banners sit in their own row above the list/detail pane (flexShrink 0),
+        // so they push the pane down instead of pushing its bottom out of view.
+        const closeBtn = (label: string, onClick: () => void, color: string) => (
+            <button type="button" onClick={onClick} aria-label={label} title={label}
+                style={{ marginLeft: "auto", flexShrink: 0, minWidth: 24, minHeight: 24, padding: 0, border: "none", background: "transparent", color, fontSize: 16, lineHeight: 1, cursor: "pointer", borderRadius: 4 }}>
+                <span aria-hidden="true">&times;</span>
+            </button>
+        );
+        const row = { display: "flex", alignItems: "center", gap: 8, flexShrink: 0, padding: "5px 6px 5px 12px", margin: "4px 8px", borderRadius: 6, fontSize: 12, fontWeight: 500 } as const;
+        if (err) return <div role="alert" style={{ ...row, background: "#fff5f5", border: "1px solid #fecaca", borderLeft: `3px solid ${tk.danger}`, color: tk.danger }}><span style={{ minWidth: 0 }}>{err}</span>{closeBtn("Dismiss error", () => this.setState({ err: "" }), tk.danger)}</div>;
+        if (ok) return <div role="status" style={{ ...row, background: "#f0fdf4", border: "1px solid #bbf7d0", borderLeft: "3px solid #16a34a", color: "#14532d" }}><span style={{ minWidth: 0 }}>{ok}</span>{closeBtn("Dismiss message", () => this.setState({ ok: "" }), "#14532d")}</div>;
         return null;
     }
 
@@ -5646,10 +5668,16 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
         const tk = this.tk;
         const mid = this.props.config?.useMapWidgetIds?.[0];
         return (
-            <div ref={this.rootRef} className={ROOT_CLASS} style={{ width: "100%", height: "100%", overflow: "hidden", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif", background: tk.surface, color: tk.text }} role="region" aria-label="Report A Concern Manager">
+            <div ref={this.rootRef} className={ROOT_CLASS} style={{ width: "100%", height: "100%", overflow: "hidden", display: "flex", flexDirection: "column", position: "relative", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif", background: tk.surface, color: tk.text }} role="region" aria-label="Report A Concern Manager">
                 {mid && <JimuMapViewComponent useMapWidgetId={mid} onActiveViewChange={this.onView} />}
                 {this.renderMsg()}
-                {this.state.mode === "list" ? this.renderList() : this.renderDetail()}
+                {/* The pane fills whatever height the banner leaves, so the
+                    bottom of the list/detail (comment box, pager) stays reachable. */}
+                <div style={{ flex: "1 1 auto", minHeight: 0, position: "relative" }}>
+                    <div style={{ position: "absolute", inset: 0 }}>
+                        {this.state.mode === "list" ? this.renderList() : this.renderDetail()}
+                    </div>
+                </div>
                 {/* One polite live region for results (Section 11.4). Every ok / err message lands here. */}
                 <div role="status" aria-live="polite" aria-atomic="true" style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0,0,0,0)" }}>
                     {this.state.ok || this.state.err}

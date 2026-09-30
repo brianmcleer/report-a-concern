@@ -5,6 +5,10 @@ All notable changes to the RAC Ticket Manager widget are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.2.2 (2026-09-30)
+
+- Fixed: after Save changes (or any success message) the green banner never cleared and pushed the detail pane down, so the bottom of the pane (comment box and buttons) could not be reached even when scrolled to the end. The banner now sits in its own row and the list/detail pane takes the remaining height, success banners clear themselves after 5 seconds (a new message restarts the timer), and both success and error banners have a dismiss button.
+
 ## 1.2.1 (2026-09-30)
 
 - Fixed: widget clipped on tablet and phone. The sidebar width saved from a desktop drag was pinned on every device, pushing the sidebar past the screen edge. The pin now applies only on screens 1025px and wider, is clamped to the window width, and is re-checked on rotate and window resize. Below 1025px the pin is removed, the sidebar is capped at the screen width, and no width is saved, so the Builder tablet/phone layout sizes it.
