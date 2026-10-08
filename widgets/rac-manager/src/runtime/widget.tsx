@@ -5079,11 +5079,11 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
         ];
 
         return (
-            <div style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }} role="region" aria-label="Ticket detail">
+            <div style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }} role="region" aria-label={t('ticketDetail')}>
                 {/* Header */}
                 <div style={{ padding: "10px 12px", borderBottom: `1px solid ${tk.divider}`, background: tk.surface }}>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 }}>
-                        <Button size="sm" onClick={this.back} title="Return to ticket list" aria-label="Back to ticket list">← Back</Button>
+                        <Button size="sm" onClick={this.back} title={t('returnToTicketList')} aria-label={t('backToTicketList')}>{t('back')}</Button>
                         {this.renderHelpButton()}
                     </div>
                     <div style={{ fontSize: 14, fontWeight: 600, marginTop: 8, color: tk.text }}>{detailTitle}</div>
@@ -5091,14 +5091,14 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                 </div>
 
                 {/* Tab bar */}
-                <div role="tablist" aria-label="Ticket detail tabs" style={{ display: "flex", padding: "0 10px", borderBottom: `1px solid ${tk.divider}`, background: tk.surface, flexWrap: "wrap" }}>
+                <div role="tablist" aria-label={t('ticketDetailTabs')} style={{ display: "flex", padding: "0 10px", borderBottom: `1px solid ${tk.divider}`, background: tk.surface, flexWrap: "wrap" }}>
                     {tabDef.map(td => {
                         const active = tab === td.id;
                         return (
                             <button
                                 key={td.id} type="button" role="tab"
                                 id={`rac-tab-${td.id}`} aria-selected={active} aria-controls={`rac-tabpanel-${td.id}`}
-                                title={`View ${td.label.toLowerCase()}${td.badge ? ` (${td.badge})` : ""}`}
+                                title={t('viewLabelBadge', { label: td.label.toLowerCase(), badge: td.badge ? ` (${td.badge})` : "" })}
                                 onClick={() => this.setState({ tab: td.id })}
                                 style={{
                                     padding: "8px 12px", cursor: "pointer", fontSize: 12,
@@ -5112,7 +5112,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                 onFocus={(e: any) => { e.currentTarget.style.boxShadow = FOCUS_RING; }}
                                 onBlur={(e: any) => { e.currentTarget.style.boxShadow = "none"; }}
                             >
-                                {td.label}{td.badge && <span aria-label={td.id === "survey" && td.badge === "\u2713" ? "has response" : `${td.badge} items`} style={{ marginLeft: 4, fontSize: 10, background: active ? tk.infoBg : tk.background, color: active ? tk.primary : tk.textSecondary, borderRadius: 99, padding: "0 5px", fontWeight: 600 }}>{td.badge}</span>}
+                                {td.label}{td.badge && <span aria-label={td.id === "survey" && td.badge === "\u2713" ? t('hasResponse') : t('badgeItems', { badge: td.badge })} style={{ marginLeft: 4, fontSize: 10, background: active ? tk.infoBg : tk.background, color: active ? tk.primary : tk.textSecondary, borderRadius: 99, padding: "0 5px", fontWeight: 600 }}>{td.badge}</span>}
                             </button>
                         );
                     })}
@@ -5124,35 +5124,35 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                     {tab === "details" && (
                         <div role="tabpanel" id="rac-tabpanel-details" aria-labelledby="rac-tab-details">
                             <div style={{ marginBottom: 10, background: tk.surface, borderRadius: 8, border: `1px solid ${tk.divider}`, padding: "10px 12px" }}>
-                                <div style={hdr(tk)}>Submitter</div>
-                                {row(tk, "Name", t.submitted_by_name || "Anonymous")}
-                                {row(tk, "Email", t.submitted_by_email || "\u2014")}
-                                {row(tk, "Phone", t.submitted_by_phone || "\u2014")}
-                                {row(tk, "Address", t.address_submitted || "\u2014")}
-                                {row(tk, "Source", t.source || "\u2014")}
+                                <div style={hdr(tk)}>{t('submitter')}</div>
+                                {row(tk, t('name'), t.submitted_by_name || t('anonymous'))}
+                                {row(tk, t('email'), t.submitted_by_email || "\u2014")}
+                                {row(tk, t('phone'), t.submitted_by_phone || "\u2014")}
+                                {row(tk, t('address'), t.address_submitted || "\u2014")}
+                                {row(tk, t('source'), t.source || "\u2014")}
                             </div>
                             <div style={{ marginBottom: 10, background: tk.surface, borderRadius: 8, border: `1px solid ${tk.divider}`, padding: "10px 12px" }}>
-                                <div style={hdr(tk)}>Description</div>
-                                <div style={{ fontSize: 13, lineHeight: 1.6, whiteSpace: "pre-wrap", color: tk.text }}>{t.description || "None"}</div>
+                                <div style={hdr(tk)}>{t('description')}</div>
+                                <div style={{ fontSize: 13, lineHeight: 1.6, whiteSpace: "pre-wrap", color: tk.text }}>{t.description || t('none')}</div>
                             </div>
                             <div style={{ marginBottom: 10, background: tk.surface, borderRadius: 8, border: `1px solid ${tk.divider}`, padding: "10px 12px" }}>
-                                <div style={hdr(tk)}>Dates</div>
-                                {row(tk, "Created", fmt(t.created_date))}
-                                {row(tk, "Updated", fmt(t.modified_date))}
-                                {row(tk, "Resolved", fmt(t.resolved_date))}
+                                <div style={hdr(tk)}>{t('dates')}</div>
+                                {row(tk, t('created'), fmt(t.created_date))}
+                                {row(tk, t('updated'), fmt(t.modified_date))}
+                                {row(tk, t('resolved'), fmt(t.resolved_date))}
                             </div>
 
                             {/* ── Manage Ticket ── compact property rows, no card header */}
                             <div style={{ marginBottom: 14, background: tk.surface, borderRadius: 8, border: `1px solid ${tk.divider}` }}>
                                 {/* Property rows */}
                                 <div style={{ display: "flex", alignItems: "center", padding: "8px 12px", borderBottom: `1px solid ${tk.divider}`, gap: 12 }}>
-                                    <label htmlFor="rac-edit-status" style={{ width: 72, flexShrink: 0, fontSize: 12, color: tk.textSecondary, fontWeight: 500 }}>Status</label>
+                                    <label htmlFor="rac-edit-status" style={{ width: 72, flexShrink: 0, fontSize: 12, color: tk.textSecondary, fontWeight: 500 }}>{t('ctlStatus')}</label>
                                     <Select id="rac-edit-status" size="sm" value={eS} onChange={(e: any) => { const ns = Number(e.target.value); this.setState({ eS: ns, resolveNote: "", resolveDate: (ns === 4 || ns === 5) ? ymd() : "" }); }} style={{ flex: 1 }}>
                                         {Object.entries(S).map(([k, v]) => <Option key={k} value={Number(k)}>{v}</Option>)}
                                     </Select>
                                 </div>
                                 <div style={{ display: "flex", alignItems: "center", padding: "8px 12px", borderBottom: `1px solid ${tk.divider}`, gap: 12 }}>
-                                    <label htmlFor="rac-edit-priority" style={{ width: 72, flexShrink: 0, fontSize: 12, color: tk.textSecondary, fontWeight: 500 }}>Priority</label>
+                                    <label htmlFor="rac-edit-priority" style={{ width: 72, flexShrink: 0, fontSize: 12, color: tk.textSecondary, fontWeight: 500 }}>{t('ctlPriority')}</label>
                                     <Select id="rac-edit-priority" size="sm" value={eP} onChange={(e: any) => this.setState({ eP: Number(e.target.value) })} style={{ flex: 1 }}>
                                         {Object.entries(P).map(([k, v]) => <Option key={k} value={Number(k)}>{v}</Option>)}
                                     </Select>
@@ -5169,7 +5169,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                 })()}
                                 {/* ── Assigned dept ── */}
                                 <div style={{ display: "flex", alignItems: "center", padding: "8px 12px", gap: 12, borderBottom: `1px solid ${tk.divider}` }}>
-                                    <label htmlFor="rac-edit-dept" style={{ width: 72, flexShrink: 0, fontSize: 12, color: tk.textSecondary, fontWeight: 500 }}>Assigned</label>
+                                    <label htmlFor="rac-edit-dept" style={{ width: 72, flexShrink: 0, fontSize: 12, color: tk.textSecondary, fontWeight: 500 }}>{t('ctlAssigned')}</label>
                                     <Select id="rac-edit-dept" size="sm" value={eA} onChange={(e: any) => {
                                         const newDept = e.target.value;
                                         const validCats = validCatsForDept(newDept);
@@ -5179,13 +5179,13 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                         // even if the category code stays the same (dept context changed).
                                         this.setState({ eA: newDept, eC: newCat, eSC: "" });
                                     }} style={{ flex: 1 }}>
-                                        <Option value="">Unassigned</Option>
+                                        <Option value="">{t('unassigned')}</Option>
                                         {this.state.deptOptions.map(d => <Option key={d} value={d}>{d}</Option>)}
                                     </Select>
                                 </div>
                                 {/* ── Category — filtered to dept's valid codes ── */}
                                 <div style={{ display: "flex", alignItems: "center", padding: "8px 12px", gap: 12, borderBottom: `1px solid ${tk.divider}` }}>
-                                    <label htmlFor="rac-edit-cat" style={{ width: 72, flexShrink: 0, fontSize: 12, color: tk.textSecondary, fontWeight: 500 }}>Category</label>
+                                    <label htmlFor="rac-edit-cat" style={{ width: 72, flexShrink: 0, fontSize: 12, color: tk.textSecondary, fontWeight: 500 }}>{t('ctlCategory')}</label>
                                     <Select id="rac-edit-cat" size="sm" value={eC} onChange={(e: any) => {
                                         const newCat = Number(e.target.value);
                                         // Cascade: update eA to the canonical dept for this category.
@@ -5211,9 +5211,9 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                 </div>
                                 {/* ── Subcategory — cascades from category; empty if none defined ── */}
                                 <div style={{ display: "flex", alignItems: "center", padding: "8px 12px", gap: 12, borderBottom: eS !== t.status ? `1px solid ${tk.divider}` : "none" }}>
-                                    <label htmlFor="rac-edit-subcat" style={{ width: 72, flexShrink: 0, fontSize: 12, color: tk.textSecondary, fontWeight: 500 }}>Subcategory</label>
+                                    <label htmlFor="rac-edit-subcat" style={{ width: 72, flexShrink: 0, fontSize: 12, color: tk.textSecondary, fontWeight: 500 }}>{t('subcategory')}</label>
                                     <Select id="rac-edit-subcat" size="sm" value={eSC} onChange={(e: any) => this.setState({ eSC: e.target.value })} style={{ flex: 1 }}>
-                                        <Option value="">— None —</Option>
+                                        <Option value="">{t('none2')}</Option>
                                         {(catSubcatOptions[eC] || []).map(opt => <Option key={opt.code} value={opt.code}>{opt.name}</Option>)}
                                     </Select>
                                 </div>
@@ -5224,9 +5224,9 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                         {(eS === 4 || eS === 5) && (
                                             <div style={{ marginBottom: 10 }}>
                                                 <label htmlFor="rac-resolved-date" style={{ display: "block", fontSize: 12, fontWeight: 600, color: eS === 4 ? tk.warning : tk.text, marginBottom: 5 }}>
-                                                    {eS === 4 ? "Resolved date" : "Closed date"}
+                                                    {eS === 4 ? t('resolvedDate') : t('closedDate')}
                                                     <span style={{ fontWeight: 400, color: eS === 4 ? tk.warning : tk.textSecondary, marginLeft: 6, fontSize: 11 }}>
-                                                        date the work was completed
+                                                        {t('dateTheWorkWasCompleted')}
                                                     </span>
                                                 </label>
                                                 <input
@@ -5238,21 +5238,21 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                                     onChange={(e: any) => this.setState({ resolveDate: e.target.value })}
                                                     style={{ fontSize: 13, padding: "5px 8px", border: `1px solid ${tk.divider}`, borderRadius: 4 }}
                                                 />
-                                                <div style={{ fontSize: 11, color: tk.textSecondary, marginTop: 3 }}>Defaults to today. Set this to the actual completion date if it differs.</div>
+                                                <div style={{ fontSize: 11, color: tk.textSecondary, marginTop: 3 }}>{t('defaultsToTodaySetThisTo')}</div>
                                             </div>
                                         )}
                                         <label htmlFor="rac-status-note" style={{ display: "block", fontSize: 12, fontWeight: 600, color: eS === 4 ? tk.warning : tk.text, marginBottom: 5 }}>
-                                            {eS === 4 ? "Resolution note" : eS === 5 ? "Closure note" : "Status change comment"} <span aria-hidden="true" style={{ color: tk.danger }}>*</span>
+                                            {eS === 4 ? t('resolutionNote') : eS === 5 ? t('closureNote') : t('statusChangeComment')} <span aria-hidden="true" style={{ color: tk.danger }}>*</span>
                                             <span style={{ fontWeight: 400, color: eS === 4 ? tk.warning : tk.textSecondary, marginLeft: 6, fontSize: 11 }}>
-                                                {eS === 4 ? "sent with the resolution email" : eS === 5 ? "reason ticket is being closed" : "submitter will be notified"}
+                                                {eS === 4 ? t('sentWithTheResolutionEmail') : eS === 5 ? t('reasonTicketIsBeingClosed') : t('submitterWillBeNotified')}
                                             </span>
                                         </label>
                                         <TextArea
                                             id="rac-status-note"
                                             value={this.state.resolveNote}
                                             onChange={(e: any) => this.setState({ resolveNote: e.target.value })}
-                                            placeholder={eS === 4 ? "Describe what was done to resolve this issue…" : eS === 5 ? "Explain why this ticket is being closed…" : `Explain the status change to ${S[eS]}…`}
-                                            aria-label={`Comment explaining status change to ${S[eS]}, required`}
+                                            placeholder={eS === 4 ? t('describeWhatWasDoneToResolve') : eS === 5 ? t('explainWhyThisTicketIsBeing') : t('explainTheStatusChangeToS', { S: S[eS] })}
+                                            aria-label={t('commentExplainingStatusChangeToS', { S: S[eS] })}
                                             aria-required="true"
                                             maxLength={(eS === 4 || eS === 5) ? INTERNAL_NOTES_MAXLEN : undefined}
                                             style={{ width: "100%", fontSize: 13, borderColor: this.state.resolveNote.trim() ? tk.divider : "#fca5a5" }}
@@ -5263,7 +5263,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                             </div>
                                         )}
                                         {!this.state.resolveNote.trim() && (
-                                            <div role="alert" style={{ fontSize: 11, color: tk.danger, marginTop: 3 }}>Required before changing status to {S[eS]}</div>
+                                            <div role="alert" style={{ fontSize: 11, color: tk.danger, marginTop: 3 }}>{t('requiredBeforeChangingStatusToS', { S: S[eS] })}</div>
                                         )}
                                     </div>
                                 )}
@@ -5274,20 +5274,20 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                         const hasIntegrityErr = !!currentIntegrityWarn;
                                         const needsComment = eS !== t.status && !this.state.resolveNote.trim();
                                         const isDisabled = saving || needsComment || hasIntegrityErr;
-                                        const label = saving ? "Saving changes"
-                                            : hasIntegrityErr ? "Fix routing errors before saving"
-                                                : eS !== t.status ? `Change status to ${S[eS]}`
-                                                    : "Save changes";
+                                        const label = saving ? t('savingChanges')
+                                            : hasIntegrityErr ? t('fixRoutingErrorsBeforeSaving')
+                                                : eS !== t.status ? t('changeStatusToS', { S: S[eS] })
+                                                    : t('ctlSaveChanges');
                                         return (
                                             <Button
                                                 type="primary" size="sm"
                                                 onClick={this.save}
                                                 disabled={isDisabled}
                                                 aria-label={label}
-                                                title={hasIntegrityErr ? "Resolve the routing warning above before saving" : undefined}
+                                                title={hasIntegrityErr ? t('resolveTheRoutingWarningAboveBefore') : undefined}
                                                 style={{ fontWeight: 500, minWidth: 90, opacity: hasIntegrityErr ? 0.5 : 1 }}
                                             >
-                                                {saving ? "Saving…" : eS !== t.status ? `Change to ${S[eS]}` : "Save changes"}
+                                                {saving ? t('saving') : eS !== t.status ? t('changeToS', { S: S[eS] }) : t('ctlSaveChanges')}
                                             </Button>
                                         );
                                     })()}
@@ -5300,8 +5300,8 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                     id="rac-new-comment"
                                     value={nc}
                                     onChange={(e: any) => this.setState({ nc: e.target.value })}
-                                    placeholder="Leave a note…"
-                                    aria-label="Comment text"
+                                    placeholder={t('leaveANote')}
+                                    aria-label={t('commentText')}
                                     style={{ width: "100%", fontSize: 13, border: "none", borderBottom: `1px solid ${tk.divider}`, borderRadius: "8px 8px 0 0", resize: "vertical" as const, padding: "10px 12px", boxSizing: "border-box" as const, outline: "none" }}
                                 />
                                 {/* Staged photo preview + validation error */}
@@ -5310,11 +5310,11 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                 )}
                                 {attPreview && (
                                     <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", borderBottom: `1px solid ${tk.divider}` }}>
-                                        <img src={attPreview} alt="Attached photo preview" style={{ width: 44, height: 44, objectFit: "cover", borderRadius: 6, border: `1px solid ${tk.divider}`, flexShrink: 0 }} />
-                                        <span style={{ fontSize: 12, color: tk.textSecondary, flex: 1 }}>Photo attached to this comment</span>
-                                        <button type="button" onClick={this.clearAttachment} aria-label="Remove attached photo"
+                                        <img src={attPreview} alt={t('attachedPhotoPreview')} style={{ width: 44, height: 44, objectFit: "cover", borderRadius: 6, border: `1px solid ${tk.divider}`, flexShrink: 0 }} />
+                                        <span style={{ fontSize: 12, color: tk.textSecondary, flex: 1 }}>{t('photoAttachedToThisComment')}</span>
+                                        <button type="button" onClick={this.clearAttachment} aria-label={t('removeAttachedPhoto')}
                                             style={{ border: "none", background: "none", color: tk.danger, cursor: "pointer", fontSize: 12, fontWeight: 600, padding: 4 }}>
-                                            Remove
+                                            {t('ctlRemove')}
                                         </button>
                                     </div>
                                 )}
@@ -5333,21 +5333,21 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                         size="sm" type="default"
                                         onClick={() => this.attInputRef?.click()}
                                         disabled={saving || attUploading || !!attFile}
-                                        aria-label="Attach a photo to this comment"
-                                        title="Attach a photo"
+                                        aria-label={t('attachAPhotoToThisComment')}
+                                        title={t('attachAPhoto')}
                                         style={{ flexShrink: 0, fontWeight: 600, background: tk.surface, color: attFile ? tk.textSecondary : tk.primary, border: `1px solid ${attFile ? tk.divider : tk.primary}` }}
                                     >
-                                        {attUploading ? "…" : attFile ? "📷 Attached" : "📷 Photo"}
+                                        {attUploading ? "…" : attFile ? t('attached') : t('photo')}
                                     </Button>
                                     <Select id="rac-comment-type" size="sm" value={nct}
                                         onChange={(e: any) => this.setState({ nct: e.target.value })}
-                                        aria-label="Comment type" style={{ flex: 1, minWidth: 130 }}>
+                                        aria-label={t('commentType')} style={{ flex: 1, minWidth: 130 }}>
                                         {np === 0
-                                            ? <Option value="INTERNAL">Internal Note</Option>
+                                            ? <Option value="INTERNAL">{t('internalNote')}</Option>
                                             : [
-                                                <Option key="STATUS" value="STATUS">Status Update</Option>,
-                                                <Option key="ASSIGN" value="ASSIGN">Assignment Change</Option>,
-                                                <Option key="PUBLIC" value="PUBLIC">Public Response</Option>,
+                                                <Option key="STATUS" value="STATUS">{t('statusUpdate')}</Option>,
+                                                <Option key="ASSIGN" value="ASSIGN">{t('assignmentChange')}</Option>,
+                                                <Option key="PUBLIC" value="PUBLIC">{t('publicResponse')}</Option>,
                                             ]
                                         }
                                     </Select>
@@ -5358,18 +5358,18 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                             const newType = v === 0 ? "INTERNAL" : (nct === "INTERNAL" ? "PUBLIC" : nct);
                                             this.setState({ np: v, nct: newType });
                                         }}
-                                        aria-label="Comment visibility" style={{ width: 96 }}>
-                                        <Option value={1}>Public</Option>
-                                        <Option value={0}>Internal</Option>
+                                        aria-label={t('commentVisibility')} style={{ width: 96 }}>
+                                        <Option value={1}>{t('ctlPublic')}</Option>
+                                        <Option value={0}>{t('ctlInternal')}</Option>
                                     </Select>
                                     <Button
                                         type="primary" size="sm"
                                         onClick={this.addComment}
                                         disabled={saving || attUploading || !nc.trim()}
-                                        aria-label={saving ? "Adding comment" : "Add comment"}
+                                        aria-label={saving ? t('addingComment') : t('addComment')}
                                         style={{ fontWeight: 500, minWidth: 64, flexShrink: 0 }}
                                     >
-                                        {saving ? "…" : "Comment"}
+                                        {saving ? "…" : t('ctlComment')}
                                     </Button>
                                 </div>
                             </div>
@@ -5378,19 +5378,19 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
 
                     {tab === "comments" && (
                         <div role="tabpanel" id="rac-tabpanel-comments" aria-labelledby="rac-tab-comments">
-                            <div style={hdr(tk)} id="rac-comment-history">Comment History ({comments.length})</div>
-                            {comments.length === 0 && <div style={{ fontSize: 13, color: tk.textSecondary, padding: "12px 0" }}>No comments yet.</div>}
+                            <div style={hdr(tk)} id="rac-comment-history">{t('commentHistoryCommentsCount', { commentsCount: comments.length })}</div>
+                            {comments.length === 0 && <div style={{ fontSize: 13, color: tk.textSecondary, padding: "12px 0" }}>{t('noCommentsYet')}</div>}
                             <div role="list" aria-labelledby="rac-comment-history">
                                 {comments.map((c: any) => {
                                     const isInternal = c.is_public === 0;
                                     return (
                                         <div key={c.OBJECTID} role="listitem" style={{ padding: "10px 12px", marginBottom: 6, background: tk.surface, borderRadius: 8, border: `1px solid ${tk.divider}`, borderLeft: `3px solid ${isInternal ? tk.danger : tk.primary}`, boxShadow: "0 1px 2px rgba(0,0,0,0.04)" }}>
                                             <div style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 4, flexWrap: "wrap" }}>
-                                                <span style={{ fontWeight: 600, fontSize: 12, color: tk.text }}>{c.author || "Unknown"}</span>
+                                                <span style={{ fontWeight: 600, fontSize: 12, color: tk.text }}>{c.author || t('unknown')}</span>
                                                 {c.author_role && <span style={{ fontSize: 10, color: tk.textSecondary }}>{c.author_role}</span>}
                                                 {isInternal && (
-                                                    <Tip text="Only visible to staff">
-                                                        <span style={{ fontSize: 9, background: "#fef2f2", color: tk.danger, border: "1px solid #fecaca", padding: "1px 6px", borderRadius: 99, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase" as const }}>Internal</span>
+                                                    <Tip text={t('onlyVisibleToStaff')}>
+                                                        <span style={{ fontSize: 9, background: "#fef2f2", color: tk.danger, border: "1px solid #fecaca", padding: "1px 6px", borderRadius: 99, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase" as const }}>{t('ctlInternal')}</span>
                                                     </Tip>
                                                 )}
                                                 <span style={{ fontSize: 10, color: tk.textSecondary, marginLeft: "auto" }}>{fmt(c.created_date)}</span>
@@ -5405,9 +5405,9 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
 
                     {tab === "photos" && (
                         <div role="tabpanel" id="rac-tabpanel-photos" aria-labelledby="rac-tab-photos">
-                            <div style={hdr(tk)} id="rac-photo-header">Photos ({photos.length})</div>
+                            <div style={hdr(tk)} id="rac-photo-header">{t('photosPhotosCount', { photosCount: photos.length })}</div>
                             {photos.length === 0 && (
-                                <div style={{ fontSize: 13, color: tk.textSecondary, padding: "12px 0" }}>No photos found for this ticket.</div>
+                                <div style={{ fontSize: 13, color: tk.textSecondary, padding: "12px 0" }}>{t('noPhotosFoundForThisTicket')}</div>
                             )}
                             <div role="list" aria-labelledby="rac-photo-header" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                                 {photos.map((p: any, idx: number) => (
@@ -5416,13 +5416,13 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                         {p.att_url && (p.content_type || "").startsWith("image/") && (
                                             <button
                                                 type="button"
-                                                aria-label={`View full size: ${p.att_name || `Photo ${idx + 1}`}`}
+                                                aria-label={t('viewFullSizeAttName', { att_name: p.att_name || t('photoIdx', { idx: idx + 1 }) })}
                                                 onClick={() => this.openLightbox(idx)}
                                                 style={{ display: "block", width: "100%", padding: 0, border: "none", background: "none", cursor: "zoom-in" }}
                                             >
                                                 <img
                                                     src={p.att_url}
-                                                    alt={p.att_name || `Photo ${idx + 1}`}
+                                                    alt={p.att_name || t('photoIdx', { idx: idx + 1 })}
                                                     style={{ width: "100%", maxHeight: 240, objectFit: "cover", display: "block" }}
                                                 />
                                             </button>
@@ -5433,22 +5433,22 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                                 src={p.att_url}
                                                 controls
                                                 style={{ width: "100%", maxHeight: 280, display: "block", background: "#000" }}
-                                                aria-label={`Video ${p.att_name || `Video ${idx + 1}`}`}
+                                                aria-label={t('videoAttName', { att_name: p.att_name || t('videoIdx', { idx: idx + 1 }) })}
                                             />
                                         )}
                                         <div style={{ padding: "6px 12px 8px" }}>
                                             {(() => {
-                                                const nm = p.att_name || p.file_name || "Unnamed";
+                                                const nm = p.att_name || p.file_name || t('unnamed');
                                                 const isStaffInt = /^staffint-/i.test(nm);
                                                 const isStaff = isStaffInt || /^staff-/i.test(nm);
-                                                const badge = isStaffInt ? "Staff · Internal" : isStaff ? "Staff · Public" : "Submitter";
+                                                const badge = isStaffInt ? t('staffInternal') : isStaff ? t('staffPublic') : t('submitter');
                                                 const bg = isStaffInt ? "#fef2f2" : isStaff ? tk.infoBg : tk.background;
                                                 const fg = isStaffInt ? tk.danger : isStaff ? tk.primary : tk.textSecondary;
                                                 const bd = isStaffInt ? "#fecaca" : isStaff ? "#bfdbfe" : tk.divider;
                                                 return (
                                                     <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-                                                        <span style={{ fontWeight: 600, fontSize: 12, color: tk.text }}>{isStaff ? "Staff photo" : nm}</span>
-                                                        <Tip text={isStaffInt ? "Attached to an internal note — not shown to the submitter" : isStaff ? "Attached to a public comment — visible on the public status page" : "Uploaded by the submitter"}>
+                                                        <span style={{ fontWeight: 600, fontSize: 12, color: tk.text }}>{isStaff ? t('staffPhoto') : nm}</span>
+                                                        <Tip text={isStaffInt ? t('attachedToAnInternalNoteNot') : isStaff ? t('attachedToAPublicCommentVisible') : t('uploadedByTheSubmitter')}>
                                                             <span style={{ fontSize: 9, background: bg, color: fg, border: `1px solid ${bd}`, padding: "1px 6px", borderRadius: 99, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase" as const }}>{badge}</span>
                                                         </Tip>
                                                     </div>
@@ -5478,19 +5478,19 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                 const navBtnStyle = (disabled: boolean): React.CSSProperties => ({
                                     position: "absolute", top: "50%", transform: "translateY(-50%)",
                                     background: disabled ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.18)",
-                                    border: "1px solid rgba(255,255,255,0.25)",
+                                    border: t('_1pxSolidRgba255255255'),
                                     borderRadius: "50%", width: 44, height: 44,
                                     cursor: disabled ? "default" : "pointer",
                                     color: disabled ? "rgba(255,255,255,0.25)" : "#fff",
                                     fontSize: 20, display: "flex", alignItems: "center", justifyContent: "center",
-                                    transition: "background 0.15s", pointerEvents: disabled ? "none" : "auto",
+                                    transition: t('background015s'), pointerEvents: disabled ? "none" : "auto",
                                     zIndex: 2,
                                 });
                                 return ReactDOM.createPortal(
                                     <div
                                         role="dialog"
                                         aria-modal="true"
-                                        aria-label={`Media viewer: ${lbItem.att_name || lbItem.file_name} (${lbIdx + 1} of ${total})`}
+                                        aria-label={t('mediaViewerAttNameLbIdxOf', { att_name: lbItem.att_name || lbItem.file_name, lbIdx: lbIdx + 1, total })}
                                         onKeyDown={(e: any) => {
                                             if (e.key === "Escape") this.closeLightbox();
                                             if (e.key === "ArrowLeft" && hasPrev) this.setState({ lightboxIndex: lbIdx - 1 });
@@ -5511,7 +5511,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                         {/* Close */}
                                         <button
                                             type="button"
-                                            aria-label="Close media viewer"
+                                            aria-label={t('closeMediaViewer')}
                                             onClick={this.closeLightbox}
                                             style={{
                                                 position: "absolute", top: 16, right: 16, zIndex: 3,
@@ -5542,7 +5542,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                         {/* Prev */}
                                         <button
                                             type="button"
-                                            aria-label="Previous media"
+                                            aria-label={t('previousMedia')}
                                             aria-disabled={!hasPrev}
                                             disabled={!hasPrev}
                                             onClick={(e: any) => { e.stopPropagation(); this.setState({ lightboxIndex: lbIdx - 1 }); }}
@@ -5554,7 +5554,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                         {/* Next */}
                                         <button
                                             type="button"
-                                            aria-label="Next media"
+                                            aria-label={t('nextMedia')}
                                             aria-disabled={!hasNext}
                                             disabled={!hasNext}
                                             onClick={(e: any) => { e.stopPropagation(); this.setState({ lightboxIndex: lbIdx + 1 }); }}
@@ -5576,13 +5576,13 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                                     borderRadius: 4, boxShadow: "0 4px 32px rgba(0,0,0,0.5)",
                                                     background: "#000",
                                                 }}
-                                                aria-label={lbItem.att_name || lbItem.file_name || "Video"}
+                                                aria-label={lbItem.att_name || lbItem.file_name || t('video')}
                                             />
                                         ) : (
                                             <img
                                                 key={lbItem.att_url}
                                                 src={lbItem.att_url}
-                                                alt={lbItem.att_name || lbItem.file_name || `Photo ${lbIdx + 1}`}
+                                                alt={lbItem.att_name || lbItem.file_name || t('photoLbIdx', { lbIdx: lbIdx + 1 })}
                                                 onClick={(e: any) => e.stopPropagation()}
                                                 style={{
                                                     maxWidth: "86vw", maxHeight: "80vh",
@@ -5603,11 +5603,11 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                             {lbItem.att_name || lbItem.file_name || ""}
                                             {total > 1 && (
                                                 <span style={{ marginLeft: 16, opacity: 0.5 }}>
-                                                    ← → keys to navigate · Esc to close
+                                                    {t('keysToNavigateEscToClose')}
                                                 </span>
                                             )}
                                             {total === 1 && (
-                                                <span style={{ marginLeft: 12, opacity: 0.5 }}>Click outside to close</span>
+                                                <span style={{ marginLeft: 12, opacity: 0.5 }}>{t('clickOutsideToClose')}</span>
                                             )}
                                         </div>
                                     </div>,
@@ -5619,25 +5619,25 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
 
                     {tab === "survey" && (
                         <div role="tabpanel" id="rac-tabpanel-survey" aria-labelledby="rac-tab-survey">
-                            <div style={hdr(tk)}>Survey Response</div>
-                            {!survey && <div style={{ fontSize: 13, color: tk.textSecondary, padding: "12px 0" }}>No survey response for this ticket.</div>}
+                            <div style={hdr(tk)}>{t('surveyResponse')}</div>
+                            {!survey && <div style={{ fontSize: 13, color: tk.textSecondary, padding: "12px 0" }}>{t('noSurveyResponseForThisTicket')}</div>}
                             {survey && (
                                 <div style={{ background: tk.surface, borderRadius: 8, border: `1px solid ${tk.divider}`, padding: "12px 14px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
                                     <div style={{ marginBottom: 12 }}>
-                                        <div style={{ ...lbl(tk), marginBottom: 6 }}>Satisfaction Rating</div>
+                                        <div style={{ ...lbl(tk), marginBottom: 6 }}>{t('satisfactionRating')}</div>
                                         {stars(tk, survey.satisfaction_rating)}
                                     </div>
                                     <div style={{ marginBottom: 12 }}>
-                                        <div style={{ ...lbl(tk), marginBottom: 4 }}>Comments</div>
+                                        <div style={{ ...lbl(tk), marginBottom: 4 }}>{t('ctlComments')}</div>
                                         <div style={{ fontSize: 13, lineHeight: 1.6, whiteSpace: "pre-wrap", color: tk.text }}>{survey.comments || "\u2014"}</div>
                                     </div>
                                     <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
                                         <div>
-                                            <div style={{ ...lbl(tk), marginBottom: 2 }}>Submitted</div>
+                                            <div style={{ ...lbl(tk), marginBottom: 2 }}>{t('submitted')}</div>
                                             <div style={{ fontSize: 13, color: tk.text }}>{fmt(survey.submitted_date)}</div>
                                         </div>
                                     </div>
-                                    <div style={{ fontSize: 10, color: tk.textSecondary, fontFamily: "monospace", marginTop: 12 }}>Survey ID: {survey.survey_id || "\u2014"}</div>
+                                    <div style={{ fontSize: 10, color: tk.textSecondary, fontFamily: "monospace", marginTop: 12 }}>{t('surveyIdSurveyId', { survey_id: survey.survey_id || "\u2014" })}</div>
                                 </div>
                             )}
                         </div>

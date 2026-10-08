@@ -7,6 +7,7 @@ import type { BeaconHandle } from "../shared/beacon";
 import { isValidEmail, PHONE_DIGITS_RE, stripPhoneDigits } from "./lib/validators";
 import { containsProfanity } from "./lib/profanity";
 import { CATEGORY_BOUNDARY_MAP } from "./lib/categoryBoundaries";
+import defaultMessages from "./translations/default";
 
 // ╔═══════════════════════════════════════════════════════════╗
 // ║  Report A Concern — Public Submission Widget             ║
@@ -2094,6 +2095,15 @@ export default class ReportAConcernSubmit extends React.PureComponent<
     AllWidgetProps<IMConfig>,
     WidgetState
 > {
+    // exb-i18n-kit translator: the app locale via the widget's intl, English from default.ts
+    // as the fallback (with {placeholders} filled) when intl is not there.
+    nls = (id: string, values?: { [key: string]: any }): string => {
+        const intl = (this.props as any).intl;
+        const msg: string = (defaultMessages as any)[id] ?? id;
+        if (intl && typeof intl.formatMessage === "function") return intl.formatMessage({ id, defaultMessage: msg }, values);
+        return msg.replace(/\{(\w+)\}/g, (m: string, k: string) => (values && values[k] != null ? String(values[k]) : m));
+    };
+
     private beacon: BeaconHandle | null = null;
     private graphicRef: __esri.Graphic | null = null;
     private boundaryGraphicRefs: __esri.Graphic[] = [];
@@ -3561,7 +3571,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                     })),
                     addressSearching: false,
                 });
-                this.announce(`${json.candidates.length} address${json.candidates.length === 1 ? "" : "es"} found. Press Tab to move into the list and Enter to pick one.`);
+                this.announce((json.candidates.length === 1 ? this.nls('candidatesCountAddressFoundPressTabTo', { candidatesCount: json.candidates.length }) : this.nls('candidatesCountAddressesFoundPressTabTo', { candidatesCount: json.candidates.length })));
             } else { this.setState({ addressResults: [], addressSearching: false, addressError: "No results found." }); }
         } catch { this.setState({ addressSearching: false, addressError: "Search failed." }); }
     };
@@ -3982,14 +3992,14 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                     </svg>
                     <span>
                         {alert.phones.length > 1
-                            ? "Please call us for this issue"
-                            : "Please call us for this issue"}
+                            ? this.nls('pleaseCallUsForThisIssue')
+                            : this.nls('pleaseCallUsForThisIssue')}
                     </span>
                 </div>
                 <div>{body}</div>
                 {alert.phones.map((p, idx) => {
                     const tel = this.telHref(p.number);
-                    const ariaLabel = `Call ${[p.name, p.label, p.number].filter(Boolean).join(", ")}`;
+                    const ariaLabel = this.nls('callJoin', { join: [p.name, p.label, p.number].filter(Boolean).join(", ") });
                     return (
                         <div key={idx} style={phoneBlock}>
                             {p.label && <span style={phoneLabelStyle}>{p.label}</span>}
@@ -4320,7 +4330,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
     copyTicketUrl = (url: string) => {
         const doSet = () => {
             this.setState({ urlCopied: true });
-            this.announce("Ticket status link copied.");
+            this.announce(this.nls('ticketStatusLinkCopied'));
             if (this.copyResetTimer) clearTimeout(this.copyResetTimer);
             this.copyResetTimer = setTimeout(() => {
                 this.setState({ urlCopied: false });
@@ -4359,11 +4369,11 @@ export default class ReportAConcernSubmit extends React.PureComponent<
         const S = this.getStyles();
         const { step } = this.state;
         return (
-            <nav style={S.stepper} aria-label="Form progress">
+            <nav style={S.stepper} aria-label={this.nls('formProgress')}>
                 {STEP_LABELS.map((label, i) => {
                     const done = i < step;
                     const active = i === step;
-                    const stateLabel = done ? ", completed" : active ? ", current step" : "";
+                    const stateLabel = done ? this.nls('completed') : active ? this.nls('currentStep') : "";
                     return (
                         <React.Fragment key={i}>
                             {i > 0 && <div style={S.stepLine(done)} aria-hidden="true" />}
@@ -4371,7 +4381,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                 <div
                                     style={S.stepDot(active, done)}
                                     aria-current={active ? "step" : undefined}
-                                    aria-label={`Step ${i + 1}: ${label}${stateLabel}`}
+                                    aria-label={this.nls('stepILabelStateLabel', { i: i + 1, label, stateLabel })}
                                     role="img"
                                 >
                                     {done ? "\u2713" : i + 1}
@@ -4477,7 +4487,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                 onClick={this.useGPS}
                 disabled={gpsLocating}
                 aria-busy={gpsLocating}
-                title="Use your device's GPS to set your current location"
+                title={this.nls('useYourDeviceSGpsTo')}
                 style={{
                     width: "100%",
                     display: "flex", alignItems: "center", gap: 14,
@@ -4525,10 +4535,10 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 15, fontWeight: 700, color: t.text, lineHeight: 1.2, marginBottom: 3 }}>
-                        {gpsLocating ? "Detecting location…" : "Use My Location"}
+                        {gpsLocating ? this.nls('detectingLocation') : this.nls('useMyLocation')}
                     </div>
                     <div style={{ fontSize: 12, color: t.textMuted, lineHeight: 1.3 }}>
-                        {gpsLocating ? "Please wait…" : "Detect your current GPS position"}
+                        {gpsLocating ? this.nls('pleaseWait') : this.nls('detectYourCurrentGpsPosition')}
                     </div>
                 </div>
                 {!gpsLocating && (
@@ -4550,7 +4560,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                     fontSize: 17, fontWeight: 700, color: t.text,
                     margin: "0 0 20px 0", letterSpacing: -0.2, outline: "none",
                 }} tabIndex={-1} data-rac-step-heading="true">
-                    Where is the concern?
+                    {this.nls('whereIsTheConcern')}
                 </h2>
 
                 {/* Location-level field error */}
@@ -4562,7 +4572,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                 {showGeo && (
                     <div style={{ marginBottom: 14 }}>
                         <label style={S.label} htmlFor="rac-addr-search">
-                            Search by address
+                            {this.nls('searchByAddress')}
                         </label>
                         {/* Pill search row */}
                         <div id="rac-search-row" style={S.searchRow}>
@@ -4579,7 +4589,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                 id="rac-addr-search"
                                 style={S.searchInput}
                                 type="text"
-                                placeholder="Type an address..."
+                                placeholder={this.nls('typeAnAddress')}
                                 value={addressQuery}
                                 onChange={this.onAddressChange}
                                 onKeyDown={this.onAddressKeyDown}
@@ -4589,7 +4599,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                 aria-haspopup="listbox"
                                 aria-controls={hasResults ? "rac-addr-results" : undefined}
                                 aria-autocomplete="list"
-                                aria-label="Search by street address"
+                                aria-label={this.nls('searchByStreetAddress')}
                                 maxLength={200}
                             />
                             <button
@@ -4597,8 +4607,8 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                 onClick={this.searchAddress}
                                 disabled={addressSearching || (addressQuery?.trim()?.length || 0) < 3}
                                 aria-busy={addressSearching}
-                                title="Search for this address"
-                                aria-label="Search for this address"
+                                title={this.nls('searchForThisAddress')}
+                                aria-label={this.nls('searchForThisAddress')}
                             >
                                 {addressSearching ? (
                                     <svg width="14" height="14" viewBox="0 0 22 22" fill="none"
@@ -4607,7 +4617,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                         <circle cx="11" cy="11" r="9" stroke="rgba(255,255,255,0.4)" strokeWidth="2.5" />
                                         <path d="M11 2a9 9 0 0 1 9 9" stroke={t.brandText} strokeWidth="2.5" strokeLinecap="round" />
                                     </svg>
-                                ) : "Search"}
+                                ) : this.nls('search')}
                             </button>
                         </div>
 
@@ -4617,7 +4627,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                 id="rac-addr-results"
                                 style={S.resultsList}
                                 role="listbox"
-                                aria-label="Address suggestions"
+                                aria-label={this.nls('addressSuggestions')}
                             >
                                 {addressResults.map((r, i) => (
                                     <li
@@ -4684,8 +4694,8 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                 color: t.brand, fontWeight: 700, fontSize: 18,
                                 padding: "0 0 0 10px", lineHeight: 1, flexShrink: 0,
                             }}
-                            aria-label="Clear selected address"
-                            title="Clear selected address"
+                            aria-label={this.nls('clearSelectedAddress')}
+                            title={this.nls('clearSelectedAddress')}
                         >
                             &times;
                         </button>
@@ -4698,7 +4708,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                     <span style={{
                         fontSize: 11, fontWeight: 700, color: t.textMuted,
                         letterSpacing: "0.1em", textTransform: "uppercase",
-                    }}>or use the map</span>
+                    }}>{this.nls('orUseTheMap')}</span>
                     <div style={{ flex: 1, height: 1, background: t.divider }} />
                 </div>
 
@@ -4727,7 +4737,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                             }}
                             onClick={this.togglePlacePin}
                             aria-pressed={placingPin}
-                            title={placingPin ? "Click to cancel pin placement" : "Click, then click the map to drop a pin"}
+                            title={placingPin ? this.nls('clickToCancelPinPlacement') : this.nls('clickThenClickTheMapTo')}
                         >
                             <div style={{
                                 width: 46, height: 46, flexShrink: 0,
@@ -4756,12 +4766,12 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                     color: placingPin ? t.brand : t.text,
                                     lineHeight: 1.2, marginBottom: 3,
                                 }}>
-                                    {placingPin ? "Cancel Pin Placement" : "Place Pin on Map"}
+                                    {placingPin ? this.nls('cancelPinPlacement') : this.nls('placePinOnMap')}
                                 </div>
                                 <div style={{ fontSize: 12, color: t.textMuted, lineHeight: 1.3 }}>
                                     {placingPin
-                                        ? "Click anywhere on the map to drop the pin"
-                                        : "Click the map to mark the exact location"}
+                                        ? this.nls('clickAnywhereOnTheMapTo')
+                                        : this.nls('clickTheMapToMarkThe')}
                                 </div>
                             </div>
                             {!placingPin && (
@@ -4788,7 +4798,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                     <circle cx="11" cy="11" r="9" stroke={hexToLight(t.brand, 0.3)} strokeWidth="2.5" />
                                     <path d="M11 2a9 9 0 0 1 9 9" stroke={t.brand} strokeWidth="2.5" strokeLinecap="round" />
                                 </svg>
-                                Checking service area&hellip;
+                                {this.nls('checkingServiceArea')}
                             </div>
                         </div>
                     )}
@@ -4801,16 +4811,16 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                     strokeLinejoin="round" aria-hidden="true" style={{ flexShrink: 0 }}>
                                     <polyline points="20 6 9 17 4 12" />
                                 </svg>
-                                <span>Location confirmed</span>
+                                <span>{this.nls('locationConfirmed')}</span>
                             </div>
                             {geofence.matchedBoundaries.length > 0 && (
                                 <div style={{ fontSize: 11, fontWeight: 700, marginTop: 5, color: t.success, paddingLeft: 23 }}>
-                                    Service area: {geofence.matchedBoundaries.join(", ")}
+                                    {this.nls('serviceAreaJoin', { join: geofence.matchedBoundaries.join(", ") })}
                                 </div>
                             )}
                             {geofence.matchedBoundaryIds.length > 0 && this.isCategoryFilteringActive() && (
                                 <div style={{ fontSize: 11, fontWeight: 400, marginTop: 3, color: t.textMuted, paddingLeft: 23 }}>
-                                    Categories will be filtered for this area.
+                                    {this.nls('categoriesWillBeFilteredForThis')}
                                 </div>
                             )}
                         </div>
@@ -4827,7 +4837,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                     <line x1="12" y1="9" x2="12" y2="13" />
                                     <line x1="12" y1="17" x2="12.01" y2="17" />
                                 </svg>
-                                <span>{cfg?.outsideBoundaryMessage || "This location is outside the service area."}</span>
+                                <span>{cfg?.outsideBoundaryMessage || this.nls('thisLocationIsOutsideTheService')}</span>
                             </div>
                             <button onClick={this.resetLocation} style={S.gfResetBtn}>
                                 &larr; Try a Different Location
@@ -4840,8 +4850,8 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                 {!mapPoint && !placingPin && (
                     <p style={{ fontSize: 12, color: t.textMuted, marginTop: 10, marginBottom: 0 }}>
                         {mobileMode
-                            ? "Search an address or tap “Use My Location”."
-                            : "Search an address, drop a pin on the map, or use GPS."}
+                            ? this.nls('searchAnAddressOrTapUse')
+                            : this.nls('searchAnAddressDropAPin')}
                     </p>
                 )}
 
@@ -4853,7 +4863,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                         disabled={!canProceed}
                         aria-disabled={!canProceed}
                     >
-                        Next: Details &rarr;
+                        {this.nls('nextDetailsRarr')}
                     </button>
                 </div>
             </div>
@@ -4888,7 +4898,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
 
         return (
             <div>
-                <h2 style={S.sectionTitle} tabIndex={-1} data-rac-step-heading="true">What&rsquo;s the concern?</h2>
+                <h2 style={S.sectionTitle} tabIndex={-1} data-rac-step-heading="true">{this.nls('whatSTheConcern')}</h2>
 
                 {/* Lookup error (non-fatal — categories still shown unfiltered) */}
                 {lookupError && (
@@ -4897,13 +4907,13 @@ export default class ReportAConcernSubmit extends React.PureComponent<
 
                 {/* ── Category ───────────────────────────────────────── */}
                 <label style={S.label} htmlFor="rac-category">
-                    Category
+                    {this.nls('category')}
                     <span style={S.required} aria-hidden="true">*</span>
                 </label>
 
                 {lookupLoading ? (
                     <div style={{ ...S.gfChecking, marginBottom: 12 }} aria-live="polite">
-                        Loading available categories&hellip;
+                        {this.nls('loadingAvailableCategories')}
                     </div>
                 ) : (
                     <React.Fragment>
@@ -4918,7 +4928,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                             aria-invalid={!!fieldErrors.category}
                             aria-describedby={fieldErrors.category ? "rac-category-err" : undefined}
                         >
-                            <option value="">— Select a category —</option>
+                            <option value="">{this.nls('selectACategory')}</option>
                             {filteredCats.map((cat) => (
                                 <option key={cat.code} value={cat.code}>{cat.name}</option>
                             ))}
@@ -4960,7 +4970,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                 {/* Category count hint */}
                 {filtering && !lookupLoading && (
                     <div style={{ fontSize: 11, color: t.textMuted, marginTop: -6, marginBottom: 10 }}>
-                        {filteredCats.filter((c) => c.isValid).length} of {filteredCats.length} categories available for this location.
+                        {filteredCats.filter((c) => c.isValid).length} {this.nls('ofFilteredCatsCountCategoriesAvailableForThis', { filteredCatsCount: filteredCats.length })}
                     </div>
                 )}
 
@@ -4979,7 +4989,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                     {subcats.length > 0 && (
                         <div>
                             <label style={S.label} htmlFor="rac-subcategory">
-                                Subcategory
+                                {this.nls('subcategory')}
                                 <span style={S.required} aria-hidden="true">*</span>
                             </label>
                             <select
@@ -4992,7 +5002,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                 aria-invalid={!!fieldErrors.subcategory}
                                 aria-describedby={fieldErrors.subcategory ? "rac-subcategory-err" : undefined}
                             >
-                                <option value="">— Select —</option>
+                                <option value="">{this.nls('select')}</option>
                                 {subcats.map((sc) => (
                                     <option key={sc.code} value={sc.code}>{sc.name}</option>
                                 ))}
@@ -5010,7 +5020,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
 
                     {/* ── Description ─────────────────────────────────── */}
                     <label style={S.label} htmlFor="rac-description">
-                        Description
+                        {this.nls('description')}
                         <span style={S.required} aria-hidden="true">*</span>
                     </label>
                     <textarea
@@ -5018,7 +5028,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                         style={S.textarea(!!fieldErrors.description)}
                         value={form.description}
                         onChange={(e) => this.onFieldChange("description", e.target.value)}
-                        placeholder="Describe the concern in detail..."
+                        placeholder={this.nls('describeTheConcernInDetail')}
                         maxLength={500}
                         disabled={disableSection}
                         aria-required="true"
@@ -5040,7 +5050,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                     {/* ── Photos ──────────────────────────────────────── */}
                     <div style={{ marginTop: 8, marginBottom: 14 }}>
                         <div id="rac-photos-label" style={S.label}>
-                            Photos (optional, up to {MAX_PHOTOS})
+                            {this.nls('photosOptionalUpToMaxPhotos', { MAX_PHOTOS })}
                         </div>
 
                         {/* 3-slot thumbnail grid */}
@@ -5048,10 +5058,10 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                             {Array.from({ length: MAX_PHOTOS }).map((_, i) => {
                                 const filled = !!photoPreviews[i];
                                 const slotErr = photoErrors[i] || "";
-                                const inputId = `rac-photo-${i}`;
+                                const inputId = this.nls('racPhotoI', { i });
                                 const dragOver = this.state.dragOverPhotoSlot === i;
                                 const isDesktop = typeof window !== "undefined" &&
-                                    !!window.matchMedia?.("(hover: hover) and (pointer: fine)").matches;
+                                    !!window.matchMedia?.(this.nls('hoverHoverAndPointerFine')).matches;
                                 return (
                                     <div
                                         key={i}
@@ -5064,14 +5074,14 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                             <>
                                                 <img
                                                     src={photoPreviews[i]}
-                                                    alt={`Photo ${i + 1} preview`}
+                                                    alt={this.nls('photoIPreview', { i: i + 1 })}
                                                     style={S.photoSlotImg}
                                                 />
                                                 <button
                                                     style={S.photoSlotRemove}
                                                     onClick={() => this.onPhotoRemove(i)}
-                                                    aria-label={`Remove photo ${i + 1}`}
-                                                    title={`Remove photo ${i + 1}`}
+                                                    aria-label={this.nls('removePhotoI', { i: i + 1 })}
+                                                    title={this.nls('removePhotoI', { i: i + 1 })}
                                                     disabled={disableSection}
                                                 >
                                                     ×
@@ -5086,7 +5096,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                                         cursor: disableSection ? "not-allowed" : "pointer",
                                                         opacity: disableSection ? 0.4 : 1,
                                                     }}
-                                                    aria-label={`Add photo ${i + 1} from library`}
+                                                    aria-label={this.nls('addPhotoIFromLibrary', { i: i + 1 })}
                                                 >
                                                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
                                                         stroke="currentColor" strokeWidth="1.8"
@@ -5096,10 +5106,10 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                                         <circle cx="8.5" cy="8.5" r="1.5" />
                                                         <polyline points="21 15 16 10 5 21" />
                                                     </svg>
-                                                    <span>{dragOver ? "Drop photo" : "Add Photo"}</span>
+                                                    <span>{dragOver ? this.nls('dropPhoto') : this.nls('addPhoto')}</span>
                                                     {isDesktop && !dragOver && (
                                                         <span style={{ fontSize: 10, color: t.textMuted, fontWeight: 500 }}>
-                                                            or drag &amp; drop
+                                                            {this.nls('orDragDrop')}
                                                         </span>
                                                     )}
                                                 </label>
@@ -5111,7 +5121,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                                     onChange={(e) => this.onPhotoAdd(i, e)}
                                                     disabled={disableSection}
                                                     style={VISUALLY_HIDDEN}
-                                                    aria-label={`Add photo ${i + 1} from library`}
+                                                    aria-label={this.nls('addPhotoIFromLibrary', { i: i + 1 })}
                                                 />
                                                 {/* Camera button — touch devices only.
                                                     Uses capture="environment" to launch
@@ -5127,7 +5137,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                                                 opacity: disableSection ? 0.4 : 1,
                                                                 cursor: disableSection ? "not-allowed" : "pointer",
                                                             }}
-                                                            aria-label={`Take photo ${i + 1} with camera`}
+                                                            aria-label={this.nls('takePhotoIWithCamera', { i: i + 1 })}
                                                         >
                                                             {/* Camera icon */}
                                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
@@ -5146,7 +5156,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                                             onChange={(e) => this.onPhotoAdd(i, e)}
                                                             disabled={disableSection}
                                                             style={VISUALLY_HIDDEN}
-                                                            aria-label={`Take photo ${i + 1} with camera`}
+                                                            aria-label={this.nls('takePhotoIWithCamera', { i: i + 1 })}
                                                         />
                                                     </>
                                                 )}
@@ -5163,7 +5173,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                         ) : null)}
 
                         <div style={{ ...S.hint, marginTop: 4 }}>
-                            JPEG, PNG, WebP, or HEIC · max {MAX_PHOTO_SIZE_MB} MB each
+                            {this.nls('jpegPngWebPOrHeicMax', { MAX_PHOTO_SIZE_MB })}
                         </div>
                     </div>
                 </div>
@@ -5179,7 +5189,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                         disabled={isNextBlocked}
                         aria-disabled={isNextBlocked}
                     >
-                        Next: Contact &rarr;
+                        {this.nls('nextContactRarr')}
                     </button>
                 </div>
             </div>
@@ -5204,11 +5214,11 @@ export default class ReportAConcernSubmit extends React.PureComponent<
 
         return (
             <div>
-                <h2 style={S.sectionTitle} tabIndex={-1} data-rac-step-heading="true">How can we reach you?</h2>
+                <h2 style={S.sectionTitle} tabIndex={-1} data-rac-step-heading="true">{this.nls('howCanWeReachYou')}</h2>
 
                 {/* ── Name ──────────────────────────────────────────── */}
                 <label style={S.label} htmlFor="rac-name">
-                    Name
+                    {this.nls('name')}
                     <span style={S.required} aria-hidden="true">*</span>
                 </label>
                 <input
@@ -5217,7 +5227,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                     type="text"
                     value={form.submitted_by_name}
                     onChange={(e) => this.onFieldChange("submitted_by_name", e.target.value)}
-                    placeholder="Your full name"
+                    placeholder={this.nls('yourFullName')}
                     maxLength={150}
                     autoComplete="name"
                     aria-required="true"
@@ -5232,7 +5242,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
 
                 {/* ── Email ─────────────────────────────────────────── */}
                 <label style={S.label} htmlFor="rac-email">
-                    Email
+                    {this.nls('email')}
                     <span style={S.required} aria-hidden="true">*</span>
                 </label>
                 <input
@@ -5256,13 +5266,13 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                     </div>
                 ) : (
                     <div id="rac-email-hint" style={S.hint}>
-                        Used for status updates.
+                        {this.nls('usedForStatusUpdates')}
                     </div>
                 )}
 
                 {/* ── Phone ─────────────────────────────────────────── */}
                 <label style={S.label} htmlFor="rac-phone">
-                    Phone (optional)
+                    {this.nls('phoneOptional')}
                 </label>
                 <input
                     id="rac-phone"
@@ -5285,13 +5295,13 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                     </div>
                 ) : (
                     <div id="rac-phone-hint" style={S.hint}>
-                        10-digit US number, e.g. (970) 555-0123
+                        {this.nls('_10DigitUsNumberEG')}
                     </div>
                 )}
 
                 <div style={S.navRow}>
                     <button style={S.btnSecondary} onClick={this.prevStep}>&larr; Details</button>
-                    <button style={S.btnPrimary(false)} onClick={this.nextStep}>Review &rarr;</button>
+                    <button style={S.btnPrimary(false)} onClick={this.nextStep}>{this.nls('reviewRarr')}</button>
                 </div>
             </div>
         );
@@ -5315,7 +5325,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
 
         return (
             <div>
-                <h2 style={S.sectionTitle} tabIndex={-1} data-rac-step-heading="true">Review Your Report</h2>
+                <h2 style={S.sectionTitle} tabIndex={-1} data-rac-step-heading="true">{this.nls('reviewYourReport')}</h2>
 
                 {/* Submit error — role="alert" ensures immediate announcement */}
                 {submitResult === "error" && submitMessage && (
@@ -5326,30 +5336,30 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                 {this.renderCriticalAlertBanner("review")}
 
                 {/* ── Location card ──────────────────────────────────── */}
-                <div style={S.reviewCard} role="region" aria-label="Location summary">
-                    <div style={S.reviewLabel}>Location</div>
+                <div style={S.reviewCard} role="region" aria-label={this.nls('locationSummary')}>
+                    <div style={S.reviewLabel}>{this.nls('location')}</div>
                     <div style={S.reviewValue}>
                         {selectedAddress || (mapPoint
                             ? `${mapPoint.latitude?.toFixed(6) ?? mapPoint.y?.toFixed(2)}, ${mapPoint.longitude?.toFixed(6) ?? mapPoint.x?.toFixed(2)}`
-                            : "Not set")}
+                            : this.nls('notSet'))}
                     </div>
                     {geofence.matchedBoundaries.length > 0 && (
                         <div style={{ fontSize: 11, color: t.textMuted, marginTop: 4 }}>
-                            Service area: {geofence.matchedBoundaries.join(", ")}
+                            {this.nls('serviceAreaJoin', { join: geofence.matchedBoundaries.join(", ") })}
                         </div>
                     )}
                     <button
                         style={S.reviewEdit}
                         onClick={() => this.goToStep(0)}
-                        aria-label="Edit location — return to Step 1"
+                        aria-label={this.nls('editLocationReturnToStep1')}
                     >
-                        Edit location
+                        {this.nls('editLocation')}
                     </button>
                 </div>
 
                 {/* ── Concern details card ───────────────────────────── */}
-                <div style={S.reviewCard} role="region" aria-label="Concern details summary">
-                    <div style={S.reviewLabel}>Concern</div>
+                <div style={S.reviewCard} role="region" aria-label={this.nls('concernDetailsSummary')}>
+                    <div style={S.reviewLabel}>{this.nls('concern')}</div>
                     <div style={S.reviewValue}>
                         <strong>{this.getCategoryName()}</strong>
                         {form.subcategory && <span> &rsaquo; {this.getSubcategoryName()}</span>}
@@ -5372,7 +5382,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                         strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                         <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" />
                                     </svg>
-                                    {this.state.photoFiles.filter(Boolean).length} photo{this.state.photoFiles.filter(Boolean).length > 1 ? "s" : ""}
+                                    {(this.state.photoFiles.filter(Boolean).length > 1 ? this.nls('filterCountPhotos', { filterCount: this.state.photoFiles.filter(Boolean).length }) : this.nls('filterCountPhoto', { filterCount: this.state.photoFiles.filter(Boolean).length }))}
                                 </span>
                             )}
                         </div>
@@ -5380,15 +5390,15 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                     <button
                         style={S.reviewEdit}
                         onClick={() => this.goToStep(1)}
-                        aria-label="Edit details — return to Step 2"
+                        aria-label={this.nls('editDetailsReturnToStep2')}
                     >
-                        Edit details
+                        {this.nls('editDetails')}
                     </button>
                 </div>
 
                 {/* ── Contact card ───────────────────────────────────── */}
-                <div style={S.reviewCard} role="region" aria-label="Contact information summary">
-                    <div style={S.reviewLabel}>Contact</div>
+                <div style={S.reviewCard} role="region" aria-label={this.nls('contactInformationSummary')}>
+                    <div style={S.reviewLabel}>{this.nls('contact')}</div>
                     <div style={S.reviewValue}>{form.submitted_by_name || "—"}</div>
                     <div style={{ ...S.reviewValue, color: t.textLight }}>{form.submitted_by_email}</div>
                     {form.submitted_by_phone && (
@@ -5397,9 +5407,9 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                     <button
                         style={S.reviewEdit}
                         onClick={() => this.goToStep(2)}
-                        aria-label="Edit contact — return to Step 3"
+                        aria-label={this.nls('editContactReturnToStep3')}
                     >
-                        Edit contact
+                        {this.nls('editContact')}
                     </button>
                 </div>
 
@@ -5409,7 +5419,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                         style={S.btnPrimary(false)}
                         onClick={this.onSubmit}
                     >
-                        {this.props.config?.submitButtonLabel || "Submit Report"}
+                        {this.props.config?.submitButtonLabel || this.nls('submitReport')}
                     </button>
                 </div>
             </div>
@@ -5440,7 +5450,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                     &#10003;
                 </div>
                 <div style={{ fontSize: 18, fontWeight: 700, marginBottom: ticketNumber != null ? 8 : 16, color: t.success }}>
-                    Report Submitted
+                    {this.nls('reportSubmitted')}
                 </div>
 
                 {ticketNumber != null && (
@@ -5451,7 +5461,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                             border: `2px solid ${t.brandBorder}`, borderRadius: 10,
                             padding: "10px 28px", marginBottom: 16, letterSpacing: 1,
                         }}
-                        aria-label={`Your ticket number is ${ticketNumber}`}
+                        aria-label={this.nls('yourTicketNumberIsTicketNumber', { ticketNumber })}
                     >
                         #{ticketNumber}
                     </div>
@@ -5468,7 +5478,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                             fontSize: 11, fontWeight: 700, color: t.textLight,
                             textTransform: "uppercase" as const, letterSpacing: 0.4, marginBottom: 6,
                         }}>
-                            Bookmark or copy your ticket status link:
+                            {this.nls('bookmarkOrCopyYourTicketStatus')}
                         </div>
                         <div style={S.copyRow}>
                             <input
@@ -5476,16 +5486,16 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                 type="text"
                                 value={confirmUrl}
                                 style={S.copyUrl}
-                                aria-label="Ticket status URL"
+                                aria-label={this.nls('ticketStatusUrl')}
                                 onFocus={(e) => e.currentTarget.select()}
                             />
                             <button
                                 style={S.copyBtn(urlCopied)}
                                 onClick={() => this.copyTicketUrl(confirmUrl)}
-                                aria-label={urlCopied ? "Link copied to clipboard" : "Copy ticket status link to clipboard"}
-                                title={urlCopied ? "Copied!" : "Copy link"}
+                                aria-label={urlCopied ? this.nls('linkCopiedToClipboard') : this.nls('copyTicketStatusLinkToClipboard')}
+                                title={urlCopied ? this.nls('copied') : this.nls('copyLink')}
                             >
-                                {urlCopied ? "\u2713 Copied!" : "\uD83D\uDCCB Copy"}
+                                {urlCopied ? this.nls('copied2') : this.nls('copy')}
                             </button>
                         </div>
                     </div>
@@ -5495,7 +5505,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                     onClick={this.onNewReport}
                     style={{ ...S.btnPrimary(false), width: "auto", padding: "12px 36px", fontSize: 14 } as any}
                 >
-                    Submit Another Report
+                    {this.nls('submitAnotherReport')}
                 </button>
             </div>
         );
@@ -5516,7 +5526,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                 <div style={{ paddingTop: 8 }}>
                     <div style={S.errorBox} role="alert">{statusViewError}</div>
                     <div style={S.navRow}>
-                        <button style={S.btnPrimary(false)} onClick={this.onNewReport}>Submit a Report</button>
+                        <button style={S.btnPrimary(false)} onClick={this.onNewReport}>{this.nls('submitAReport')}</button>
                     </div>
                 </div>
             );
@@ -5543,13 +5553,13 @@ export default class ReportAConcernSubmit extends React.PureComponent<
 
         return (
             <div>
-                <div style={S.sectionTitle}>Ticket Status</div>
+                <div style={S.sectionTitle}>{this.nls('ticketStatus')}</div>
 
                 {/* Ticket number badge */}
                 <div style={{ textAlign: "center", marginBottom: 16 }}>
                     <div
                         style={{ display: "inline-block", fontSize: 28, fontWeight: 800, color: t.brand, background: t.brandLight, border: `2px solid ${t.brandBorder}`, borderRadius: 10, padding: "10px 28px", letterSpacing: 1 }}
-                        aria-label={`Ticket number ${tk.ticket_number}`}
+                        aria-label={this.nls('ticketNumberTicketNumber', { ticket_number: tk.ticket_number })}
                     >
                         #{tk.ticket_number}
                     </div>
@@ -5559,7 +5569,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                 <div style={{ textAlign: "center", marginBottom: 20 }}>
                     <span
                         style={{ display: "inline-block", padding: "6px 24px", borderRadius: 20, fontSize: 14, fontWeight: 700, background: statusBg, color: statusColor, border: `1px solid ${statusBorder}` }}
-                        aria-label={`Ticket status: ${statusLabel}`}
+                        aria-label={this.nls('ticketStatusStatusLabel', { statusLabel })}
                     >
                         {statusLabel}
                     </span>
@@ -5567,15 +5577,15 @@ export default class ReportAConcernSubmit extends React.PureComponent<
 
                 {/* Location */}
                 {tk.address_submitted && (
-                    <div style={S.reviewCard} role="region" aria-label="Ticket location">
-                        <div style={S.reviewLabel}>Location</div>
+                    <div style={S.reviewCard} role="region" aria-label={this.nls('ticketLocation')}>
+                        <div style={S.reviewLabel}>{this.nls('location')}</div>
                         <div style={S.reviewValue}>{tk.address_submitted}</div>
                     </div>
                 )}
 
                 {/* Category */}
-                <div style={S.reviewCard} role="region" aria-label="Ticket category">
-                    <div style={S.reviewLabel}>Category</div>
+                <div style={S.reviewCard} role="region" aria-label={this.nls('ticketCategory')}>
+                    <div style={S.reviewLabel}>{this.nls('category')}</div>
                     <div style={S.reviewValue}>
                         <strong>{categoryName}</strong>
                         {subcategoryName && (
@@ -5585,19 +5595,19 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                 </div>
 
                 {/* Description */}
-                <div style={S.reviewCard} role="region" aria-label="Ticket description">
-                    <div style={S.reviewLabel}>Description</div>
+                <div style={S.reviewCard} role="region" aria-label={this.nls('ticketDescription')}>
+                    <div style={S.reviewLabel}>{this.nls('description')}</div>
                     <div style={S.reviewValue}>{tk.description || "—"}</div>
                 </div>
 
                 {/* Priority + Date */}
                 <div style={{ display: "flex", gap: 12, marginBottom: 12 }}>
-                    <div style={{ ...S.reviewCard, flex: 1, marginBottom: 0 }} role="region" aria-label="Ticket priority">
-                        <div style={S.reviewLabel}>Priority</div>
+                    <div style={{ ...S.reviewCard, flex: 1, marginBottom: 0 }} role="region" aria-label={this.nls('ticketPriority')}>
+                        <div style={S.reviewLabel}>{this.nls('priority')}</div>
                         <div style={S.reviewValue}>{priorityLabel}</div>
                     </div>
-                    <div style={{ ...S.reviewCard, flex: 1, marginBottom: 0 }} role="region" aria-label="Submission date">
-                        <div style={S.reviewLabel}>Submitted</div>
+                    <div style={{ ...S.reviewCard, flex: 1, marginBottom: 0 }} role="region" aria-label={this.nls('submissionDate')}>
+                        <div style={S.reviewLabel}>{this.nls('submitted')}</div>
                         <div style={S.reviewValue}>{submittedDate}</div>
                     </div>
                 </div>
@@ -5605,12 +5615,12 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                 {/* Public staff comments */}
                 {(statusViewCommentsLoading || statusViewComments.length > 0) && (
                     <div style={{ marginTop: 20 }}>
-                        <div style={S.sectionTitle}>Staff Updates</div>
+                        <div style={S.sectionTitle}>{this.nls('staffUpdates')}</div>
                         {statusViewCommentsLoading ? (
-                            <div style={S.gfChecking} aria-live="polite">Loading updates&hellip;</div>
+                            <div style={S.gfChecking} aria-live="polite">{this.nls('loadingUpdates')}</div>
                         ) : (
                             statusViewComments.map((c, i) => (
-                                <div key={i} style={S.commentCard} role="article" aria-label={`Staff update ${i + 1}`}>
+                                <div key={i} style={S.commentCard} role="article" aria-label={this.nls('staffUpdateI', { i: i + 1 })}>
                                     {c.commentDate && (
                                         <div style={S.commentDate}>
                                             <time dateTime={new Date(c.commentDate).toISOString()}>
@@ -5629,16 +5639,16 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                     staffint- (internal) or the submitter's own uploads */}
                 {(statusViewPhotosLoading || statusViewPhotos.length > 0) && (
                     <div style={{ marginTop: 20 }}>
-                        <div style={S.sectionTitle}>Photos from City Staff</div>
+                        <div style={S.sectionTitle}>{this.nls('photosFromCityStaff')}</div>
                         {statusViewPhotosLoading ? (
-                            <div style={S.gfChecking} aria-live="polite">Loading photos&hellip;</div>
+                            <div style={S.gfChecking} aria-live="polite">{this.nls('loadingPhotos')}</div>
                         ) : (
                             statusViewPhotos.map((p, i) => (
-                                <div key={i} style={{ marginBottom: 12, borderRadius: 8, overflow: "hidden", border: `1px solid ${t.divider}`, background: t.inputBg }} role="figure" aria-label={`Photo from City staff ${i + 1} of ${statusViewPhotos.length}`}>
-                                    <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ display: "block" }} aria-label={`Open staff photo ${i + 1} full size in a new tab`}>
+                                <div key={i} style={{ marginBottom: 12, borderRadius: 8, overflow: "hidden", border: `1px solid ${t.divider}`, background: t.inputBg }} role="figure" aria-label={this.nls('photoFromCityStaffIOf', { i: i + 1, statusViewPhotosCount: statusViewPhotos.length })}>
+                                    <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ display: "block" }} aria-label={this.nls('openStaffPhotoIFullSize', { i: i + 1 })}>
                                         <img
                                             src={p.url}
-                                            alt={`Photo added by City staff${p.uploadDate ? " on " + new Date(p.uploadDate).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : ""}`}
+                                            alt={this.nls('photoAddedByCityStaffUploadDate', { uploadDate: p.uploadDate ? " on " + new Date(p.uploadDate).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : "" })}
                                             style={{ width: "100%", maxHeight: 320, objectFit: "cover", display: "block" }}
                                             loading="lazy"
                                         />
@@ -5658,7 +5668,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
 
                 <div style={S.navRow}>
                     <button style={S.btnPrimary(false)} onClick={this.onNewReport}>
-                        Submit a New Report
+                        {this.nls('submitANewReport')}
                     </button>
                 </div>
             </div>
@@ -5679,14 +5689,14 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                 style={{ padding: 20 }}
                 role="status"
                 aria-busy="true"
-                aria-label="Loading form, please wait"
+                aria-label={this.nls('loadingFormPleaseWait')}
             >
                 <style>{`@keyframes pulse { 0%,100% { opacity:.6 } 50% { opacity:1 } } @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; } }`}</style>
                 {[100, 60, 80, 100, 40].map((w, i) => (
                     <div key={i} style={{ ...S.skeleton, width: `${w}%` }} aria-hidden="true" />
                 ))}
                 <div style={{ textAlign: "center", color: t.textMuted, marginTop: 8, fontSize: 13 }}>
-                    Loading&hellip;
+                    {this.nls('loading')}
                 </div>
             </div>
         );
@@ -5719,7 +5729,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                 style={{ padding: "32px 20px 28px", textAlign: "center" as const }}
                 role="status"
                 aria-busy="true"
-                aria-label="Submitting your report, please wait"
+                aria-label={this.nls('submittingYourReportPleaseWait')}
             >
                 <style>{`
                     @keyframes rac-submit-pulse {
@@ -5751,7 +5761,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                     fontSize: 17, fontWeight: 700, color: t.text,
                     marginBottom: 6, letterSpacing: -0.2,
                 }}>
-                    Sending Your Report
+                    {this.nls('sendingYourReport')}
                 </div>
 
                 {/* Brief summary of what's being submitted */}
@@ -5781,7 +5791,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                         aria-valuenow={submitProgress}
                         aria-valuemin={0}
                         aria-valuemax={100}
-                        aria-label={`Submission progress: ${submitProgress}%`}
+                        aria-label={this.nls('submissionProgressSubmitProgress', { submitProgress })}
                         style={S.progressBarTrack}
                     >
                         <div style={S.progressBarFill(submitProgress)} aria-hidden="true" />
@@ -5794,13 +5804,13 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                     aria-live="polite"
                     aria-atomic="true"
                 >
-                    {submitPhase || "Submitting\u2026"}&nbsp;&nbsp;{submitProgress}%
+                    {submitPhase || this.nls('submitting')}&nbsp;&nbsp;{submitProgress}%
                 </div>
 
                 <div style={{
                     fontSize: 12, color: t.textMuted, marginTop: 20, lineHeight: 1.5,
                 }}>
-                    Please don&rsquo;t close this window until complete.
+                    {this.nls('pleaseDonTCloseThisWindow')}
                 </div>
             </div>
         );
@@ -5919,13 +5929,13 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                             // but flex:1 is set for all so center/right work correctly
                         };
                     })()}>
-                        {cfg?.headerTitle || "Report A Concern"}
+                        {cfg?.headerTitle || this.nls('reportAConcern')}
                     </span>
                 </header>
 
                 {!mid && (
                     <div style={{ padding: 20 }}>
-                        <div style={S.errorBox} role="alert">No map widget configured.</div>
+                        <div style={S.errorBox} role="alert">{this.nls('noMapWidgetConfigured')}</div>
                     </div>
                 )}
                 {initError && (

@@ -9,6 +9,7 @@ import {
 } from "jimu-ui/advanced/setting-components";
 import { TextInput, TextArea, NumericInput, Switch, Select, Option } from "jimu-ui";
 import type { IMConfig } from "../config";
+import defaultMessages from "./translations/default";
 
 /**
  * Panel colors read from the builder theme, with the same paths and fallbacks as
@@ -57,6 +58,15 @@ export default class Setting extends React.PureComponent<
     AllWidgetSettingProps<IMConfig>,
     SettingState
 > {
+    // exb-i18n-kit translator: the app locale via the widget's intl, English from default.ts
+    // as the fallback (with {placeholders} filled) when intl is not there.
+    nls = (id: string, values?: { [key: string]: any }): string => {
+        const intl = (this.props as any).intl;
+        const msg: string = (defaultMessages as any)[id] ?? id;
+        if (intl && typeof intl.formatMessage === "function") return intl.formatMessage({ id, defaultMessage: msg }, values);
+        return msg.replace(/\{(\w+)\}/g, (m: string, k: string) => (values && values[k] != null ? String(values[k]) : m));
+    };
+
     state: SettingState = {
         loadingMeta: false,
         metaError: "",
@@ -580,7 +590,7 @@ export default class Setting extends React.PureComponent<
         return (
             <div className="widget-setting-report-a-concern p-2">
                 {/* ── Settings Import / Export ───────────────────── */}
-                <SettingSection title="Settings Import / Export">
+                <SettingSection title={this.nls('settingsImportExport')}>
                     <SettingRow flow="wrap">
                         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", width: "100%" }}>
                             <button
@@ -596,9 +606,9 @@ export default class Setting extends React.PureComponent<
                                     cursor: "pointer",
                                     fontWeight: 600,
                                 }}
-                                title="Download current settings as an XML file"
+                                title={this.nls('downloadCurrentSettingsAsAnXml')}
                             >
-                                ⬇ Export to XML
+                                {this.nls('exportToXml')}
                             </button>
                             <label
                                 style={{
@@ -614,9 +624,9 @@ export default class Setting extends React.PureComponent<
                                     alignItems: "center",
                                     marginBottom: 0,
                                 }}
-                                title="Import settings from a previously exported XML file"
+                                title={this.nls('importSettingsFromAPreviouslyExported')}
                             >
-                                ⬆ Import from XML
+                                {this.nls('importFromXml')}
                                 <input
                                     type="file"
                                     accept=".xml,application/xml,text/xml"
@@ -626,9 +636,7 @@ export default class Setting extends React.PureComponent<
                             </label>
                         </div>
                         <span className="setting-text-level-3" style={{ marginTop: 6, display: "block" }}>
-                            Export to copy these settings to another device view (mobile, tablet, desktop)
-                            within the same Experience. The selected map widget is NOT included —
-                            each view stays bound to its own map.
+                            {this.nls('exportToCopyTheseSettingsTo')}
                         </span>
                     </SettingRow>
                     {importStatus && (
@@ -647,8 +655,8 @@ export default class Setting extends React.PureComponent<
                 </SettingSection>
 
                 {/* ── Map Source ─────────────────────────────────── */}
-                <SettingSection title="Map Source">
-                    <SettingRow label="Select map widget" flow="wrap">
+                <SettingSection title={this.nls('mapSource')}>
+                    <SettingRow label={this.nls('selectMapWidget')} flow="wrap">
                         <MapWidgetSelector
                             useMapWidgetIds={cfg.useMapWidgetIds as any}
                             onSelect={this.onMapWidgetSelected}
@@ -657,8 +665,8 @@ export default class Setting extends React.PureComponent<
                 </SettingSection>
 
                 {/* ── Layer Configuration ─────────────────────────── */}
-                <SettingSection title="Layer Configuration">
-                    <SettingRow label="Tickets layer index">
+                <SettingSection title={this.nls('layerConfiguration')}>
+                    <SettingRow label={this.nls('ticketsLayerIndex')}>
                         <NumericInput
                             value={cfg.ticketsLayerIndex ?? 0}
                             min={0} max={50} step={1}
@@ -668,14 +676,14 @@ export default class Setting extends React.PureComponent<
                     </SettingRow>
                     <SettingRow>
                         <span className="text-truncate setting-text-level-3">
-                            Sublayer index of the Tickets feature class (typically 0).
+                            {this.nls('sublayerIndexOfTheTicketsFeature')}
                         </span>
                     </SettingRow>
                 </SettingSection>
 
                 {/* ── Geofencing / Boundaries ─────────────────────── */}
-                <SettingSection title="Geofencing — Service Boundaries">
-                    <SettingRow label="Service Boundaries layer URL" flow="wrap">
+                <SettingSection title={this.nls('geofencingServiceBoundaries')}>
+                    <SettingRow label={this.nls('serviceBoundariesLayerUrl')} flow="wrap">
                         <TextInput
                             className="w-100" size="sm"
                             placeholder="https://your-server/rest/services/.../FeatureServer/1"
@@ -683,12 +691,11 @@ export default class Setting extends React.PureComponent<
                             onChange={(e) => this.setConfig("boundariesLayerUrl", e.target.value)}
                         />
                         <span className="setting-text-level-3" style={{ marginTop: 4, display: "block" }}>
-                            REST URL to the Service_Boundaries polygon feature layer.
-                            Required for geofencing. If blank, geofencing is disabled.
+                            {this.nls('restUrlToTheServiceBoundaries')}
                         </span>
                     </SettingRow>
 
-                    <SettingRow label="Boundaries layer index (fallback)">
+                    <SettingRow label={this.nls('boundariesLayerIndexFallback')}>
                         <NumericInput
                             value={cfg.boundariesLayerIndex ?? 1}
                             min={0} max={50} step={1}
@@ -698,11 +705,11 @@ export default class Setting extends React.PureComponent<
                     </SettingRow>
                     <SettingRow>
                         <span className="text-truncate setting-text-level-3">
-                            Only used if the URL above is blank and boundaries are in the same map service.
+                            {this.nls('onlyUsedIfTheUrlAbove')}
                         </span>
                     </SettingRow>
 
-                    <SettingRow label="Boundary ID field" flow="wrap">
+                    <SettingRow label={this.nls('boundaryIdField')} flow="wrap">
                         <TextInput
                             className="w-100" size="sm"
                             placeholder="boundary_id"
@@ -710,13 +717,11 @@ export default class Setting extends React.PureComponent<
                             onChange={(e) => this.setConfig("boundaryIdField", e.target.value)}
                         />
                         <span className="setting-text-level-3" style={{ marginTop: 4, display: "block" }}>
-                            Field name on Service_Boundaries that uniquely identifies each
-                            boundary polygon. This value is matched against
-                            Category_Boundary_Lookup and written to tickets.
+                            {this.nls('fieldNameOnServiceBoundariesThat')}
                         </span>
                     </SettingRow>
 
-                    <SettingRow label="Outside boundary message" flow="wrap">
+                    <SettingRow label={this.nls('outsideBoundaryMessage')} flow="wrap">
                         <TextArea
                             className="w-100" height={80}
                             value={cfg.outsideBoundaryMessage ??
@@ -727,8 +732,8 @@ export default class Setting extends React.PureComponent<
                 </SettingSection>
 
                 {/* ── Category ↔ Boundary Filtering ───────────────── */}
-                <SettingSection title="Category Filtering by Boundary">
-                    <SettingRow label="Enable category filtering">
+                <SettingSection title={this.nls('categoryFilteringByBoundary')}>
+                    <SettingRow label={this.nls('enableCategoryFiltering')}>
                         <Switch
                             checked={cfg.enableCategoryFiltering ?? true}
                             onChange={(evt) =>
@@ -738,15 +743,13 @@ export default class Setting extends React.PureComponent<
                     </SettingRow>
                     <SettingRow>
                         <span className="setting-text-level-3">
-                            When enabled, only categories that are valid for the
-                            matched service boundary are available to the user.
-                            Uses the Category_Boundary_Lookup table.
+                            {this.nls('whenEnabledOnlyCategoriesThatAre')}
                         </span>
                     </SettingRow>
 
                     {(cfg.enableCategoryFiltering ?? true) && (
                         <React.Fragment>
-                            <SettingRow label="Lookup table URL" flow="wrap">
+                            <SettingRow label={this.nls('lookupTableUrl')} flow="wrap">
                                 <TextInput
                                     className="w-100" size="sm"
                                     placeholder="https://your-server/.../MapServer/2 or FeatureServer/2"
@@ -757,13 +760,11 @@ export default class Setting extends React.PureComponent<
                                 />
                                 <span className="setting-text-level-3"
                                     style={{ marginTop: 4, display: "block" }}>
-                                    REST URL to Category_Boundary_Lookup table.
-                                    If blank, the widget will derive it from the map
-                                    service using the sublayer index below.
+                                    {this.nls('restUrlToCategoryBoundaryLookup')}
                                 </span>
                             </SettingRow>
 
-                            <SettingRow label="Lookup table sublayer index (fallback)">
+                            <SettingRow label={this.nls('lookupTableSublayerIndexFallback')}>
                                 <NumericInput
                                     value={cfg.lookupTableIndex ?? 2}
                                     min={0} max={50} step={1}
@@ -775,12 +776,11 @@ export default class Setting extends React.PureComponent<
                             </SettingRow>
                             <SettingRow>
                                 <span className="text-truncate setting-text-level-3">
-                                    Sublayer index of Category_Boundary_Lookup in the same
-                                    map service. Only used when the URL above is blank.
+                                    {this.nls('sublayerIndexOfCategoryBoundaryLookup')}
                                 </span>
                             </SettingRow>
 
-                            <SettingRow label="Invalid category behavior" flow="wrap">
+                            <SettingRow label={this.nls('invalidCategoryBehavior')} flow="wrap">
                                 <Select
                                     value={cfg.invalidCategoryBehavior ?? "show_message"}
                                     onChange={(e) =>
@@ -789,16 +789,15 @@ export default class Setting extends React.PureComponent<
                                     size="sm" className="w-100"
                                 >
                                     <Option value="hide">
-                                        Hide — do not show invalid categories
+                                        {this.nls('hideDoNotShowInvalidCategories')}
                                     </Option>
                                     <Option value="show_message">
-                                        Show disabled with redirect message
+                                        {this.nls('showDisabledWithRedirectMessage')}
                                     </Option>
                                 </Select>
                                 <span className="setting-text-level-3"
                                     style={{ marginTop: 4, display: "block" }}>
-                                    Controls how categories with is_valid=0 in the
-                                    lookup table are displayed (or hidden) in the form.
+                                    {this.nls('controlsHowCategoriesWithIsValid')}
                                 </span>
                             </SettingRow>
                         </React.Fragment>
@@ -806,8 +805,8 @@ export default class Setting extends React.PureComponent<
                 </SettingSection>
 
                 {/* ── Ticket Boundary Population ──────────────────── */}
-                <SettingSection title="Ticket Boundary Field">
-                    <SettingRow label="Auto-populate boundary_id on tickets">
+                <SettingSection title={this.nls('ticketBoundaryField')}>
+                    <SettingRow label={this.nls('autoPopulateBoundaryIdOnTickets')}>
                         <Switch
                             checked={cfg.populateBoundaryId ?? true}
                             onChange={(evt) =>
@@ -818,7 +817,7 @@ export default class Setting extends React.PureComponent<
 
                     {(cfg.populateBoundaryId ?? true) && (
                         <React.Fragment>
-                            <SettingRow label="Ticket boundary field name" flow="wrap">
+                            <SettingRow label={this.nls('ticketBoundaryFieldName')} flow="wrap">
                                 <TextInput
                                     className="w-100" size="sm"
                                     placeholder="boundary_id"
@@ -829,8 +828,7 @@ export default class Setting extends React.PureComponent<
                                 />
                                 <span className="setting-text-level-3"
                                     style={{ marginTop: 4, display: "block" }}>
-                                    Field on the Tickets feature class where the matched
-                                    boundary identifier will be written on submission.
+                                    {this.nls('fieldOnTheTicketsFeatureClass')}
                                 </span>
                             </SettingRow>
                         </React.Fragment>
@@ -838,8 +836,8 @@ export default class Setting extends React.PureComponent<
                 </SettingSection>
 
                 {/* ── Write Endpoint (Secured FeatureServer) ────── */}
-                <SettingSection title="Write Endpoint (Secured FeatureServer)">
-                    <SettingRow label="Tickets write URL" flow="wrap">
+                <SettingSection title={this.nls('writeEndpointSecuredFeatureServer')}>
+                    <SettingRow label={this.nls('ticketsWriteUrl')} flow="wrap">
                         <TextInput
                             className="w-100" size="sm"
                             placeholder="https://portal/sharing/proxy?https://server/.../FeatureServer/0"
@@ -850,25 +848,21 @@ export default class Setting extends React.PureComponent<
                         />
                         <span className="setting-text-level-3"
                             style={{ marginTop: 4, display: "block" }}>
-                            URL for writing tickets (all fields including PII).
-                            Use a Portal proxy URL so credentials stay server-side:
+                            {this.nls('urlForWritingTicketsAllFields')}
                             <br />
                             <code style={{ fontSize: 10, wordBreak: "break-all" }}>
                                 https://portal/sharing/proxy?https://server/.../FeatureServer/0
                             </code>
                             <br />
-                            The FeatureServer should be secured (shared with a private
-                            group, not Everyone). Portal proxies the request and injects
-                            authentication automatically. If blank, falls back to the
-                            map layer's applyEdits (limited fields).
+                            {this.nls('theFeatureServerShouldBeSecuredShared')}
                         </span>
                     </SettingRow>
                 </SettingSection>
 
 
                 {/* ── Public Comments Table ───────────────────────── */}
-                <SettingSection title="Public Comments (Ticket Status View)">
-                    <SettingRow label="Public comments table URL" flow="wrap">
+                <SettingSection title={this.nls('publicCommentsTicketStatusView')}>
+                    <SettingRow label={this.nls('publicCommentsTableUrl')} flow="wrap">
                         <TextInput
                             className="w-100" size="sm"
                             placeholder="https://your-server/arcgis/rest/services/.../MapServer/0"
@@ -879,17 +873,14 @@ export default class Setting extends React.PureComponent<
                         />
                         <span className="setting-text-level-3"
                             style={{ marginTop: 4, display: "block" }}>
-                            REST URL to the public-facing comments table or map service layer
-                            (pre-filtered to is_public = 1 via definition query).
-                            Shown to citizens on the ticket status view.
-                            Example: .../ReportAConcern_CommentsPublic/MapServer/0
+                            {this.nls('restUrlToThePublicFacing')}
                         </span>
                     </SettingRow>
                 </SettingSection>
 
                 {/* ── Geocoder / Address Search ───────────────────── */}
-                <SettingSection title="Address Search">
-                    <SettingRow label="Enable geocoder">
+                <SettingSection title={this.nls('addressSearch')}>
+                    <SettingRow label={this.nls('enableGeocoder')}>
                         <Switch
                             checked={cfg.enableGeocoder ?? true}
                             onChange={(evt) =>
@@ -899,10 +890,10 @@ export default class Setting extends React.PureComponent<
                     </SettingRow>
 
                     {cfg.enableGeocoder && (
-                        <SettingRow label="Custom geocoder URL" flow="wrap">
+                        <SettingRow label={this.nls('customGeocoderUrl')} flow="wrap">
                             <TextInput
                                 className="w-100" size="sm"
-                                placeholder="Leave blank for ArcGIS World Geocoder"
+                                placeholder={this.nls('leaveBlankForArcGISWorldGeocoder')}
                                 value={cfg.geocoderUrl ?? ""}
                                 onChange={(e) =>
                                     this.setConfig("geocoderUrl", e.target.value)
@@ -910,15 +901,15 @@ export default class Setting extends React.PureComponent<
                             />
                             <span className="setting-text-level-3"
                                 style={{ marginTop: 4, display: "block" }}>
-                                Optionally point to your organization's geocoder service.
+                                {this.nls('optionallyPointToYourOrganizationS')}
                             </span>
                         </SettingRow>
                     )}
                 </SettingSection>
 
                 {/* ── Display Options ─────────────────────────────── */}
-                <SettingSection title="Display Options">
-                    <SettingRow label="Mobile-optimized location step">
+                <SettingSection title={this.nls('displayOptions')}>
+                    <SettingRow label={this.nls('mobileOptimizedLocationStep')}>
                         <Switch
                             checked={cfg.mobileMode ?? false}
                             onChange={(evt) =>
@@ -928,18 +919,14 @@ export default class Setting extends React.PureComponent<
                     </SettingRow>
                     <SettingRow>
                         <span className="setting-text-level-3">
-                            When enabled, the "Place Pin on Map" button is hidden on the
-                            Location step. Address search and GPS become the only location
-                            methods, each displayed as a large, full-width button.
-                            Recommended when the widget is deployed primarily on phones
-                            or tablets where map interaction is impractical.
+                            {this.nls('whenEnabledThePlacePinOn')}
                         </span>
                     </SettingRow>
                 </SettingSection>
 
                 {/* ── Widget Labels ───────────────────────────────── */}
-                <SettingSection title="Widget Labels &amp; Header">
-                    <SettingRow label="Header title" flow="wrap">
+                <SettingSection title={this.nls('widgetLabelsAmpHeader')}>
+                    <SettingRow label={this.nls('headerTitle')} flow="wrap">
                         <TextInput
                             className="w-100" size="sm"
                             value={cfg.headerTitle ?? "Report A Concern"}
@@ -947,7 +934,7 @@ export default class Setting extends React.PureComponent<
                         />
                     </SettingRow>
 
-                    <SettingRow label="Header title size (px)">
+                    <SettingRow label={this.nls('headerTitleSizePx')}>
                         <NumericInput
                             value={cfg.headerTitleSize ?? 20}
                             min={10} max={48} step={1}
@@ -956,13 +943,13 @@ export default class Setting extends React.PureComponent<
                         />
                     </SettingRow>
 
-                    <SettingRow label="Header image" flow="wrap">
+                    <SettingRow label={this.nls('headerImage')} flow="wrap">
                         {/* Hidden file input */}
                         <input
                             ref={this.fileInputRef}
                             type="file"
                             accept="image/png,image/jpeg,image/svg+xml,image/webp,image/gif"
-                            aria-label="Upload header image"
+                            aria-label={this.nls('uploadHeaderImage')}
                             style={{ display: "none" }}
                             onChange={this.handleImageUpload}
                         />
@@ -976,7 +963,7 @@ export default class Setting extends React.PureComponent<
                             }}>
                                 <img
                                     src={cfg.headerImageUrl}
-                                    alt={cfg.headerImageAlt ?? "Header image preview"}
+                                    alt={cfg.headerImageAlt ?? this.nls('headerImagePreview')}
                                     style={{
                                         maxHeight: 40, maxWidth: 120,
                                         objectFit: "contain", flexShrink: 0,
@@ -996,7 +983,7 @@ export default class Setting extends React.PureComponent<
                                             borderRadius: 3,
                                         }}
                                     >
-                                        Replace image
+                                        {this.nls('replaceImage')}
                                     </button>
                                     <button
                                         type="button"
@@ -1009,7 +996,7 @@ export default class Setting extends React.PureComponent<
                                             borderRadius: 3, color: c.danger,
                                         }}
                                     >
-                                        Remove image
+                                        {this.nls('removeImage')}
                                     </button>
                                 </div>
                             </div>
@@ -1026,17 +1013,16 @@ export default class Setting extends React.PureComponent<
                                     color: c.textSecondary, textAlign: "center",
                                 }}
                             >
-                                Click to upload image (PNG, JPG, SVG)
+                                {this.nls('clickToUploadImagePngJpg')}
                             </button>
                         )}
                         <span className="setting-text-level-3" style={{ marginTop: 4, display: "block" }}>
-                            Logo displayed to the left of the header title.
-                            Rendered at max height 40 px. Stored as a data URL in the widget config.
+                            {this.nls('logoDisplayedToTheLeftOf')}
                         </span>
                     </SettingRow>
 
-                    <SettingRow label="Header title alignment" flow="wrap">
-                        <div style={{ display: "flex", gap: 6, width: "100%" }} role="group" aria-label="Header title alignment">
+                    <SettingRow label={this.nls('headerTitleAlignment')} flow="wrap">
+                        <div style={{ display: "flex", gap: 6, width: "100%" }} role="group" aria-label={this.nls('headerTitleAlignment')}>
                             {(["left", "center", "right"] as const).map((align) => (
                                 <button
                                     key={align}
@@ -1059,26 +1045,23 @@ export default class Setting extends React.PureComponent<
                             ))}
                         </div>
                         <span className="setting-text-level-3" style={{ marginTop: 4, display: "block" }}>
-                            Position of the title text within the header bar.
+                            {this.nls('positionOfTheTitleTextWithin')}
                         </span>
                     </SettingRow>
 
-                    <SettingRow label="Header image alt text" flow="wrap">
+                    <SettingRow label={this.nls('headerImageAltText')} flow="wrap">
                         <TextInput
                             className="w-100" size="sm"
-                            placeholder="City of Example"
+                            placeholder={this.nls('cityOfExample')}
                             value={cfg.headerImageAlt ?? ""}
                             onChange={(e) => this.setConfig("headerImageAlt", e.target.value)}
                         />
                         <span className="setting-text-level-3" style={{ marginTop: 4, display: "block" }}>
-                            Required for WCAG 2.1 AA compliance. If the image also links
-                            somewhere, this text becomes the link's accessible name — keep it
-                            descriptive. Use an empty value only for purely decorative images
-                            when the title alone conveys full context.
+                            {this.nls('requiredForWcag21Aa')}
                         </span>
                     </SettingRow>
 
-                    <SettingRow label="Header image link URL (optional)" flow="wrap">
+                    <SettingRow label={this.nls('headerImageLinkUrlOptional')} flow="wrap">
                         <TextInput
                             className="w-100" size="sm"
                             placeholder="https://www.example.gov"
@@ -1086,12 +1069,11 @@ export default class Setting extends React.PureComponent<
                             onChange={(e) => this.setConfig("headerImageLink", e.target.value)}
                         />
                         <span className="setting-text-level-3" style={{ marginTop: 4, display: "block" }}>
-                            If set, the image becomes a link that opens in a new tab.
-                            Leave blank for a non-interactive image.
+                            {this.nls('ifSetTheImageBecomesA')}
                         </span>
                     </SettingRow>
 
-                    <SettingRow label="Submit button label" flow="wrap">
+                    <SettingRow label={this.nls('submitButtonLabel')} flow="wrap">
                         <TextInput
                             className="w-100" size="sm"
                             value={cfg.submitButtonLabel ?? "Submit Report"}
@@ -1101,7 +1083,7 @@ export default class Setting extends React.PureComponent<
                         />
                     </SettingRow>
 
-                    <SettingRow label="Success message" flow="wrap">
+                    <SettingRow label={this.nls('successMessage')} flow="wrap">
                         <TextArea
                             className="w-100" height={80}
                             value={cfg.successMessage ??
@@ -1112,7 +1094,7 @@ export default class Setting extends React.PureComponent<
                         />
                     </SettingRow>
 
-                    <SettingRow label="Max photo size (MB)">
+                    <SettingRow label={this.nls('maxPhotoSizeMb')}>
                         <NumericInput
                             value={cfg.maxPhotoSizeMB ?? 10}
                             min={1} max={25} step={1}
@@ -1125,21 +1107,14 @@ export default class Setting extends React.PureComponent<
                 </SettingSection>
 
                 {/* ── Critical Issue Alerts ──────────────────────── */}
-                <SettingSection title="Critical Issue Alerts">
+                <SettingSection title={this.nls('criticalIssueAlerts')}>
                     <SettingRow>
                         <span className="setting-text-level-3">
-                            For category/subcategory combinations that need
-                            immediate phone response (e.g. sewer overflow,
-                            traffic signal outage), show a warning banner with
-                            a click-to-call phone number on Steps 2 and 4.
-                            Submission is still allowed — this is a soft warn.
-                            Leave Subcategory blank to match all subcategories
-                            of the category. Pickers below are populated from
-                            the Category Metadata URL field below.
+                            {this.nls('forCategorySubcategoryCombinationsThatNeed')}
                         </span>
                     </SettingRow>
 
-                    <SettingRow label="Category Metadata URL" flow="wrap">
+                    <SettingRow label={this.nls('categoryMetadataUrl')} flow="wrap">
                         <TextInput
                             className="w-100" size="sm"
                             placeholder="https://gis.example.gov/arcgis/rest/services/RAC/ReportAConcern_Reporter/FeatureServer/0"
@@ -1149,10 +1124,7 @@ export default class Setting extends React.PureComponent<
                             }
                         />
                         <span className="setting-text-level-3" style={{ marginTop: 4, display: "block" }}>
-                            Full REST URL to the Tickets layer — used only here in
-                            settings to load Category and Subcategory pick-lists.
-                            Must be a FeatureServer or MapServer layer URL, NOT
-                            the Flask submission proxy.
+                            {this.nls('fullRestUrlToTheTickets')}
                         </span>
                     </SettingRow>
 
@@ -1169,20 +1141,20 @@ export default class Setting extends React.PureComponent<
 
                         let label = "";
                         let color = c.textSecondary;
-                        if (loading) { label = "Loading categories from layer…"; color = c.textSecondary; }
-                        else if (err) { label = `Error: ${err}`; color = c.danger; }
-                        else if (!url) { label = "No layer URL available. Set Category Metadata URL below, or make sure Write Endpoint URL is a FeatureServer/MapServer URL (not the proxy)."; color = c.warning; }
-                        else if (n === 0) { label = "Fetched layer JSON but found 0 subtypes."; color = c.warning; }
-                        else { label = `${n} categor${n === 1 ? "y" : "ies"} loaded`; color = "#080"; }
+                        if (loading) { label = this.nls('loadingCategoriesFromLayer'); color = c.textSecondary; }
+                        else if (err) { label = this.nls('errorErr', { err }); color = c.danger; }
+                        else if (!url) { label = this.nls('noLayerUrlAvailableSetCategory'); color = c.warning; }
+                        else if (n === 0) { label = this.nls('fetchedLayerJsonButFound0'); color = c.warning; }
+                        else { label = (n === 1 ? this.nls('nCategoryLoaded', { n }) : this.nls('nCategoriesLoaded', { n })); color = "#080"; }
 
                         return (
                             <SettingRow>
                                 <div style={{ width: "100%", fontSize: 12 }}>
                                     <div style={{ color, marginBottom: 4 }}>
-                                        <strong>Pickers:</strong> {label}
+                                        <strong>{this.nls('pickers')}</strong> {label}
                                     </div>
                                     <div style={{ color: c.textSecondary, wordBreak: "break-all", fontSize: 11 }}>
-                                        URL: {url || "(none)"}
+                                        {this.nls('url')} {url || this.nls('none')}
                                     </div>
                                     <button
                                         type="button"
@@ -1193,14 +1165,14 @@ export default class Setting extends React.PureComponent<
                                             cursor: "pointer", padding: 0, fontSize: 12,
                                         }}
                                     >
-                                        Refresh metadata
+                                        {this.nls('refreshMetadata')}
                                     </button>
                                 </div>
                             </SettingRow>
                         );
                     })()}
 
-                    <SettingRow label="Default warning message" flow="wrap">
+                    <SettingRow label={this.nls('defaultWarningMessage')} flow="wrap">
                         <TextArea
                             className="w-100" height={80}
                             value={cfg.criticalAlertDefaultMessage ??
@@ -1210,8 +1182,7 @@ export default class Setting extends React.PureComponent<
                             }
                         />
                         <span className="setting-text-level-3" style={{ marginTop: 4, display: "block" }}>
-                            Shown above the phone number when the alert's own
-                            Message field is blank.
+                            {this.nls('shownAboveThePhoneNumberWhen')}
                         </span>
                     </SettingRow>
 
@@ -1231,7 +1202,7 @@ export default class Setting extends React.PureComponent<
                                 marginBottom: 6,
                             }}>
                                 <strong style={{ fontSize: 12 }}>
-                                    Alert #{i + 1}
+                                    {this.nls('alertI', { i: i + 1 })}
                                 </strong>
                                 <button
                                     type="button"
@@ -1245,17 +1216,17 @@ export default class Setting extends React.PureComponent<
                                         fontSize: 11,
                                         cursor: "pointer",
                                     }}
-                                    aria-label={`Remove alert ${i + 1}`}
+                                    aria-label={this.nls('removeAlertI', { i: i + 1 })}
                                 >
-                                    Remove
+                                    {this.nls('remove')}
                                 </button>
                             </div>
 
-                            <SettingRow label="Category" flow="wrap">
+                            <SettingRow label={this.nls('category')} flow="wrap">
                                 {this.state.subtypes.length === 0 ? (
                                     <TextInput
                                         className="w-100" size="sm"
-                                        placeholder="Sewer"
+                                        placeholder={this.nls('sewer')}
                                         value={row.category ?? ""}
                                         onChange={(e) =>
                                             this.setCriticalAlertField(i, "category", e.target.value)
@@ -1278,7 +1249,7 @@ export default class Setting extends React.PureComponent<
                                             }
                                         }}
                                     >
-                                        <option value="">— Select category —</option>
+                                        <option value="">{this.nls('selectCategory')}</option>
                                         {this.state.subtypes.map((st) => (
                                             <option key={st.code} value={st.name}>{st.name}</option>
                                         ))}
@@ -1287,14 +1258,14 @@ export default class Setting extends React.PureComponent<
                                                 (st) => st.name.toLowerCase() === (row.category || "").toLowerCase()
                                             ) && (
                                                 <option value={row.category}>
-                                                    {row.category} (not in layer)
+                                                    {this.nls('categoryNotInLayer', { category: row.category })}
                                                 </option>
                                             )}
                                     </select>
                                 )}
                             </SettingRow>
 
-                            <SettingRow label="Subcategory" flow="wrap">
+                            <SettingRow label={this.nls('subcategory')} flow="wrap">
                                 {(() => {
                                     const match = this.state.subtypes.find(
                                         (st) => st.name.toLowerCase() === (row.category || "").toLowerCase()
@@ -1303,7 +1274,7 @@ export default class Setting extends React.PureComponent<
                                         return (
                                             <TextInput
                                                 className="w-100" size="sm"
-                                                placeholder="Overflow / Spill   (blank = whole category)"
+                                                placeholder={this.nls('overflowSpillBlankWholeCategory')}
                                                 value={row.subcategory ?? ""}
                                                 onChange={(e) =>
                                                     this.setCriticalAlertField(i, "subcategory", e.target.value)
@@ -1328,13 +1299,13 @@ export default class Setting extends React.PureComponent<
                                                 this.setCriticalAlertField(i, "subcategory", e.target.value)
                                             }
                                         >
-                                            <option value="">(any subcategory — whole category)</option>
+                                            <option value="">{this.nls('anySubcategoryWholeCategory')}</option>
                                             {subOpts.map((so) => (
                                                 <option key={so.code} value={so.name}>{so.name}</option>
                                             ))}
                                             {row.subcategory && !inList && (
                                                 <option value={row.subcategory}>
-                                                    {row.subcategory} (not in domain)
+                                                    {this.nls('subcategoryNotInDomain', { subcategory: row.subcategory })}
                                                 </option>
                                             )}
                                         </select>
@@ -1342,13 +1313,9 @@ export default class Setting extends React.PureComponent<
                                 })()}
                             </SettingRow>
 
-                            <SettingRow label="Phone numbers" flow="wrap">
+                            <SettingRow label={this.nls('phoneNumbers')} flow="wrap">
                                 <span className="setting-text-level-3" style={{ marginTop: 0, marginBottom: 6, display: "block" }}>
-                                    One or more numbers shown to the citizen. Each
-                                    becomes its own tap-to-call link. Use the
-                                    optional label and name fields to indicate
-                                    when each line should be used (e.g.
-                                    "Monday-Friday 8 AM to 5 PM" / "Customer Service").
+                                    {this.nls('oneOrMoreNumbersShownTo')}
                                 </span>
 
                                 {this.getAlertPhones(i).map((p, j, arr) => (
@@ -1366,12 +1333,12 @@ export default class Setting extends React.PureComponent<
                                             marginBottom: 4,
                                         }}>
                                             <em style={{ fontSize: 11, color: c.textSecondary }}>
-                                                Phone #{j + 1}
+                                                {this.nls('phoneJ', { j: j + 1 })}
                                             </em>
                                             <div style={{ display: "flex", gap: 4 }}>
                                                 <button
                                                     type="button"
-                                                    title="Move up"
+                                                    title={this.nls('moveUp')}
                                                     disabled={j === 0}
                                                     onClick={() => this.moveAlertPhone(i, j, -1)}
                                                     style={{
@@ -1384,11 +1351,11 @@ export default class Setting extends React.PureComponent<
                                                         cursor: j === 0 ? "not-allowed" : "pointer",
                                                         opacity: j === 0 ? 0.4 : 1,
                                                     }}
-                                                    aria-label={`Move phone ${j + 1} up`}
+                                                    aria-label={this.nls('movePhoneJUp', { j: j + 1 })}
                                                 >▲</button>
                                                 <button
                                                     type="button"
-                                                    title="Move down"
+                                                    title={this.nls('moveDown')}
                                                     disabled={j === arr.length - 1}
                                                     onClick={() => this.moveAlertPhone(i, j, 1)}
                                                     style={{
@@ -1401,7 +1368,7 @@ export default class Setting extends React.PureComponent<
                                                         cursor: j === arr.length - 1 ? "not-allowed" : "pointer",
                                                         opacity: j === arr.length - 1 ? 0.4 : 1,
                                                     }}
-                                                    aria-label={`Move phone ${j + 1} down`}
+                                                    aria-label={this.nls('movePhoneJDown', { j: j + 1 })}
                                                 >▼</button>
                                                 <button
                                                     type="button"
@@ -1415,19 +1382,19 @@ export default class Setting extends React.PureComponent<
                                                         fontSize: 11,
                                                         cursor: "pointer",
                                                     }}
-                                                    aria-label={`Remove phone ${j + 1}`}
-                                                >Remove</button>
+                                                    aria-label={this.nls('removePhoneJ', { j: j + 1 })}
+                                                >{this.nls('remove')}</button>
                                             </div>
                                         </div>
 
                                         <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                                             <div style={{ flex: "1 1 220px", minWidth: 180 }}>
                                                 <label style={{ fontSize: 11, color: c.textSecondary, display: "block", marginBottom: 2 }}>
-                                                    When (optional)
+                                                    {this.nls('whenOptional')}
                                                 </label>
                                                 <TextInput
                                                     className="w-100" size="sm"
-                                                    placeholder="Monday-Friday 8 AM to 5 PM"
+                                                    placeholder={this.nls('mondayFriday8AmTo5')}
                                                     value={p.label}
                                                     onChange={(e) =>
                                                         this.setAlertPhoneField(i, j, "label", e.target.value)
@@ -1436,11 +1403,11 @@ export default class Setting extends React.PureComponent<
                                             </div>
                                             <div style={{ flex: "1 1 180px", minWidth: 140 }}>
                                                 <label style={{ fontSize: 11, color: c.textSecondary, display: "block", marginBottom: 2 }}>
-                                                    Who (optional)
+                                                    {this.nls('whoOptional')}
                                                 </label>
                                                 <TextInput
                                                     className="w-100" size="sm"
-                                                    placeholder="Customer Service"
+                                                    placeholder={this.nls('customerService')}
                                                     value={p.name}
                                                     onChange={(e) =>
                                                         this.setAlertPhoneField(i, j, "name", e.target.value)
@@ -1449,7 +1416,7 @@ export default class Setting extends React.PureComponent<
                                             </div>
                                             <div style={{ flex: "1 1 150px", minWidth: 130 }}>
                                                 <label style={{ fontSize: 11, color: c.textSecondary, display: "block", marginBottom: 2 }}>
-                                                    Number *
+                                                    {this.nls('number')}
                                                 </label>
                                                 <TextInput
                                                     className="w-100" size="sm"
@@ -1477,10 +1444,10 @@ export default class Setting extends React.PureComponent<
                                         cursor: "pointer",
                                         fontWeight: 600,
                                     }}
-                                >+ Add another phone</button>
+                                >{this.nls('addAnotherPhone')}</button>
                             </SettingRow>
 
-                            <SettingRow label="Custom message (optional)" flow="wrap">
+                            <SettingRow label={this.nls('customMessageOptional')} flow="wrap">
                                 <TextArea
                                     className="w-100" height={70}
                                     value={row.message ?? ""}
@@ -1489,11 +1456,7 @@ export default class Setting extends React.PureComponent<
                                     }
                                 />
                                 <span className="setting-text-level-3" style={{ marginTop: 4, display: "block" }}>
-                                    Optional context shown above the phone
-                                    numbers. Leave blank to use the default
-                                    message. With multiple phones already
-                                    labeled, a short message works best —
-                                    don't repeat the schedule in prose.
+                                    {this.nls('optionalContextShownAboveThePhone')}
                                 </span>
                             </SettingRow>
                         </div>
@@ -1514,7 +1477,7 @@ export default class Setting extends React.PureComponent<
                                 fontWeight: 600,
                             }}
                         >
-                            + Add Critical Alert
+                            {this.nls('addCriticalAlert')}
                         </button>
                     </SettingRow>
                 </SettingSection>
