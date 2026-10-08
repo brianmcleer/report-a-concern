@@ -146,5 +146,13 @@ export default {
   helpTipsTitle: 'Good to know',
   helpTips1: 'Press Enter in the search box instead of clicking Search.',
   helpTips2: 'Hover a date in the list to see the full date and time.',
-  helpTips3: 'Type a word like status or photo in the box above to jump to the right line of this guide.'
+  helpTips3: 'Type a word like status or photo in the box above to jump to the right line of this guide.',
+  commentsComments: '{comments} comments',
+  commentsComment: '{comments} comment',
+  photosPhotos: '{photos} photos',
+  photosPhoto: '{photos} photo',
+  surveyResponseReceived: 'Survey response received',
+  clickToViewFullCat: 'Click to view — {fullCat}',
+  noDescription: 'No description',
+  survey: '⭐ Survey'
 }

@@ -56,7 +56,8 @@ $ReleaseOnlyExclude = @(
     "src\*-shims.d.ts",
     "src\editor-shims.d.ts",
     "src\runtime\esri.d.ts",
-    "tools"
+    "tools",
+    "i18n"            # exb-i18n-kit lock + status: for contributors, not for installs
 )
 
 # Files that must never be committed. .gitignore covers them, but a rename or a copy with a
@@ -86,7 +87,8 @@ if (-not $NoMirror) {
         Write-Host "==> $w : manifest.json $mv, package.json $pv"
         if ($mv -and $pv -and ($mv -ne $pv)) { throw "$w : manifest.json is $mv but package.json is $pv. Bump both together, in the EB folder." }
 
-        $xd = @("/XD") + $ExcludeDirs
+        # exb-i18n-kit: localize snapshots stay local; i18n\STATUS.md and the lock still publish.
+        $xd = @("/XD") + $ExcludeDirs + @((Join-Path $src "i18n\backup"))
         $xf = @("/XF") + $ExcludeFiles
         robocopy "$src" "$dest" /MIR @xd @xf /NFL /NDL /NJH /NJS /NP | Out-Null
         if ($LASTEXITCODE -ge 8) { throw "robocopy failed for $w with exit code $LASTEXITCODE" }
@@ -94,6 +96,8 @@ if (-not $NoMirror) {
             $stale = Join-Path $dest $dir
             if (Test-Path $stale) { Remove-Item $stale -Recurse -Force }
         }
+        $staleBackup = Join-Path $dest "i18n\backup"
+        if (Test-Path $staleBackup) { Remove-Item $staleBackup -Recurse -Force }
         if (-not (Test-Path (Join-Path $dest "manifest.json"))) { throw "manifest.json is not directly inside $dest" }
         if (-not (Test-Path (Join-Path $dest "icon.svg"))) { Write-Warning "$w has no icon.svg; Experience Builder shows a blank tile for it." }
     }

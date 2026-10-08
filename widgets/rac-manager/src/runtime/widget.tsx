@@ -4589,13 +4589,13 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                                 {badge && (badge.comments > 0 || badge.photos > 0 || badge.survey) ? (
                                                     <div style={{ display: "flex", flexWrap: "wrap", gap: 4, alignItems: "center", justifyContent: "center" }}>
                                                         {badge.comments > 0 && (
-                                                            <span title={`${badge.comments} comment${badge.comments !== 1 ? "s" : ""}`} style={{ fontSize: 10, background: tk.infoBg, color: tk.primary, borderRadius: 99, padding: "1px 6px", fontWeight: 600, border: "1px solid #bfdbfe" }}>💬 {badge.comments}</span>
+                                                            <span title={(badge.comments !== 1 ? t('commentsComments', { comments: badge.comments }) : t('commentsComment', { comments: badge.comments }))} style={{ fontSize: 10, background: tk.infoBg, color: tk.primary, borderRadius: 99, padding: "1px 6px", fontWeight: 600, border: "1px solid #bfdbfe" }}>💬 {badge.comments}</span>
                                                         )}
                                                         {badge.photos > 0 && (
-                                                            <span title={`${badge.photos} photo${badge.photos !== 1 ? "s" : ""}`} style={{ fontSize: 10, background: tk.warningBg, color: tk.warning, borderRadius: 99, padding: "1px 6px", fontWeight: 600, border: "1px solid #fde68a" }}>📷 {badge.photos}</span>
+                                                            <span title={(badge.photos !== 1 ? t('photosPhotos', { photos: badge.photos }) : t('photosPhoto', { photos: badge.photos }))} style={{ fontSize: 10, background: tk.warningBg, color: tk.warning, borderRadius: 99, padding: "1px 6px", fontWeight: 600, border: "1px solid #fde68a" }}>📷 {badge.photos}</span>
                                                         )}
                                                         {badge.survey && (
-                                                            <span title="Survey response received" style={{ fontSize: 10, background: "#f0fdf4", color: "#15803d", borderRadius: 99, padding: "1px 6px", fontWeight: 600, border: "1px solid #bbf7d0" }}>⭐</span>
+                                                            <span title={t('surveyResponseReceived')} style={{ fontSize: 10, background: "#f0fdf4", color: "#15803d", borderRadius: 99, padding: "1px 6px", fontWeight: 600, border: "1px solid #bbf7d0" }}>⭐</span>
                                                         )}
                                                     </div>
                                                 ) : (
@@ -4999,7 +4999,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                             role="listitem"
                                             tabIndex={0}
                                             aria-label={cardLabel}
-                                            title={`Click to view — ${fullCat}`}
+                                            title={t('clickToViewFullCat', { fullCat })}
                                             onClick={(e: any) => { e.stopPropagation(); this.clearHoverHl(); this.select(t); }}
                                             onKeyDown={(e: any) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); this.clearHoverHl(); this.select(t); } }}
                                             style={{ padding: "10px 12px", marginBottom: 6, border: `1px solid ${tk.divider}`, borderLeft: `3px solid ${leftColor}`, borderRadius: 6, cursor: "pointer", outline: "none", background: tk.surface, boxShadow: "0 1px 3px rgba(0,0,0,0.04)", transition: "box-shadow 0.15s" }}
@@ -5018,7 +5018,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                             </div>
                                             <div style={{ fontWeight: 600, fontSize: 13, color: tk.text, marginBottom: 2 }}>{fullCat}</div>
                                             <div style={{ fontSize: 12, color: tk.textSecondary, marginBottom: 4, lineHeight: 1.4 }}>
-                                                {(t.description || "No description").substring(0, 120)}
+                                                {(t.description || t('noDescription')).substring(0, 120)}
                                             </div>
                                             <div style={{ display: "flex", gap: 8, fontSize: 11, color: tk.textSecondary, flexWrap: "wrap" }}>
                                                 {t.address_submitted && <span>{t.address_submitted}</span>}
@@ -5027,13 +5027,13 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                             {badge && (badge.comments > 0 || badge.photos > 0 || badge.survey) && (
                                                 <div style={{ display: "flex", gap: 5, marginTop: 6, flexWrap: "wrap" }}>
                                                     {badge.comments > 0 && (
-                                                        <span title={`${badge.comments} comment${badge.comments !== 1 ? "s" : ""}`} style={{ fontSize: 10, background: tk.infoBg, color: tk.primary, borderRadius: 99, padding: "1px 7px", fontWeight: 600, border: "1px solid #bfdbfe" }}>💬 {badge.comments}</span>
+                                                        <span title={(badge.comments !== 1 ? t('commentsComments', { comments: badge.comments }) : t('commentsComment', { comments: badge.comments }))} style={{ fontSize: 10, background: tk.infoBg, color: tk.primary, borderRadius: 99, padding: "1px 7px", fontWeight: 600, border: "1px solid #bfdbfe" }}>💬 {badge.comments}</span>
                                                     )}
                                                     {badge.photos > 0 && (
-                                                        <span title={`${badge.photos} photo${badge.photos !== 1 ? "s" : ""}`} style={{ fontSize: 10, background: tk.warningBg, color: tk.warning, borderRadius: 99, padding: "1px 7px", fontWeight: 600, border: "1px solid #fde68a" }}>📷 {badge.photos}</span>
+                                                        <span title={(badge.photos !== 1 ? t('photosPhotos', { photos: badge.photos }) : t('photosPhoto', { photos: badge.photos }))} style={{ fontSize: 10, background: tk.warningBg, color: tk.warning, borderRadius: 99, padding: "1px 7px", fontWeight: 600, border: "1px solid #fde68a" }}>📷 {badge.photos}</span>
                                                     )}
                                                     {badge.survey && (
-                                                        <span title="Survey response received" style={{ fontSize: 10, background: "#f0fdf4", color: "#15803d", borderRadius: 99, padding: "1px 7px", fontWeight: 600, border: "1px solid #bbf7d0" }}>⭐ Survey</span>
+                                                        <span title={t('surveyResponseReceived')} style={{ fontSize: 10, background: "#f0fdf4", color: "#15803d", borderRadius: 99, padding: "1px 7px", fontWeight: 600, border: "1px solid #bbf7d0" }}>{t('survey')}</span>
                                                     )}
                                                 </div>
                                             )}

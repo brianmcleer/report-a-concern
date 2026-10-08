@@ -1,0 +1,561 @@
+{
+  "version": 2,
+  "generator": "exb-i18n-kit",
+  "parts": {
+    "runtime": {
+      "en": "20ffaace6986",
+      "keys": 1,
+      "hashes": {
+        "_widgetLabel": "b4c289cd9eda"
+      },
+      "locales": {
+        "ar": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "bg": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "bs": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "ca": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "cs": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "da": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "de": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "el": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "es": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "et": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "fi": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "fr": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "he": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "hr": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "hu": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "id": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "it": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "ja": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "ko": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "lt": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "lv": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "no": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "nl": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "pl": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "pt-br": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "pt-pt": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "ro": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "ru": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "sk": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "sl": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "sr": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "sv": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "th": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "tr": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "zh-cn": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "uk": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "vi": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "zh-hk": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        },
+        "zh-tw": {
+          "file": "db2197486131",
+          "counts": {
+            "esri": 0,
+            "esri-check": 0,
+            "community": 0,
+            "manual": 0,
+            "existing": 0,
+            "machine": 0,
+            "stale": 0,
+            "missing": 1
+          },
+          "entries": {}
+        }
+      }
+    }
+  }
+}
