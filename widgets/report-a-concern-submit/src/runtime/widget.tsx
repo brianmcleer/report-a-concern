@@ -9,7 +9,7 @@ import { containsProfanity } from "./lib/profanity";
 import { CATEGORY_BOUNDARY_MAP } from "./lib/categoryBoundaries";
 import defaultMessages from "./translations/default";
 import __i18nDefaults from './translations/default'
-import { __setIntl, __tc } from './i18n-t'
+import { __locale, __setIntl, __tc } from './i18n-t'
 let __i18nIntl: any = null
 /** Module translator: app language via the widget intl, English from default.ts, {name} values filled. */
 const __t = (id: string, values?: { [key: string]: any }): string => {
@@ -5550,12 +5550,12 @@ export default class ReportAConcernSubmit extends React.PureComponent<
         const statusLabel = STATUS_LABELS[tk.status ?? 0] || __t("statusStatus", { status: tk.status });
         const priorityLabel = PRIORITY_LABELS[tk.priority ?? 0] || __t("priorityPriority", { priority: tk.priority });
         const categoryName = this.state.subtypes.find((s) => s.code === tk.category)?.name
-            || (tk.category != null ? `Category ${tk.category}` : "—");
+            || (tk.category != null ? __t("categoryCategory", { category: tk.category }) : "—");
         const subcategoryName = tk.subcategory
             ? this.getSubcategoryNameFor(tk.category, tk.subcategory)
             : null;
         const submittedDate = tk.created_date
-            ? new Date(tk.created_date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+            ? new Date(tk.created_date).toLocaleDateString(__locale(), { year: "numeric", month: "long", day: "numeric" })
             : "—";
 
         const isResolved = tk.status === 4 || tk.status === 5;
@@ -5636,7 +5636,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                     {c.commentDate && (
                                         <div style={S.commentDate}>
                                             <time dateTime={new Date(c.commentDate).toISOString()}>
-                                                {new Date(c.commentDate).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+                                                {new Date(c.commentDate).toLocaleDateString(__locale(), { year: "numeric", month: "long", day: "numeric" })}
                                             </time>
                                         </div>
                                     )}
@@ -5660,7 +5660,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                     <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ display: "block" }} aria-label={this.nls('openStaffPhotoIFullSize', { i: i + 1 })}>
                                         <img
                                             src={p.url}
-                                            alt={this.nls('photoAddedByCityStaffUploadDate', { uploadDate: p.uploadDate ? " on " + new Date(p.uploadDate).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : "" })}
+                                            alt={this.nls('photoAddedByCityStaffUploadDate', { uploadDate: p.uploadDate ? " on " + new Date(p.uploadDate).toLocaleDateString(__locale(), { year: "numeric", month: "long", day: "numeric" }) : "" })}
                                             style={{ width: "100%", maxHeight: 320, objectFit: "cover", display: "block" }}
                                             loading="lazy"
                                         />
@@ -5668,7 +5668,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                                     {p.uploadDate && (
                                         <div style={{ fontSize: 12, color: t.textMuted, padding: "6px 10px" }}>
                                             <time dateTime={new Date(p.uploadDate).toISOString()}>
-                                                {new Date(p.uploadDate).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+                                                {new Date(p.uploadDate).toLocaleDateString(__locale(), { year: "numeric", month: "long", day: "numeric" })}
                                             </time>
                                         </div>
                                     )}

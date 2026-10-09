@@ -3,8 +3,8 @@
   "generator": "exb-i18n-kit",
   "parts": {
     "runtime": {
-      "en": "50f0a7950d57",
-      "keys": 138,
+      "en": "47ebf709eaf1",
+      "keys": 139,
       "hashes": {
         "_widgetLabel": "b4c289cd9eda",
         "candidatesCountAddressFoundPressTabTo": "42024159c120",
@@ -143,20 +143,21 @@
         "statusStatus": "b6bb62f4e2a0",
         "priorityPriority": "dadd7cd05d86",
         "unknownError": "af6321ca7a8b",
-        "unserializableError": "76e73551597a"
+        "unserializableError": "76e73551597a",
+        "categoryCategory": "54bc35fb1f81"
       },
       "locales": {
         "ar": {
-          "file": "fc4b3b34444f",
+          "file": "4ebd816408e0",
           "counts": {
-            "esri": 10,
+            "esri": 12,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -723,20 +724,80 @@
               "t": "لا يوجد مسحوق للخريطة",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "اتصل {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Ticket Comments",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "تذكرة{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "وهذه الفئة غير متاحة للموقع المختار.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "خطأ الخادم",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "وللاستجابة السريعة، يرجى الاتصال بالرقم أدناه. يمكنك أن تقدم هذا التقرير على الإنترنت، ولكن مكالمة هاتفية تضمن شخص ما يستجيب على الفور.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "رفض الطلب.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "شكراً لك لقد تم تقديم قلقك",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "... التحقق من توافر هذا الموقع...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "⚠ هذه الفئة غير متاحة للموقع المختار.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "الحالة {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "الأولوية {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "bg": {
-          "file": "b898f12df343",
+          "file": "646fa18ed3b9",
           "counts": {
-            "esri": 10,
+            "esri": 12,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -1303,11 +1364,71 @@
               "t": "Няма конфигурирана карта.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Обаждане {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Коментари за билета",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Билет #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Тази категория не е достъпна за избраното място.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "грешка в сървъра",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "За най-бързия отговор, моля обадете се на номера по-долу. Все още можете да подадете този доклад онлайн, но телефонно обаждане гарантира някой да отговори веднага.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Подаването е отхвърлено.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Благодаря! Вашата загриженост е била представена.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "Проверка на наличността за това местоположение...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "Тази категория не е достъпна за избраното местоположение.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Състояние {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Приоритет {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "bs": {
-          "file": "8d0ae31fdcba",
+          "file": "6336a035e0d5",
           "counts": {
             "esri": 9,
             "esri-check": 1,
@@ -1316,21 +1437,21 @@
             "existing": 0,
             "machine": 0,
             "stale": 0,
-            "missing": 128
+            "missing": 129
           },
           "entries": {}
         },
         "ca": {
-          "file": "88eb544d47a9",
+          "file": "8bd5a4af845f",
           "counts": {
-            "esri": 10,
+            "esri": 12,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -1897,20 +2018,80 @@
               "t": "No s' ha configurat cap estri de mapa.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Crida {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Comentaris d' entrada",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Rebut #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Aquesta categoria no està disponible per a la ubicació seleccionada.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "error del servidor",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Per a la resposta més ràpida, si us plau, truqui al número de sota. Encara pots enviar aquest informe en línia, però una trucada telefònica assegura que algú respon immediatament.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Submissió rebutjada.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Gràcies! La seva preocupació s'ha enviat.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "Publicant disponibilitat per aquesta ubicació...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "category Aquesta categoria no està disponible per a la localització seleccionada.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Estat {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Prioritat {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "cs": {
-          "file": "c60e6261d743",
+          "file": "734898d1dd9d",
           "counts": {
-            "esri": 9,
+            "esri": 11,
             "esri-check": 2,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -2477,20 +2658,80 @@
               "t": "Žádný widget mapy.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Volání {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Komentáře k tipu",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Lístek #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Tato kategorie není dostupná pro vybrané místo.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "chyba serveru",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Pro nejrychlejší odpověď volejte prosím na níže uvedené číslo. Stále můžete tuto zprávu předložit online, ale telefonát zajistí, že někdo okamžitě zareaguje.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Podřízení zamítnuto.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Díky! Vaše obavy byly předloženy.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "Kontrola dostupnosti pro tuto polohu...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "Celá kategorie není k dispozici pro vybrané místo.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Stav {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Priorita {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "da": {
-          "file": "9eac7ae15d13",
+          "file": "fde2ab5401cd",
           "counts": {
-            "esri": 10,
+            "esri": 12,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -3057,20 +3298,80 @@
               "t": "Ingen kortkontrol indstillet.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Opkald {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Billetkommentarer",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Ticket #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Denne kategori er ikke tilgængelig for det valgte sted.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "serverfejl",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "For den hurtigste reaktion, bedes du ringe til nummeret nedenfor. Du kan stadig indsende denne rapport online, men et telefonopkald sikrer nogen reagerer straks.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Indgivelse afvist.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Tak! Din bekymring er blevet forelagt.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "Tjekker tilgængelighed for denne placering...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "Denne kategori er ikke tilgængelig for den valgte placering.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Status {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Prioriteret {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "de": {
-          "file": "0ec3ea85f95b",
+          "file": "cfe2cd3d5f83",
           "counts": {
-            "esri": 9,
+            "esri": 11,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 114,
+            "machine": 126,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -3642,20 +3943,80 @@
               "t": "Kein Map Widget konfiguriert.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Ruf {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Ticketkommentare",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Ticket #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Diese Kategorie ist für den ausgewählten Standort nicht verfügbar.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "Serverfehler",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Für die schnellste Antwort rufen Sie bitte die unten stehende Nummer an. Sie können diesen bericht immer noch online einreichen, aber ein anruf stellt sicher, dass jemand sofort reagiert.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Das Vorbringen wurde abgelehnt.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Vielen Dank! Ihre Besorgnis wurde geäußert.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "⏳ Verfügbarkeit für diesen Standort prüfen...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "⚠ Diese Kategorie ist für den ausgewählten Standort nicht verfügbar.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Status {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Priorität {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "el": {
-          "file": "c836ab3e05ef",
+          "file": "62ae30dda743",
           "counts": {
-            "esri": 10,
+            "esri": 12,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -4222,20 +4583,80 @@
               "t": "Δεν έχει ρυθμιστεί γραφικό συστατικό χάρτη.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Κλήση {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Σχόλια εισιτηρίου",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Εισιτήριο #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Αυτή η κατηγορία δεν είναι διαθέσιμη για την επιλεγμένη τοποθεσία.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "Σφάλμα εξυπηρετητή",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Για την ταχύτερη απάντηση, παρακαλούμε καλέστε τον αριθμό παρακάτω. Μπορείτε ακόμα να υποβάλετε αυτή την αναφορά online, αλλά ένα τηλεφώνημα εξασφαλίζει ότι κάποιος θα απαντήσει αμέσως.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Η αίτηση απορρίπτεται.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Ευχαριστώ! Η ανησυχία σας υποβλήθηκε.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "⏳ Έλεγχος διαθεσιμότητας για αυτή την τοποθεσία...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "⚠ Αυτή η κατηγορία δεν είναι διαθέσιμη για την επιλεγμένη τοποθεσία.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Κατάσταση {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Προτεραιότητα {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "es": {
-          "file": "59befe013582",
+          "file": "a4c3186abf0b",
           "counts": {
-            "esri": 9,
+            "esri": 11,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 114,
+            "machine": 126,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -4807,20 +5228,80 @@
               "t": "No hay widget de mapa configurado.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Call {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Comentarios",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Entrada{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Esta categoría no está disponible para la ubicación seleccionada.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "error servidor",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Para la respuesta más rápida, llame al número siguiente. Usted todavía puede presentar este informe en línea, pero una llamada telefónica asegura que alguien responda inmediatamente.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Submission rejected.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "¡Gracias! Su preocupación ha sido presentada.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "⏳ Consultar disponibilidad para esta ubicación...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "NOV Esta categoría no está disponible para la ubicación seleccionada.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Situación {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Prioridad {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "et": {
-          "file": "0cd90dc10973",
+          "file": "b2031009ba17",
           "counts": {
-            "esri": 10,
+            "esri": 12,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -5387,20 +5868,80 @@
               "t": "Kaardividinat pole seadistatud.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Helista {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Pileti kommentaarid",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Pilet{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "See kategooria ei ole valitud asukoha jaoks saadaval.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "serveriviga",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Kiireima vastuse saamiseks helistage allpool olevale numbrile. Te võite selle aruande siiski veebis esitada, kuid telefonikõne tagab, et keegi vastab kohe.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Taotlus lükati tagasi.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Tänan teid! Teie mure on esitatud.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "Kontrollige selle asukoha kättesaadavust...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "See kategooria ei ole valitud asukoha jaoks saadaval.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Staatus {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Prioriteet {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "fi": {
-          "file": "a3e7f19e21f9",
+          "file": "7d0cb7bca398",
           "counts": {
-            "esri": 10,
+            "esri": 12,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -5967,20 +6508,80 @@
               "t": "Karttaelementtiä ei ole määritetty.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Soita {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Lipun kommentit",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Lippu #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Tämä luokka ei ole käytettävissä valittuun paikkaan.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "palvelinvirhe",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Nopein vastaus, soita alla olevaan numeroon. Voit silti lähettää tämän raportin verkossa, mutta puhelu varmistaa, että joku vastaa välittömästi.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Esitys hylätty.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Kiitos! Huolenne on esitetty.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "Tämä luokka ei ole käytettävissä valittuun paikkaan.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Tila {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Painopiste {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "fr": {
-          "file": "e70fdeb89903",
+          "file": "44eb5eb9e44f",
           "counts": {
-            "esri": 10,
+            "esri": 12,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 114,
+            "machine": 126,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -6552,20 +7153,80 @@
               "t": "Aucun widget de carte configuré.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Appeler {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Commentaires sur les billets",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Billet #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Cette catégorie n'est pas disponible pour l'emplacement sélectionné.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "erreur du serveur",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Pour la réponse la plus rapide, veuillez appeler le numéro ci-dessous. Vous pouvez toujours soumettre ce rapport en ligne, mais un appel téléphonique garantit que quelqu'un répond immédiatement.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Présentation rejetée.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Je vous remercie ! Votre préoccupation a été soumise.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "Rechercher la disponibilité pour cet emplacement...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "Cette catégorie n'est pas disponible pour l'emplacement sélectionné.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "État {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Priorité {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "he": {
-          "file": "e4b1b279c658",
+          "file": "2f67af23cb25",
           "counts": {
-            "esri": 10,
+            "esri": 12,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -7132,11 +7793,71 @@
               "t": "שום מפה לא הוקמה.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Call {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "הערות כרטיס",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "כרטיס #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "קטגוריה זו אינה זמינה למיקום שנבחר.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "טעות בשר",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "לקבלת התגובה המהירה ביותר, אנא התקשר למספר להלן. אתה עדיין יכול להגיש את הדוח הזה באינטרנט, אבל שיחת טלפון מבטיחה שמישהו יגיב מיד.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "ההגשה נדחתה.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "תודה! הדאגה שלך הוגשה.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "בדיקת זמינות למיקום זה...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "קטגוריה זו אינה זמינה עבור המיקום שנבחר.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "סטטוס {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "עדיפות {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "hr": {
-          "file": "8d0ae31fdcba",
+          "file": "6336a035e0d5",
           "counts": {
             "esri": 9,
             "esri-check": 1,
@@ -7145,21 +7866,21 @@
             "existing": 0,
             "machine": 0,
             "stale": 0,
-            "missing": 128
+            "missing": 129
           },
           "entries": {}
         },
         "hu": {
-          "file": "61cd0c36197c",
+          "file": "6002ccf18caa",
           "counts": {
-            "esri": 10,
+            "esri": 12,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -7726,20 +8447,80 @@
               "t": "Nincs map widget beállítva.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Hívás {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Jegyzetek Megjegyzések",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Jegy #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Ez a kategória nem érhető el a kiválasztott helyen.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "szerver hiba",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "A leggyorsabb válaszért kérjük, hívja az alábbi számot. Lehet, hogy ezt a jelentést online is benyújthatja, de egy telefonhívás biztosítja, hogy valaki azonnal válaszoljon.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "A beadványt elutasították.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Köszönöm! Az aggodalmát benyújtottuk.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "A helyszín elérhetőségének ellenőrzése...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "Ez a kategória nem érhető el a kiválasztott helyen.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Állapot {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Prioritás {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "id": {
-          "file": "ba09b1e8122a",
+          "file": "09f07345f740",
           "counts": {
-            "esri": 8,
+            "esri": 10,
             "esri-check": 2,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 114,
+            "machine": 126,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -8311,20 +9092,80 @@
               "t": "Tak ada widget peta yang dikonfigurasi.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Call {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Komentar Tiket",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Tiket #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Kategori ini tidak tersedia bagi lokasi yang dipilih.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "galat server",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Untuk respon tercepat, silahkan hubungi nomor di bawah ini. Anda mungkin masih mengirimkan laporan ini secara online, tapi panggilan telepon memastikan seseorang merespon segera.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Submisi ditolak.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Terima kasih! Kekhawatiranmu telah diajukan.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "Memeriksa tersedia untuk lokasi ini...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "Kategori ini tidak tersedia bagi lokasi yang dipilih.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Status {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Prioritas {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "it": {
-          "file": "1b40c9558cae",
+          "file": "797109c9533d",
           "counts": {
-            "esri": 11,
+            "esri": 13,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -8891,20 +9732,80 @@
               "t": "Nessun widget di mappa configurato.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Chiamata {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Commenti dei biglietti",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Biglietto{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Questa categoria non è disponibile per la posizione selezionata.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "errore server",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Per la risposta più veloce, si prega di chiamare il numero qui sotto. Si può ancora presentare questo rapporto online, ma una telefonata assicura che qualcuno risponde immediatamente.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "La sottomissione è respinta.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Grazie! La vostra preoccupazione è stata presentata.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "⏳ Controllare la disponibilità per questa posizione...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "⚠ Questa categoria non è disponibile per la posizione selezionata.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Stato {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Priorità {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "ja": {
-          "file": "5f1d4186a24d",
+          "file": "0b7edc2857de",
           "counts": {
-            "esri": 11,
+            "esri": 13,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -9471,20 +10372,80 @@
               "t": "ウィジェットの設定はありません。",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "電話番号 {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "チケットコメント",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "チケット番号{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "このカテゴリは、選択した場所では利用できません。",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "サーバエラー",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "最速の対応については、下記の番号にご連絡ください。 このレポートをオンラインで送信しても構いませんが、電話は誰かがすぐに応答することを可能にします。",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "応募を拒否しました。",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "お問い合わせ 皆様のお越しをお待ちしております。",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "空室状況をチェックする",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "⚠ このカテゴリは、選択した場所では利用できません。",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "ステータス {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "優先順位 {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "ko": {
-          "file": "440c7bf07275",
+          "file": "9a5276e0e958",
           "counts": {
-            "esri": 11,
+            "esri": 13,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 112,
+            "machine": 124,
             "stale": 0,
-            "missing": 15
+            "missing": 2
           },
           "entries": {
             "_widgetLabel": {
@@ -10046,20 +11007,80 @@
               "t": "지도 위젯 구성 없음.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "이름 * {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "티켓 댓글",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "티켓 #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "이 카테고리는 선택된 위치에 사용할 수 없습니다.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "서버 오류",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "가장 빠른 응답을 위해, 아래에 번호를 부르십시오. 이 보고서를 온라인으로 제출할 수 있지만, 전화 통화는 즉시 응답합니다.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "제출 거부.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "감사합니다! 당신의 관심사는 제출되었습니다.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "이 위치에 대한 가용성 확인 ...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "⚠ 이 카테고리는 선택된 위치에 사용할 수 없습니다.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "주요연혁 {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "회사연혁 {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "lt": {
-          "file": "0d9e52c7788a",
+          "file": "a63446b78a60",
           "counts": {
-            "esri": 10,
+            "esri": 12,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -10626,20 +11647,80 @@
               "t": "Nekonfigūruotas žemėlapio valdiklis.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Skambutis {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Bilieto komentarai",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Bilietas #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Pasirinktoje vietoje šios kategorijos nėra.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "serverio klaida",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Norėdami gauti greičiausią atsakymą, skambinkite žemiau nurodytu numeriu. Jūs vis dar galite pateikti šią ataskaitą internete, bet telefono skambutis užtikrina, kad kas nors reaguoti nedelsiant.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Pateikimas atmestas.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Ačiū! Jūsų susirūpinimas buvo pateiktas.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "Patikrinti šios vietos prieinamumą...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "® Ši kategorija nėra prieinama pasirinktai vietai.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Būsena {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Prioritetas {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "lv": {
-          "file": "1a96d5223e0e",
+          "file": "e09a182ea277",
           "counts": {
-            "esri": 10,
+            "esri": 12,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 112,
+            "machine": 125,
             "stale": 0,
-            "missing": 15
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -11057,6 +12138,11 @@
               "src": "machine",
               "h": "2f84eea5d45d"
             },
+            "copied2": {
+              "t": "- Kopēt!",
+              "src": "machine",
+              "h": "a5a95321de15"
+            },
             "copy": {
               "t": "י Kopija",
               "src": "machine",
@@ -11201,20 +12287,80 @@
               "t": "Nav konfigurēta kartes logdaļa.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Izsaukt {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Biļetes komentāri",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Biļete #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Šī kategorija nav pieejama izvēlētajai vietai.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "servera kļūda",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Lai iegūtu ātrāko atbildi, zvaniet uz zemāk norādīto numuru. Jūs joprojām varat iesniegt šo ziņojumu tiešsaistē, bet tālruņa zvans nodrošina, ka kāds reaģē nekavējoties.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Iesniegums noraidīts.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Paldies! Jūsu bažas ir iesniegtas.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "י Pārbauda šīs vietas pieejamību...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "Šī kategorija nav pieejama izvēlētajai vietai.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Statuss {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Prioritāte {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "no": {
-          "file": "a45f64987616",
+          "file": "93abcc528a8d",
           "counts": {
-            "esri": 11,
+            "esri": 13,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -11781,20 +12927,80 @@
               "t": "Ingen kart widget konfigurert.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Ring {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Kontakt oss",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Billet #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Denne kategorien er ikke tilgjengelig for det valgte stedet.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "serverfeil",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "For det raskeste svaret, vennligst ring nummeret nedenfor. Du kan fortsatt sende denne rapporten på nettet, men et telefonsamtale sikrer at noen reagerer umiddelbart.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Innsendelse avvist.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Takk! Din bekymring er sendt.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "⏳ Sjekk tilgjengelighet for dette stedet...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "⚠ Denne kategorien er ikke tilgjengelig for den valgte plasseringen.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Status {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Prioritet {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "nl": {
-          "file": "c6bfa1214376",
+          "file": "5ca68e037b18",
           "counts": {
-            "esri": 10,
+            "esri": 12,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -12361,20 +13567,80 @@
               "t": "Geen mapwidget geconfigureerd.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Oproep {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Ticketcommentaar",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Kaartje #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Deze categorie is niet beschikbaar voor de geselecteerde locatie.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "serverfout",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Voor het snelste antwoord, bel het onderstaande nummer. U kunt dit rapport nog steeds online indienen, maar een telefoontje zorgt ervoor dat iemand onmiddellijk reageert.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Indiening afgewezen.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Dank je! Uw bezorgdheid is geuit.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "Beschikbaarheid controleren voor deze locatie...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "Deze categorie is niet beschikbaar voor de geselecteerde locatie.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Status {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Prioriteit {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "pl": {
-          "file": "09e40d117e15",
+          "file": "2bf98833b256",
           "counts": {
-            "esri": 10,
+            "esri": 12,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -12941,20 +14207,80 @@
               "t": "Brak skonfigurowanego widżetu mapy.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Call {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Uwagi dotyczące biletu",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Bilet #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Ta kategoria nie jest dostępna dla wybranej lokalizacji.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "błąd serwera",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Aby uzyskać najszybszą odpowiedź, proszę zadzwonić pod poniższy numer. Możesz nadal składać ten raport online, ale telefon zapewnia natychmiastową reakcję.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Zgłoszenie odrzucone.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Dziękuję! Twoje obawy zostały przedstawione.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "Kontrola dostępności dla tej lokalizacji...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "Kategoria ta nie jest dostępna dla wybranej lokalizacji.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Stan {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Priorytet {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "pt-br": {
-          "file": "a8737573e45c",
+          "file": "8a9464c46375",
           "counts": {
-            "esri": 10,
+            "esri": 12,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -13521,20 +14847,80 @@
               "t": "Nenhum widget de mapa configurado.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Chame. {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Comentários do Bilhete",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Bilhete #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Esta categoria não está disponível para o local selecionado.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "erro do servidor",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Para a resposta mais rápida, ligue para o número abaixo. Você ainda pode enviar este relatório on-line, mas um telefonema garante que alguém responda imediatamente.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Submissão rejeitada.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Obrigado! Sua preocupação foi submetida.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "Verificando disponibilidade para este local...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "Esta categoria não está disponível para o local selecionado.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Situação {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Prioridade {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "pt-pt": {
-          "file": "6a9d305bbe8f",
+          "file": "82e45b18842a",
           "counts": {
-            "esri": 10,
+            "esri": 12,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -14101,20 +15487,80 @@
               "t": "Nenhum elemento do mapa configurado.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Chamada {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Comentários do ticket",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Bilhete #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Esta categoria não está disponível para o local selecionado.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "erro do servidor",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Para a resposta mais rápida, ligue para o número abaixo. Você ainda pode enviar este relatório on-line, mas um telefonema garante que alguém responde imediatamente.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Submissão rejeitada.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Obrigado! A sua preocupação foi submetida.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "Verificar disponibilidade para este local...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "□ Esta categoria não está disponível para o local selecionado.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Estado {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Prioridade {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "ro": {
-          "file": "78b78762d5cd",
+          "file": "2b3fe6b7946f",
           "counts": {
-            "esri": 9,
+            "esri": 11,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 114,
+            "machine": 126,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -14686,20 +16132,80 @@
               "t": "Nicio hartă configurată.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Apel {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Comentariile biletelor",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Biletul #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Această categorie nu este disponibilă pentru locația selectată.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "Eroare server",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Pentru cel mai rapid răspuns, vă rugăm să sunaţi la numărul de mai jos. Puteți depune încă acest raport on-line, dar un apel telefonic asigură cineva răspunde imediat.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Trimitere respinsă.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Mulţumesc! Grija ta a fost prezentată.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "Verific disponibilitatea pentru această locație...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "Această categorie nu este disponibilă pentru locaţia selectată.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Stare {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Prioritate {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "ru": {
-          "file": "c73deae1b29f",
+          "file": "90af89a975cf",
           "counts": {
-            "esri": 9,
+            "esri": 11,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 114,
+            "machine": 126,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -15271,20 +16777,80 @@
               "t": "Виджет карты не настроен.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Звони. {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Комментарии к билету",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Билет #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Эта категория недоступна для выбранного места.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "Серверная ошибка",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Для быстрого ответа, пожалуйста, позвоните по номеру ниже. Вы все еще можете отправить этот отчет онлайн, но телефонный звонок гарантирует, что кто-то ответит немедленно.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Представление отклонено.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Спасибо! Ваше беспокойство было представлено.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "Проверка доступности для этого места...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "Эта категория недоступна для выбранного местоположения.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "статус {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Приоритет {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "sk": {
-          "file": "1f5ff4fc62ae",
+          "file": "6b71a9e17a17",
           "counts": {
-            "esri": 9,
+            "esri": 11,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 111,
+            "machine": 123,
             "stale": 0,
-            "missing": 17
+            "missing": 4
           },
           "entries": {
             "_widgetLabel": {
@@ -15841,20 +17407,80 @@
               "t": "@ info",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Volanie {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Komentáre vstupeniek",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Lístok #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Táto kategória nie je dostupná pre vybrané miesto.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "chyba servera",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Pre najrýchlejšiu odpoveď, prosím volajte číslo nižšie. Môžete ešte predložiť túto správu on-line, ale telefonický hovor zaisťuje, že niekto odpovie okamžite.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Predloženie zamietnuté.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Ďakujem! Vaše obavy boli predložené.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "checking availability for this location...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "Táto kategória nie je k dispozícii pre vybrané miesto.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Stav {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Priorita {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "sl": {
-          "file": "e106c67e3850",
+          "file": "201e2d29b58a",
           "counts": {
-            "esri": 9,
+            "esri": 11,
             "esri-check": 2,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 112,
+            "machine": 122,
             "stale": 0,
-            "missing": 15
+            "missing": 4
           },
           "entries": {
             "_widgetLabel": {
@@ -16416,11 +18042,61 @@
               "t": "Nastavljen ni noben gradnik zemljevida.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Klic {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Komentarji vozovnice",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Vstopnica #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Ta kategorija ni na voljo za izbrano lokacijo.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "napaka strežnika",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Za najhitrejši odgovor pokličite številko spodaj. To poročilo lahko še vedno predložite na spletu, vendar telefonski klic zagotavlja, da se nekdo takoj odzove.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Predložitev zavrnjena.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Hvala! Vaša skrb je bila podana.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "statusStatus": {
+              "t": "Stanje {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Prednost {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "sr": {
-          "file": "d31d64096d15",
+          "file": "e1ce7bf239e0",
           "counts": {
             "esri": 9,
             "esri-check": 1,
@@ -16429,21 +18105,21 @@
             "existing": 0,
             "machine": 0,
             "stale": 0,
-            "missing": 128
+            "missing": 129
           },
           "entries": {}
         },
         "sv": {
-          "file": "055e359ad877",
+          "file": "609041a250c2",
           "counts": {
-            "esri": 10,
+            "esri": 12,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -17010,20 +18686,80 @@
               "t": "Ingen kart widget konfigurerad.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Ring samtal {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Biljettkommentarer",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Biljett #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Denna kategori är inte tillgänglig för den valda platsen.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "Server fel",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "För det snabbaste svaret, ring numret nedan. Du kan fortfarande skicka denna rapport online, men ett telefonsamtal garanterar att någon svarar omedelbart.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Inlämning avvisas.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Tack! Din oro har lämnats in.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "· Kontrollera tillgängligheten för denna plats...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "Denna kategori är inte tillgänglig för den valda platsen.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Status {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Prioritet {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "th": {
-          "file": "7613eb2c0960",
+          "file": "e071d03b9433",
           "counts": {
-            "esri": 9,
+            "esri": 11,
             "esri-check": 2,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -17590,20 +19326,80 @@
               "t": "ยังไม่มีการปรับแต่งวิดเจ็ตของแผนที่",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "เรียก {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "หมายเหตุของตั๋ว",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "ตั๋ว #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "ไม่พบหมวดหมู่สําหรับตําแหน่งที่เลือกไว้",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "เกิดข้อผิดพลาดของแม่ข่าย",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "สําหรับการตอบสนองที่เร็วที่สุด กรุณาโทรตามหมายเลขด้านล่างนี้ คุณ อาจ ยัง คง ส่ง รายงาน นี้ ทาง อินเทอร์เน็ต แต่ การ โทรศัพท์ ทํา ให้ แน่ ใจ ว่า มี คน ตอบ รับ ทันที.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "ถูกปฏิเสธตําแหน่ง",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "ขอบคุณ! ความห่วงใยของเจ้าได้ถูกส่งมอบแล้ว",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "○ ตรวจ ดู สถาน ที่ ที่ เหมาะ สม...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "○ หมวดหมู่นี้ไม่สามารถใช้ได้กับตําแหน่งที่เลือกไว้",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "สถานะ {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "สูง {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "tr": {
-          "file": "30ff5f339edb",
+          "file": "6f89ff8aa7e5",
           "counts": {
-            "esri": 9,
+            "esri": 11,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 114,
+            "machine": 126,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -18175,20 +19971,80 @@
               "t": "No map widget yapılandırılmış.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Call Call Call {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Bilet Yorumlar",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Bilet # #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Bu kategori seçilmiş yer için mevcut değildir.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "server hatası",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "En hızlı yanıt için lütfen aşağıdaki numarayı arayın. Bu raporu hala online olarak gönderebilirsiniz, ancak bir telefon görüşmesi, birinin hemen yanıt vermesini sağlar.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Submission reddedildi.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Teşekkür ederim! Endişeniz sunuldu.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "Bu yer için erişilebilirliği kontrol edin...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": ". Bu kategori seçilmiş yer için mevcut değildir.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Durum durumu {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Öncelik {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "zh-cn": {
-          "file": "057d80f95487",
+          "file": "08b01f555137",
           "counts": {
-            "esri": 10,
+            "esri": 12,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -18755,20 +20611,80 @@
               "t": "未配置地图部件 。",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "调用 {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "车票注释",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "车票 #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "此分类不适用于选定位置 。",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "服务器错误",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "最快的答复请打电话到下面的号码。 您仍可在网上提交此报告, 但电话会确保有人立即回复。",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "申请被驳回。",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "谢谢! 你的问题已经解决了",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "检查此位置的可用性...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "QQ 此分类对选定位置不可用 。",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "状态 {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "优先权 {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "uk": {
-          "file": "d718380683ec",
+          "file": "ba186f6efe50",
           "counts": {
-            "esri": 10,
+            "esri": 12,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -19335,20 +21251,80 @@
               "t": "Не налаштуйте віджет на карті.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "Дзякуй {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Коментарі",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Квиток #{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Ця категорія недоступна для обраного місця.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "помилка сервера",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Для швидкого реагування, будь ласка, зателефонуйте номер нижче. Ви все ще можете подати цей звіт в Інтернеті, але телефонний дзвінок гарантує, що хтось реагує негайно.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Відхилення відхилення.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Дякуємо! Подано Ваше занепокоєння.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "浜у 灞 绀",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "浜у 涓 蹇",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Статус на сервери {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Головна {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "vi": {
-          "file": "70f439b719a1",
+          "file": "ff87b96505ee",
           "counts": {
-            "esri": 9,
+            "esri": 11,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 114,
+            "machine": 126,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -19920,20 +21896,80 @@
               "t": "Không cấu hình ô điều khiển sơ đồ.",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "nhỏ {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "Ghi chú vé",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "Vé{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "Không sẵn sàng cho địa điểm đã chọn.",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "lỗi máy phục vụ",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Để trả lời nhanh nhất, hãy gọi số dưới đây. Bạn vẫn có thể đăng báo cáo này lên mạng, nhưng một cuộc điện thoại đảm bảo có người sẽ trả lời ngay lập tức.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "Bị từ chối.",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Cảm ơn! Mối quan tâm của anh đã được nộp.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "Kiểm tra có sẵn cho địa điểm này...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "Loại này không sẵn sàng cho địa điểm đã chọn.",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "Trạng thái {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "Ưu tiên {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "zh-hk": {
-          "file": "eb26dddf92a2",
+          "file": "bfc9d8d59fdd",
           "counts": {
-            "esri": 11,
+            "esri": 13,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -20500,20 +22536,80 @@
               "t": "沒有設定地圖元件 。",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "呼叫 {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "票面註解",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "票{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "此類別不可用於選取的位置 。",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "伺服器錯誤",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "最快的回應請打到下面 但電話能讓人立刻回應。",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "划界案被驳回。",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "謝謝你! 你的擔心已經提交",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "正在檢查此位置的可用性...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "QQ 此類別對選取的位置不可用 。",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "狀態 {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "优先 {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         },
         "zh-tw": {
-          "file": "eb26dddf92a2",
+          "file": "bfc9d8d59fdd",
           "counts": {
-            "esri": 11,
+            "esri": 13,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 113,
+            "machine": 125,
             "stale": 0,
-            "missing": 14
+            "missing": 1
           },
           "entries": {
             "_widgetLabel": {
@@ -21080,14 +23176,74 @@
               "t": "沒有設定地圖元件 。",
               "src": "machine",
               "h": "8255380d2451"
+            },
+            "uiCall": {
+              "t": "呼叫 {trim}",
+              "src": "machine",
+              "h": "f66ad3efb579"
+            },
+            "ticketComments": {
+              "t": "票面註解",
+              "src": "machine",
+              "h": "1e92934bd5a4"
+            },
+            "ticketTicketNumber": {
+              "t": "票{ticketNumber}",
+              "src": "machine",
+              "h": "17f1b8be0087"
+            },
+            "thisCategoryIsNotAvailableFor": {
+              "t": "此類別不可用於選取的位置 。",
+              "src": "machine",
+              "h": "02677024090d"
+            },
+            "serverError": {
+              "t": "伺服器錯誤",
+              "src": "machine",
+              "h": "6ff9d9c2b03d"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "最快的回應請打到下面 但電話能讓人立刻回應。",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
+            },
+            "submissionRejected": {
+              "t": "划界案被驳回。",
+              "src": "machine",
+              "h": "3e29ccaa5b4c"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "謝謝你! 你的擔心已經提交",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "checkingAvailabilityForThisLocation": {
+              "t": "正在檢查此位置的可用性...",
+              "src": "machine",
+              "h": "bd9055894c49"
+            },
+            "thisCategoryIsNotAvailableFor2": {
+              "t": "QQ 此類別對選取的位置不可用 。",
+              "src": "machine",
+              "h": "6dd19b32d26e"
+            },
+            "statusStatus": {
+              "t": "狀態 {status}",
+              "src": "machine",
+              "h": "b6bb62f4e2a0"
+            },
+            "priorityPriority": {
+              "t": "优先 {priority}",
+              "src": "machine",
+              "h": "dadd7cd05d86"
             }
           }
         }
       }
     },
     "setting": {
-      "en": "9b7f7e299c07",
-      "keys": 120,
+      "en": "a2aefbc259e3",
+      "keys": 123,
       "hashes": {
         "settingsImportExport": "501b7e1a7f68",
         "exportToXml": "7a76077d3160",
@@ -21208,18 +23364,21 @@
         "reportAConcern": "574bb6f5dc61",
         "submitReport": "1ca00033fee3",
         "thankYouYourConcernHasBeen": "2f1282925ede",
-        "forTheFastestResponsePleaseCall": "b0ed358cbaa4"
+        "forTheFastestResponsePleaseCall": "b0ed358cbaa4",
+        "forThisViewTheMapWidget": "8841ce95b1fc",
+        "continue": "4e6302ed0349",
+        "importingNameWillOverwriteTheCurrent": "5ca557f4f89a"
       },
       "locales": {
         "ar": {
-          "file": "180bb3b8c74b",
+          "file": "3c0ebaa87ac2",
           "counts": {
             "esri": 10,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 107,
+            "machine": 110,
             "stale": 0,
             "missing": 3
           },
@@ -21744,6 +23903,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/sharing/proxy? https://server/.../FeatureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "هذا الموقع خارج منطقة الخدمة",
               "src": "machine",
@@ -21758,20 +23922,30 @@
               "t": "التقرير",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "شكراً لك لقد تم تقديم قلقك",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "وللاستجابة السريعة، يرجى الاتصال بالرقم أدناه. يمكنك أن تقدم هذا التقرير على الإنترنت، ولكن مكالمة هاتفية تضمن شخص ما يستجيب على الفور.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "bg": {
-          "file": "fd5a217b0252",
+          "file": "87f69cba628e",
           "counts": {
-            "esri": 8,
+            "esri": 9,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 107,
+            "machine": 110,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -22294,6 +24468,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Това място е извън сервизната зона.",
               "src": "machine",
@@ -22308,11 +24487,21 @@
               "t": "Представяне на доклад",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Благодаря! Вашата загриженост е била представена.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "За най-бързия отговор, моля обадете се на номера по-долу. Все още можете да подадете този доклад онлайн, но телефонно обаждане гарантира някой да отговори веднага.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "bs": {
-          "file": "dee6453f1656",
+          "file": "53195053e81b",
           "counts": {
             "esri": 8,
             "esri-check": 0,
@@ -22321,21 +24510,21 @@
             "existing": 0,
             "machine": 0,
             "stale": 0,
-            "missing": 112
+            "missing": 115
           },
           "entries": {}
         },
         "ca": {
-          "file": "b1450a2729ea",
+          "file": "253080ed5d2e",
           "counts": {
-            "esri": 7,
+            "esri": 8,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 109,
+            "machine": 112,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -22868,6 +25057,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/ share/ proxy?https://server /.../FatureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Aquesta ubicació està fora de l' àrea de servei.",
               "src": "machine",
@@ -22882,20 +25076,30 @@
               "t": "Envia l' informe",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Gràcies! La seva preocupació s'ha enviat.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Per a la resposta més ràpida, si us plau, truqui al número de sota. Encara pots enviar aquest informe en línia, però una trucada telefònica assegura que algú respon immediatament.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "cs": {
-          "file": "23d1400ee4f1",
+          "file": "bd05d1d38810",
           "counts": {
-            "esri": 9,
+            "esri": 10,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 107,
+            "machine": 110,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -23418,6 +25622,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "http: / / portal / sharing / proxy? https: / / server /... / FeatureServer / 0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Toto místo je mimo servisní oblast.",
               "src": "machine",
@@ -23432,20 +25641,30 @@
               "t": "Odeslat zprávu",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Díky! Vaše obavy byly předloženy.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Pro nejrychlejší odpověď volejte prosím na níže uvedené číslo. Stále můžete tuto zprávu předložit online, ale telefonát zajistí, že někdo okamžitě zareaguje.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "da": {
-          "file": "ee644b9311c4",
+          "file": "3994f46898ff",
           "counts": {
-            "esri": 7,
+            "esri": 8,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 108,
+            "machine": 111,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -23973,6 +26192,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https: / / portal / share / proxy? https: / / server /... / FeatureServer / 0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Stedet ligger uden for serviceområdet.",
               "src": "machine",
@@ -23987,20 +26211,30 @@
               "t": "Indsend rapport",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Tak! Din bekymring er blevet forelagt.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "For den hurtigste reaktion, bedes du ringe til nummeret nedenfor. Du kan stadig indsende denne rapport online, men et telefonopkald sikrer nogen reagerer straks.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "de": {
-          "file": "edf3af85116b",
+          "file": "33fd765a8f46",
           "counts": {
-            "esri": 8,
+            "esri": 9,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 108,
+            "machine": 111,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -24528,6 +26762,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Dieser Standort befindet sich außerhalb des Servicebereichs.",
               "src": "machine",
@@ -24542,20 +26781,30 @@
               "t": "Bericht einreichen",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Vielen Dank! Ihre Besorgnis wurde geäußert.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Für die schnellste Antwort rufen Sie bitte die unten stehende Nummer an. Sie können diesen bericht immer noch online einreichen, aber ein anruf stellt sicher, dass jemand sofort reagiert.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "el": {
-          "file": "f802ecb2eac9",
+          "file": "6d271359c873",
           "counts": {
-            "esri": 8,
+            "esri": 9,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 107,
+            "machine": 110,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -25078,6 +27327,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/sharing/proxy;https://server/.../FeatureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Αυτή η τοποθεσία είναι έξω από την περιοχή εξυπηρέτησης.",
               "src": "machine",
@@ -25092,20 +27346,30 @@
               "t": "Υποβολή έκθεσης",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Ευχαριστώ! Η ανησυχία σας υποβλήθηκε.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Για την ταχύτερη απάντηση, παρακαλούμε καλέστε τον αριθμό παρακάτω. Μπορείτε ακόμα να υποβάλετε αυτή την αναφορά online, αλλά ένα τηλεφώνημα εξασφαλίζει ότι κάποιος θα απαντήσει αμέσως.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "es": {
-          "file": "01f5b414416c",
+          "file": "079be97c1d14",
           "counts": {
-            "esri": 6,
+            "esri": 7,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 109,
+            "machine": 112,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -25638,6 +27902,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Esta ubicación está fuera del área de servicio.",
               "src": "machine",
@@ -25652,20 +27921,30 @@
               "t": "Informe presentado",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "¡Gracias! Su preocupación ha sido presentada.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Para la respuesta más rápida, llame al número siguiente. Usted todavía puede presentar este informe en línea, pero una llamada telefónica asegura que alguien responda inmediatamente.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "et": {
-          "file": "45d7e5420608",
+          "file": "3e8aa64586f3",
           "counts": {
-            "esri": 7,
+            "esri": 8,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 108,
+            "machine": 111,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -26193,6 +28472,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "See asukoht asub väljaspool teeninduspiirkonda.",
               "src": "machine",
@@ -26207,20 +28491,30 @@
               "t": "Esitamisaruanne",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Tänan teid! Teie mure on esitatud.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Kiireima vastuse saamiseks helistage allpool olevale numbrile. Te võite selle aruande siiski veebis esitada, kuid telefonikõne tagab, et keegi vastab kohe.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "fi": {
-          "file": "3cbeb93a16aa",
+          "file": "acca3122e5b5",
           "counts": {
-            "esri": 9,
+            "esri": 10,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 107,
+            "machine": 110,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -26743,6 +29037,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/sharing/proxy?https://server/../FeatureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Tämä paikka on huoltoalueen ulkopuolella.",
               "src": "machine",
@@ -26757,20 +29056,30 @@
               "t": "Lähetä raportti",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Kiitos! Huolenne on esitetty.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Nopein vastaus, soita alla olevaan numeroon. Voit silti lähettää tämän raportin verkossa, mutta puhelu varmistaa, että joku vastaa välittömästi.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "fr": {
-          "file": "de6de21090c3",
+          "file": "bde4ffbb6b2b",
           "counts": {
-            "esri": 8,
+            "esri": 9,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 107,
+            "machine": 110,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -27293,6 +29602,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Cet endroit est à l'extérieur de la zone de service.",
               "src": "machine",
@@ -27307,18 +29621,28 @@
               "t": "Soumettre le rapport",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Je vous remercie ! Votre préoccupation a été soumise.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Pour la réponse la plus rapide, veuillez appeler le numéro ci-dessous. Vous pouvez toujours soumettre ce rapport en ligne, mais un appel téléphonique garantit que quelqu'un répond immédiatement.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "he": {
-          "file": "d4fcd5337707",
+          "file": "e541ac0fb19f",
           "counts": {
             "esri": 9,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 107,
+            "machine": 110,
             "stale": 0,
             "missing": 3
           },
@@ -27843,6 +30167,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "ה-https / Share/proxy?https",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "מיקום זה נמצא מחוץ לאזור השירות.",
               "src": "machine",
@@ -27857,11 +30186,21 @@
               "t": "הגשת דוח",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "תודה! הדאגה שלך הוגשה.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "לקבלת התגובה המהירה ביותר, אנא התקשר למספר להלן. אתה עדיין יכול להגיש את הדוח הזה באינטרנט, אבל שיחת טלפון מבטיחה שמישהו יגיב מיד.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "hr": {
-          "file": "dee6453f1656",
+          "file": "53195053e81b",
           "counts": {
             "esri": 8,
             "esri-check": 0,
@@ -27870,21 +30209,21 @@
             "existing": 0,
             "machine": 0,
             "stale": 0,
-            "missing": 112
+            "missing": 115
           },
           "entries": {}
         },
         "hu": {
-          "file": "5a8298a87926",
+          "file": "b58607ffebb5",
           "counts": {
-            "esri": 8,
+            "esri": 9,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 108,
+            "machine": 111,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -28412,6 +30751,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https: / / portal / sharing / proxy? https: / / server /... / FeatureServer / 0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Ez a hely a szolgálati területen kívül van.",
               "src": "machine",
@@ -28426,20 +30770,30 @@
               "t": "Jelentés benyújtása",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Köszönöm! Az aggodalmát benyújtottuk.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "A leggyorsabb válaszért kérjük, hívja az alábbi számot. Lehet, hogy ezt a jelentést online is benyújthatja, de egy telefonhívás biztosítja, hogy valaki azonnal válaszoljon.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "id": {
-          "file": "8466577e541a",
+          "file": "50149abc1ec6",
           "counts": {
-            "esri": 7,
+            "esri": 8,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 108,
+            "machine": 111,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -28967,6 +31321,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https: / / portal / sharing / proxy? https: / / server /... / FeatureServer / 0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Lokasi ini di luar area pelayanan.",
               "src": "machine",
@@ -28981,20 +31340,30 @@
               "t": "Kirim Laporan",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Terima kasih! Kekhawatiranmu telah diajukan.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Untuk respon tercepat, silahkan hubungi nomor di bawah ini. Anda mungkin masih mengirimkan laporan ini secara online, tapi panggilan telepon memastikan seseorang merespon segera.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "it": {
-          "file": "88220ed7715e",
+          "file": "aa87d4c8afa5",
           "counts": {
-            "esri": 9,
+            "esri": 10,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 107,
+            "machine": 110,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -29517,6 +31886,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Questa posizione è fuori dalla zona di servizio.",
               "src": "machine",
@@ -29531,18 +31905,28 @@
               "t": "Relazione",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Grazie! La vostra preoccupazione è stata presentata.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Per la risposta più veloce, si prega di chiamare il numero qui sotto. Si può ancora presentare questo rapporto online, ma una telefonata assicura che qualcuno risponde immediatamente.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "ja": {
-          "file": "fdaec3c0e44f",
+          "file": "0aac7683e8ff",
           "counts": {
             "esri": 10,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 107,
+            "machine": 110,
             "stale": 0,
             "missing": 3
           },
@@ -30067,6 +32451,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "サービスエリアの外にございます。",
               "src": "machine",
@@ -30081,18 +32470,28 @@
               "t": "レポートの提出",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "お問い合わせ 皆様のお越しをお待ちしております。",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "最速の対応については、下記の番号にご連絡ください。 このレポートをオンラインで送信しても構いませんが、電話は誰かがすぐに応答することを可能にします。",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "ko": {
-          "file": "b733759addcd",
+          "file": "04cf816815dd",
           "counts": {
             "esri": 10,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 107,
+            "machine": 110,
             "stale": 0,
             "missing": 3
           },
@@ -30617,6 +33016,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "이 위치는 서비스 구역 밖에 있습니다.",
               "src": "machine",
@@ -30631,20 +33035,30 @@
               "t": "자주 묻는 질문",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "감사합니다! 당신의 관심사는 제출되었습니다.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "가장 빠른 응답을 위해, 아래에 번호를 부르십시오. 이 보고서를 온라인으로 제출할 수 있지만, 전화 통화는 즉시 응답합니다.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "lt": {
-          "file": "a95d48a42aa6",
+          "file": "a14416b17952",
           "counts": {
-            "esri": 7,
+            "esri": 8,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 108,
+            "machine": 111,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -31172,6 +33586,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https: / / portal / shared / proxy? https: / / server /... / FeatureServer / 0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Ši vieta yra už aptarnavimo zonos ribų.",
               "src": "machine",
@@ -31186,20 +33605,30 @@
               "t": "Pateikimo ataskaita",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Ačiū! Jūsų susirūpinimas buvo pateiktas.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Norėdami gauti greičiausią atsakymą, skambinkite žemiau nurodytu numeriu. Jūs vis dar galite pateikti šią ataskaitą internete, bet telefono skambutis užtikrina, kad kas nors reaguoti nedelsiant.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "lv": {
-          "file": "1d9a233f70db",
+          "file": "9d01c74d702f",
           "counts": {
-            "esri": 9,
+            "esri": 10,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 107,
+            "machine": 110,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -31722,6 +34151,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "Skatīt, piemēram, spriedumu lietā C-70/72 Komisija/Vācija, EU:C:1974:71, 13. punkts.",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Šī vieta atrodas ārpus pakalpojumu zonas.",
               "src": "machine",
@@ -31736,20 +34170,30 @@
               "t": "Iesniegt ziņojumu",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Paldies! Jūsu bažas ir iesniegtas.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Lai iegūtu ātrāko atbildi, zvaniet uz zemāk norādīto numuru. Jūs joprojām varat iesniegt šo ziņojumu tiešsaistē, bet tālruņa zvans nodrošina, ka kāds reaģē nekavējoties.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "no": {
-          "file": "770a0a2a5868",
+          "file": "da1140afc45d",
           "counts": {
-            "esri": 8,
+            "esri": 9,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 108,
+            "machine": 111,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -32277,6 +34721,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/deling/proxy?https://server/.../FeatureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Dette stedet er utenfor serviceområdet.",
               "src": "machine",
@@ -32291,20 +34740,30 @@
               "t": "Rapport",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Takk! Din bekymring er sendt.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "For det raskeste svaret, vennligst ring nummeret nedenfor. Du kan fortsatt sende denne rapporten på nettet, men et telefonsamtale sikrer at noen reagerer umiddelbart.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "nl": {
-          "file": "1a78db845e07",
+          "file": "d877c60ae892",
           "counts": {
-            "esri": 8,
+            "esri": 9,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 108,
+            "machine": 111,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -32832,6 +35291,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Deze locatie is buiten het servicegebied.",
               "src": "machine",
@@ -32846,20 +35310,30 @@
               "t": "Verslag indienen",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Dank je! Uw bezorgdheid is geuit.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Voor het snelste antwoord, bel het onderstaande nummer. U kunt dit rapport nog steeds online indienen, maar een telefoontje zorgt ervoor dat iemand onmiddellijk reageert.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "pl": {
-          "file": "0974396645ec",
+          "file": "4d224e489eb7",
           "counts": {
-            "esri": 9,
+            "esri": 10,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 107,
+            "machine": 110,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -33382,6 +35856,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https: / / portal / sharing / proxy? https: / / server /... / FeatureServer / 0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Ta lokalizacja jest poza obszarem usług.",
               "src": "machine",
@@ -33396,20 +35875,30 @@
               "t": "Sprawozdanie z przekazania",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Dziękuję! Twoje obawy zostały przedstawione.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Aby uzyskać najszybszą odpowiedź, proszę zadzwonić pod poniższy numer. Możesz nadal składać ten raport online, ale telefon zapewnia natychmiastową reakcję.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "pt-br": {
-          "file": "85c56d0d9475",
+          "file": "eb94db2b0f11",
           "counts": {
-            "esri": 7,
+            "esri": 8,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 108,
+            "machine": 111,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -33937,6 +36426,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/sharing/proxy?https://servidor/.../FeatureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Este local é fora da área de serviço.",
               "src": "machine",
@@ -33951,20 +36445,30 @@
               "t": "Apresentar relatório",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Obrigado! Sua preocupação foi submetida.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Para a resposta mais rápida, ligue para o número abaixo. Você ainda pode enviar este relatório on-line, mas um telefonema garante que alguém responda imediatamente.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "pt-pt": {
-          "file": "8a4fe38d8506",
+          "file": "06388c3d95b8",
           "counts": {
-            "esri": 8,
+            "esri": 9,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 108,
+            "machine": 111,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -34492,6 +36996,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Esta localização é fora da área de serviço.",
               "src": "machine",
@@ -34506,20 +37015,30 @@
               "t": "Enviar relatório",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Obrigado! A sua preocupação foi submetida.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Para a resposta mais rápida, ligue para o número abaixo. Você ainda pode enviar este relatório on-line, mas um telefonema garante que alguém responde imediatamente.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "ro": {
-          "file": "79fa06fd3e92",
+          "file": "ed5ee9046231",
           "counts": {
-            "esri": 8,
+            "esri": 9,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 106,
+            "machine": 109,
             "stale": 0,
-            "missing": 6
+            "missing": 5
           },
           "entries": {
             "settingsImportExport": {
@@ -35037,6 +37556,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/sharing/proxy?https://server/.../ featureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Această locație este în afara zonei de serviciu.",
               "src": "machine",
@@ -35051,20 +37575,30 @@
               "t": "Raport de depunere",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Mulţumesc! Grija ta a fost prezentată.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Pentru cel mai rapid răspuns, vă rugăm să sunaţi la numărul de mai jos. Puteți depune încă acest raport on-line, dar un apel telefonic asigură cineva răspunde imediat.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "ru": {
-          "file": "c73069493fb0",
+          "file": "fc32e3f173c1",
           "counts": {
-            "esri": 8,
+            "esri": 9,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 107,
+            "machine": 110,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -35587,6 +38121,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Это место находится за пределами зоны обслуживания.",
               "src": "machine",
@@ -35601,20 +38140,30 @@
               "t": "Представить доклад",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Спасибо! Ваше беспокойство было представлено.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Для быстрого ответа, пожалуйста, позвоните по номеру ниже. Вы все еще можете отправить этот отчет онлайн, но телефонный звонок гарантирует, что кто-то ответит немедленно.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "sk": {
-          "file": "cb735e9351e2",
+          "file": "bf2f22e3fa0f",
           "counts": {
-            "esri": 8,
+            "esri": 9,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 9,
+            "machine": 109,
             "stale": 0,
-            "missing": 103
+            "missing": 5
           },
           "entries": {
             "settingsImportExport": {
@@ -35637,15 +38186,505 @@
               "src": "machine",
               "h": "6eb05c7f79da"
             },
+            "exportToCopyTheseSettingsTo": {
+              "t": "Exportovať na skopírovanie týchto nastavení do iného zobrazenia zariadenia (mobil, tablet, plocha) v rámci rovnakej skúsenosti. Vybraná mapa widget nie je súčasťou balenia.",
+              "src": "machine",
+              "h": "c7617460ef76"
+            },
+            "mapSource": {
+              "t": "Zdroj mapy",
+              "src": "machine",
+              "h": "e42b43bee8d6"
+            },
+            "ticketsLayerIndex": {
+              "t": "Index vrstvy vstupeniek",
+              "src": "machine",
+              "h": "c14b5797f15f"
+            },
+            "sublayerIndexOfTheTicketsFeature": {
+              "t": "Podvrstvový index extra triedy vstupeniek (zvyčajne 0).",
+              "src": "machine",
+              "h": "92b4299a5cc7"
+            },
+            "geofencingServiceBoundaries": {
+              "t": "Oplotenie hraníc služby",
+              "src": "machine",
+              "h": "09eb1a2e0cbd"
+            },
+            "serviceBoundariesLayerUrl": {
+              "t": "URL vrstvy hraníc služieb",
+              "src": "machine",
+              "h": "f59176a12fd6"
+            },
+            "restUrlToTheServiceBoundaries": {
+              "t": "REST URL do extra vrstvy Service Boundaries polygón. Vyžaduje sa na geofensing. Ak je prázdne, zneškodnenie je zakázané.",
+              "src": "machine",
+              "h": "7baabc10db79"
+            },
+            "boundariesLayerIndexFallback": {
+              "t": "Index vrstvy Hranice (záplavy)",
+              "src": "machine",
+              "h": "089ff05e75fc"
+            },
+            "onlyUsedIfTheUrlAbove": {
+              "t": "Používa sa len vtedy, ak je URL prázdne a hranice sú v rovnakej mapovej službe.",
+              "src": "machine",
+              "h": "3b8253ff41b6"
+            },
+            "boundaryIdField": {
+              "t": "Hranica ID poľa",
+              "src": "machine",
+              "h": "92f422391cce"
+            },
+            "fieldNameOnServiceBoundariesThat": {
+              "t": "Názov poľa na Service Boundaries, ktorý jedinečne identifikuje každý ohraničný polygón. Táto hodnota je spárovaná s Category Boundary Lookup a napísaný na vstupenky.",
+              "src": "machine",
+              "h": "7961429aa4c6"
+            },
+            "outsideBoundaryMessage": {
+              "t": "Správa o vonkajšej hranici",
+              "src": "machine",
+              "h": "f248cee94916"
+            },
+            "categoryFilteringByBoundary": {
+              "t": "Filtrovanie podľa hranice kategórie",
+              "src": "machine",
+              "h": "acdc219ca728"
+            },
+            "enableCategoryFiltering": {
+              "t": "Povoliť filtrovanie kategórie",
+              "src": "machine",
+              "h": "ca9a26fa00f2"
+            },
+            "whenEnabledOnlyCategoriesThatAre": {
+              "t": "Ak je to povolené, užívateľ má k dispozícii iba kategórie, ktoré sú platné pre uzavreté hranice služieb. Používa tabuľku \"Category Boundary Lookup.\"",
+              "src": "machine",
+              "h": "9989476af70a"
+            },
+            "lookupTableUrl": {
+              "t": "URL tabuľky vyhľadávania",
+              "src": "machine",
+              "h": "d1e720a2f170"
+            },
+            "restUrlToCategoryBoundaryLookup": {
+              "t": "REST URL do kategórie Boundary Lookup tabuľky. Ak prázdne, widget odvodí z mapovej služby pomocou podvrstvového indexu nižšie.",
+              "src": "machine",
+              "h": "7e8350a072bc"
+            },
+            "lookupTableSublayerIndexFallback": {
+              "t": "Index podvrstvy vyhľadávacej tabuľky (fallback)",
+              "src": "machine",
+              "h": "09c8c32bee58"
+            },
+            "sublayerIndexOfCategoryBoundaryLookup": {
+              "t": "Index podvrstvy kategórie Boundary Lookup v rovnakej mapovej službe. Používa sa len vtedy, keď je URL prázdne.",
+              "src": "machine",
+              "h": "50e1e04f6b24"
+            },
+            "invalidCategoryBehavior": {
+              "t": "Neplatné správanie kategórie",
+              "src": "machine",
+              "h": "8586d7b7e303"
+            },
+            "hideDoNotShowInvalidCategories": {
+              "t": "Skryť & neukazovať neplatné kategórie",
+              "src": "machine",
+              "h": "ae6776e09072"
+            },
+            "showDisabledWithRedirectMessage": {
+              "t": "Zobraziť vypnuté s presmerovaním správy",
+              "src": "machine",
+              "h": "d581e9c7938f"
+            },
+            "controlsHowCategoriesWithIsValid": {
+              "t": "Ovláda, ako kategórie s is valid = 0 v vyhľadávacej tabuľke sú zobrazené (alebo skryté) vo forme.",
+              "src": "machine",
+              "h": "cbd592e82a93"
+            },
+            "ticketBoundaryField": {
+              "t": "Hraničné pole vstupeniek",
+              "src": "machine",
+              "h": "aa472aeda24f"
+            },
+            "autoPopulateBoundaryIdOnTickets": {
+              "t": "Automatická populácia hraníc id na vstupenky",
+              "src": "machine",
+              "h": "88668c443fd1"
+            },
+            "ticketBoundaryFieldName": {
+              "t": "Názov poľa ohraničenia vstupeniek",
+              "src": "machine",
+              "h": "de05529fbc61"
+            },
+            "fieldOnTheTicketsFeatureClass": {
+              "t": "Pole na extra triede vstupeniek, kde sa po predložení zapíše dohodnutý identifikátor hranice.",
+              "src": "machine",
+              "h": "48d7a92c9666"
+            },
+            "writeEndpointSecuredFeatureServer": {
+              "t": "Write Endpoint (zabezpečená funkciaServer)",
+              "src": "machine",
+              "h": "850603975739"
+            },
+            "ticketsWriteUrl": {
+              "t": "Lístky na zápis URL",
+              "src": "machine",
+              "h": "f303ff42375c"
+            },
+            "urlForWritingTicketsAllFields": {
+              "t": "URL pre písanie lístkov (všetky polia vrátane PII). Použiť proxy URL portálu, takže údaje zostať server-strana:",
+              "src": "machine",
+              "h": "9d1607609ec0"
+            },
+            "theFeatureServerShouldBeSecuredShared": {
+              "t": "MotívServer by mal byť zabezpečený (zdieľaný so súkromnou skupinou, nie s každým). Portál podporuje požiadavku a automaticky vstrekuje autentifikáciu. Ak je prázdne, spadne späť do mapovej vrstvy aplikácieEdity (obmedzené polia).",
+              "src": "machine",
+              "h": "5075c17be296"
+            },
+            "publicCommentsTicketStatusView": {
+              "t": "Verejné pripomienky (Zobraziť stav vstupeniek)",
+              "src": "machine",
+              "h": "8ebd99e92d06"
+            },
+            "publicCommentsTableUrl": {
+              "t": "URL tabuľky verejných komentárov",
+              "src": "machine",
+              "h": "6c6e9c7024b3"
+            },
+            "restUrlToThePublicFacing": {
+              "t": "REST URL do verejne prístupnej tabuľky komentárov alebo mapovej servisnej vrstvy (predfiltrovaná na is public = 1 prostredníctvom dotazu definície). Občanom je zobrazený stav vstupeniek. Príklad: .../ReportAconcern CommentsPublic/MapServer/0",
+              "src": "machine",
+              "h": "8d207a6f7674"
+            },
+            "addressSearch": {
+              "t": "Hľadanie adresy",
+              "src": "machine",
+              "h": "3bdddf2e1ac5"
+            },
+            "enableGeocoder": {
+              "t": "Povoliť geokodér",
+              "src": "machine",
+              "h": "b419bc54b034"
+            },
+            "customGeocoderUrl": {
+              "t": "Vlastná URL geokodéra",
+              "src": "machine",
+              "h": "88dad2fefdae"
+            },
+            "leaveBlankForArcGISWorldGeocoder": {
+              "t": "Zanechať prázdne pre ArcGIS World Geocoder",
+              "src": "machine",
+              "h": "6842ca41d9b1"
+            },
+            "optionallyPointToYourOrganizationS": {
+              "t": "Voliteľne poukázať na geokodér služby vašej organizácie.",
+              "src": "machine",
+              "h": "38b214c28dbb"
+            },
+            "mobileOptimizedLocationStep": {
+              "t": "Mobilne optimalizovaný lokalizačný krok",
+              "src": "machine",
+              "h": "38c52a00b126"
+            },
+            "whenEnabledThePlacePinOn": {
+              "t": "Ak je povolené, tlačidlo \"Miesto Pin na mape\" je skryté v kroku Miesto. Vyhľadávanie adries a GPS sa stávajú jedinými metódami umiestnenia, z ktorých každá je zobrazená ako veľké, plné tlačidlo. Odporúča sa, ak je widget nasadený predovšetkým na telefónoch alebo tabletoch, kde mapová interakcia je nepraktická.",
+              "src": "machine",
+              "h": "760f57de1eb1"
+            },
+            "widgetLabelsAmpHeader": {
+              "t": "Štítky a hlavičky komponentov",
+              "src": "machine",
+              "h": "9a5857c9e211"
+            },
+            "headerTitle": {
+              "t": "Názov hlavičky",
+              "src": "machine",
+              "h": "4be73943a2d1"
+            },
+            "headerTitleSizePx": {
+              "t": "Veľkosť hlavičky (px)",
+              "src": "machine",
+              "h": "a3853198bc89"
+            },
+            "headerImage": {
+              "t": "Obrázok hlavičky",
+              "src": "machine",
+              "h": "19eea27c29ae"
+            },
+            "uploadHeaderImage": {
+              "t": "Odoslať obrázok hlavičky",
+              "src": "machine",
+              "h": "057482bc1847"
+            },
+            "headerImagePreview": {
+              "t": "Náhľad obrázku hlavičky",
+              "src": "machine",
+              "h": "21ace6bcfdbe"
+            },
+            "replaceImage": {
+              "t": "Nahradiť obrázok",
+              "src": "machine",
+              "h": "bc0a102a5169"
+            },
+            "removeImage": {
+              "t": "Odstrániť obrázok",
+              "src": "machine",
+              "h": "5f94b03c2e6a"
+            },
+            "clickToUploadImagePngJpg": {
+              "t": "Kliknite pre nahrávanie obrazu (PNG, JPG, SVG)",
+              "src": "machine",
+              "h": "f5ec6467c077"
+            },
+            "logoDisplayedToTheLeftOf": {
+              "t": "Logo zobrazené vľavo od hlavičky. Zobrazené na maximálnej výške 40 px. Uložené ako dátová URL v widgetu konfigurovať.",
+              "src": "machine",
+              "h": "466f7c4e8b28"
+            },
+            "headerTitleAlignment": {
+              "t": "Zosúladenie názvu hlavy",
+              "src": "machine",
+              "h": "80555d1233af"
+            },
+            "positionOfTheTitleTextWithin": {
+              "t": "Poloha názvu textu v hlavičkovej lište.",
+              "src": "machine",
+              "h": "f7947113b2fc"
+            },
+            "headerImageAltText": {
+              "t": "Obrázok hlavičky alt text",
+              "src": "machine",
+              "h": "12c42820a2d8"
+            },
+            "cityOfExample": {
+              "t": "Mesto príkladu",
+              "src": "machine",
+              "h": "90762a215276"
+            },
+            "requiredForWcag21Aa": {
+              "t": "Vyžaduje sa pre súlad WCAG 2.1 AA. Ak je obraz tiež odkazy niekde, tento text sa stáva odkaz je dostupný názov Použite prázdnu hodnotu iba pre čisto dekoratívne obrázky, keď samotný názov vyjadruje úplný kontext.",
+              "src": "machine",
+              "h": "e0a2fbbf0661"
+            },
+            "headerImageLinkUrlOptional": {
+              "t": "Obrázok hlavičky odkaz URL (voliteľné)",
+              "src": "machine",
+              "h": "70e71b740c71"
+            },
+            "ifSetTheImageBecomesA": {
+              "t": "Ak je nastavený, obraz sa stane odkazom, ktorý sa otvorí v novej karte. Ponechajte prázdne pre neinteraktívny obraz.",
+              "src": "machine",
+              "h": "cd20dbd4659d"
+            },
+            "submitButtonLabel": {
+              "t": "Odoslať štítok tlačidla",
+              "src": "machine",
+              "h": "5f9ff48452be"
+            },
+            "successMessage": {
+              "t": "Správa o úspechu",
+              "src": "machine",
+              "h": "1dd08f3972ee"
+            },
+            "maxPhotoSizeMb": {
+              "t": "Maximálna veľkosť fotografie (MB)",
+              "src": "machine",
+              "h": "c0cff62f66fb"
+            },
+            "criticalIssueAlerts": {
+              "t": "Kritické varovania",
+              "src": "machine",
+              "h": "188c1d13054c"
+            },
+            "forCategorySubcategoryCombinationsThatNeed": {
+              "t": "Pre kombinácie kategórií/podkategórie, ktoré vyžadujú okamžitú odpoveď na telefón (napr. pretečenie kanálom, výpadok dopravného signálu), zobrazí výstražný banner s telefónnym číslom click-to-call v krokoch 2 a 4. Predloženie je stále povolené Podkategória zostáva prázdna, aby zodpovedala všetkým podkategóriám kategórie. Nižšie uvedené zberače sú obsadené z poľa URL podľa kategórií.",
+              "src": "machine",
+              "h": "7b05e63432fc"
+            },
+            "categoryMetadataUrl": {
+              "t": "URL metaúdaje kategórie",
+              "src": "machine",
+              "h": "7db3c31541eb"
+            },
+            "fullRestUrlToTheTickets": {
+              "t": "Full REST URL do Vstupenky vrstvy Musí to byť funkciaServer alebo MapServer URL vrstvy, NIE Flask submission proxy.",
+              "src": "machine",
+              "h": "e8c88d7245bf"
+            },
+            "loadingCategoriesFromLayer": {
+              "t": "Načítavam kategórie z vrstvy...",
+              "src": "machine",
+              "h": "93a4752852d9"
+            },
+            "noLayerUrlAvailableSetCategory": {
+              "t": "Nie je k dispozícii URL vrstvy. Nastavte URL kategórie Metadata nižšie, alebo uistite sa, že Write Endpoint URL je funkciaServer/MapServer URL (nie proxy).",
+              "src": "machine",
+              "h": "5b17c13298a7"
+            },
+            "fetchedLayerJsonButFound0": {
+              "t": "Prinesená vrstva JSON ale našiel 0 podtypov.",
+              "src": "machine",
+              "h": "69f12447c304"
+            },
+            "nCategoryLoaded": {
+              "t": "{n} zaťažená kategória",
+              "src": "machine",
+              "h": "738434189415"
+            },
+            "nCategoriesLoaded": {
+              "t": "{n} Načítané kategórie",
+              "src": "machine",
+              "h": "731dd2b8b5e1"
+            },
+            "pickers": {
+              "t": "Odberače:",
+              "src": "machine",
+              "h": "3ac57fac4072"
+            },
+            "url": {
+              "t": "URL:",
+              "src": "machine",
+              "h": "4274d554b314"
+            },
             "none": {
               "t": "(žiadne)",
               "src": "machine",
               "h": "3c6b183d348f"
             },
+            "refreshMetadata": {
+              "t": "Obnoviť metaúdaje",
+              "src": "machine",
+              "h": "db1d630192e2"
+            },
+            "defaultWarningMessage": {
+              "t": "Štandardná varovacia správa",
+              "src": "machine",
+              "h": "35fe63c166d0"
+            },
+            "shownAboveThePhoneNumberWhen": {
+              "t": "Zobrazené nad telefónnym číslom, keď je pole správy upozornenia prázdne.",
+              "src": "machine",
+              "h": "ff208aad3adc"
+            },
+            "alertI": {
+              "t": "Upozornenie #{i}",
+              "src": "machine",
+              "h": "61910cd35910"
+            },
+            "removeAlertI": {
+              "t": "Odstrániť upozornenie {i}",
+              "src": "machine",
+              "h": "5e3d66ec4bc5"
+            },
+            "sewer": {
+              "t": "Kanalizácia",
+              "src": "machine",
+              "h": "e9394e51f3ed"
+            },
+            "categoryNotInLayer": {
+              "t": "{category} (nie vo vrstve)",
+              "src": "machine",
+              "h": "b7c2e9189a3b"
+            },
             "subcategory": {
               "t": "Podkategória",
               "src": "machine",
               "h": "ae1899ecfd17"
+            },
+            "overflowSpillBlankWholeCategory": {
+              "t": "Prečerpanie / Spill (zlomok = celá kategória)",
+              "src": "machine",
+              "h": "fda51d171929"
+            },
+            "anySubcategoryWholeCategory": {
+              "t": "(každá podpoložka",
+              "src": "machine",
+              "h": "dd8d3538a41d"
+            },
+            "subcategoryNotInDomain": {
+              "t": "{subcategory} (nie v doméne)",
+              "src": "machine",
+              "h": "821852de8cf0"
+            },
+            "phoneNumbers": {
+              "t": "Telefónne čísla",
+              "src": "machine",
+              "h": "1a533fa9d8f3"
+            },
+            "oneOrMoreNumbersShownTo": {
+              "t": "Jeden alebo viac čísel uvedených občanovi. Každý z nich sa stáva vlastným ťuk-to-call odkazom. Použite voliteľné políčka na označenie, kedy sa má použiť každý riadok (napr. \"Pondelok - piatok 8 AM až 5 PM\" / \"Zákaznícky servis\").",
+              "src": "machine",
+              "h": "a52e6810fb4d"
+            },
+            "phoneJ": {
+              "t": "Telefón #{j}",
+              "src": "machine",
+              "h": "495b756ee30f"
+            },
+            "movePhoneJUp": {
+              "t": "Presunúť telefón {j} Hore",
+              "src": "machine",
+              "h": "6ad63dddc1fa"
+            },
+            "movePhoneJDown": {
+              "t": "Presunúť telefón {j} dole",
+              "src": "machine",
+              "h": "cc360309fdad"
+            },
+            "removePhoneJ": {
+              "t": "Odstrániť telefón {j}",
+              "src": "machine",
+              "h": "d969d9dc8daf"
+            },
+            "whenOptional": {
+              "t": "Kedy (nepovinné)",
+              "src": "machine",
+              "h": "8b91fee84557"
+            },
+            "mondayFriday8AmTo5": {
+              "t": "Pondelok - piatok od 8:00 do 17:00",
+              "src": "machine",
+              "h": "603d6b296fdb"
+            },
+            "whoOptional": {
+              "t": "Kto (nepovinné)",
+              "src": "machine",
+              "h": "bab810b7970e"
+            },
+            "customerService": {
+              "t": "Služby zákazníkom",
+              "src": "machine",
+              "h": "a7ae52fcf05b"
+            },
+            "number": {
+              "t": "Číslo *",
+              "src": "machine",
+              "h": "fa498099fd1f"
+            },
+            "addAnotherPhone": {
+              "t": "+ Pridať iný telefón",
+              "src": "machine",
+              "h": "4d1935ccd7eb"
+            },
+            "customMessageOptional": {
+              "t": "Vlastná správa (nepovinné)",
+              "src": "machine",
+              "h": "53545f326b1a"
+            },
+            "optionalContextShownAboveThePhone": {
+              "t": "Nepovinný kontext zobrazený nad telefónnymi číslami. Ponechajte prázdne pre použitie predvolenej správy. S viacerými telefóny už označené, krátky odkaz funguje najlepšie",
+              "src": "machine",
+              "h": "2592b327adad"
+            },
+            "addCriticalAlert": {
+              "t": "+ Pridať kritické upozornenie",
+              "src": "machine",
+              "h": "7c22262ec843"
+            },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/share/proxy?https://server/.../FeatureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
             },
             "thisLocationIsOutsideTheService": {
               "t": "Toto miesto je mimo servisnej oblasti.",
@@ -35661,20 +38700,30 @@
               "t": "Predložiť správu",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Ďakujem! Vaše obavy boli predložené.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Pre najrýchlejšiu odpoveď, prosím volajte číslo nižšie. Môžete ešte predložiť túto správu on-line, ale telefonický hovor zaisťuje, že niekto odpovie okamžite.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "sl": {
-          "file": "4399a30cdee3",
+          "file": "831c679231bd",
           "counts": {
-            "esri": 8,
+            "esri": 9,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 67,
+            "machine": 109,
             "stale": 0,
-            "missing": 45
+            "missing": 5
           },
           "entries": {
             "settingsImportExport": {
@@ -35987,15 +39036,215 @@
               "src": "machine",
               "h": "5f9ff48452be"
             },
+            "successMessage": {
+              "t": "Sporočilo o uspehu",
+              "src": "machine",
+              "h": "1dd08f3972ee"
+            },
+            "maxPhotoSizeMb": {
+              "t": "Največja velikost fotografije (MB)",
+              "src": "machine",
+              "h": "c0cff62f66fb"
+            },
+            "criticalIssueAlerts": {
+              "t": "Opozorila o kritičnih vprašanjih",
+              "src": "machine",
+              "h": "188c1d13054c"
+            },
+            "forCategorySubcategoryCombinationsThatNeed": {
+              "t": "Za kombinacije kategorije/podkategorije, ki potrebujejo takojšen telefonski odziv (npr. preplavljanje kanalizacije, izpad prometnih signalov), prikaži opozorilni pas z opozorilno telefonsko številko na korakih 2 in 4. Podložnost je še dovoljena — to je mehko svarilo. Pustite podkategorijo prazno, da se ujema z vsemi podkategorijami kategorije. Izbirniki spodaj so naseljeni iz spodnjega URL polja kategorije Metadata.",
+              "src": "machine",
+              "h": "7b05e63432fc"
+            },
+            "categoryMetadataUrl": {
+              "t": "URL z metapodatki kategorije",
+              "src": "machine",
+              "h": "7db3c31541eb"
+            },
+            "fullRestUrlToTheTickets": {
+              "t": "Celotni URL REST na plast Vstopnic – uporablja se samo tukaj v nastavitvah za nalaganje seznama kategorij in podkategorij. Mora biti funkcijaServer ali MapServer plast URL, NE Flask posrednik za predložitev.",
+              "src": "machine",
+              "h": "e8c88d7245bf"
+            },
+            "loadingCategoriesFromLayer": {
+              "t": "Nalaganje kategorij iz plasti...",
+              "src": "machine",
+              "h": "93a4752852d9"
+            },
+            "noLayerUrlAvailableSetCategory": {
+              "t": "Na voljo ni nobenega URL sloja. Spodaj nastavite URL za metapodatke kategorije ali pa se prepričajte, da je URL za končno točko » Write« funkcijaServer/MapServer URL (ne posrednik).",
+              "src": "machine",
+              "h": "5b17c13298a7"
+            },
+            "fetchedLayerJsonButFound0": {
+              "t": "Fetched plast JSON vendar je našel 0 podtipov.",
+              "src": "machine",
+              "h": "69f12447c304"
+            },
+            "nCategoryLoaded": {
+              "t": "{n} Naložena kategorija",
+              "src": "machine",
+              "h": "738434189415"
+            },
+            "nCategoriesLoaded": {
+              "t": "{n} Naložene kategorije",
+              "src": "machine",
+              "h": "731dd2b8b5e1"
+            },
+            "pickers": {
+              "t": "Pickers:",
+              "src": "machine",
+              "h": "3ac57fac4072"
+            },
+            "url": {
+              "t": "URL:",
+              "src": "machine",
+              "h": "4274d554b314"
+            },
             "none": {
               "t": "(brez)",
               "src": "machine",
               "h": "3c6b183d348f"
             },
+            "refreshMetadata": {
+              "t": "Osveži metapodatke",
+              "src": "machine",
+              "h": "db1d630192e2"
+            },
+            "defaultWarningMessage": {
+              "t": "Privzeto opozorilno sporočilo",
+              "src": "machine",
+              "h": "35fe63c166d0"
+            },
+            "shownAboveThePhoneNumberWhen": {
+              "t": "Prikazan nad telefonsko številko, ko je polje sporočila prazno.",
+              "src": "machine",
+              "h": "ff208aad3adc"
+            },
+            "alertI": {
+              "t": "Alarm #{i}",
+              "src": "machine",
+              "h": "61910cd35910"
+            },
+            "removeAlertI": {
+              "t": "Odstrani alarm {i}",
+              "src": "machine",
+              "h": "5e3d66ec4bc5"
+            },
+            "sewer": {
+              "t": "Odsek",
+              "src": "machine",
+              "h": "e9394e51f3ed"
+            },
+            "selectCategory": {
+              "t": "— Izberite kategorijo —",
+              "src": "machine",
+              "h": "ab7e2d86d899"
+            },
+            "categoryNotInLayer": {
+              "t": "{category} (ne v sloju)",
+              "src": "machine",
+              "h": "b7c2e9189a3b"
+            },
             "subcategory": {
               "t": "Podkategorija",
               "src": "machine",
               "h": "ae1899ecfd17"
+            },
+            "overflowSpillBlankWholeCategory": {
+              "t": "Prelivanje / razlitje (prazno = celotna kategorija)",
+              "src": "machine",
+              "h": "fda51d171929"
+            },
+            "anySubcategoryWholeCategory": {
+              "t": "(vsaka podkategorija – celotna kategorija)",
+              "src": "machine",
+              "h": "dd8d3538a41d"
+            },
+            "subcategoryNotInDomain": {
+              "t": "{subcategory} (ni v domeni)",
+              "src": "machine",
+              "h": "821852de8cf0"
+            },
+            "phoneNumbers": {
+              "t": "Telefonske številke",
+              "src": "machine",
+              "h": "1a533fa9d8f3"
+            },
+            "oneOrMoreNumbersShownTo": {
+              "t": "Ena ali več številk, ki se kažejo državljanu. Vsak postane svojo povezavo tap-to-call. Uporabi neobvezna polja oznake in imena za navedbo, kdaj naj se uporabi vsaka vrstica (npr. \"ponedeljek-petek 8 AM do 5 PM\" / \"storitev kupca\").",
+              "src": "machine",
+              "h": "a52e6810fb4d"
+            },
+            "phoneJ": {
+              "t": "Telefon #{j}",
+              "src": "machine",
+              "h": "495b756ee30f"
+            },
+            "movePhoneJUp": {
+              "t": "Premakni telefon {j} Gor.",
+              "src": "machine",
+              "h": "6ad63dddc1fa"
+            },
+            "movePhoneJDown": {
+              "t": "Premakni telefon {j} Dol",
+              "src": "machine",
+              "h": "cc360309fdad"
+            },
+            "removePhoneJ": {
+              "t": "Odstrani telefon {j}",
+              "src": "machine",
+              "h": "d969d9dc8daf"
+            },
+            "whenOptional": {
+              "t": "Ko (neobvezno)",
+              "src": "machine",
+              "h": "8b91fee84557"
+            },
+            "mondayFriday8AmTo5": {
+              "t": "Od ponedeljka do petka od 8.00 do 5.00",
+              "src": "machine",
+              "h": "603d6b296fdb"
+            },
+            "whoOptional": {
+              "t": "Kdo (neobvezno)",
+              "src": "machine",
+              "h": "bab810b7970e"
+            },
+            "customerService": {
+              "t": "Storitve za stranke",
+              "src": "machine",
+              "h": "a7ae52fcf05b"
+            },
+            "number": {
+              "t": "Številka *",
+              "src": "machine",
+              "h": "fa498099fd1f"
+            },
+            "addAnotherPhone": {
+              "t": "+ Dodaj še en telefon",
+              "src": "machine",
+              "h": "4d1935ccd7eb"
+            },
+            "customMessageOptional": {
+              "t": "Sporočilo po meri (neobvezno)",
+              "src": "machine",
+              "h": "53545f326b1a"
+            },
+            "optionalContextShownAboveThePhone": {
+              "t": "Neobvezen kontekst, prikazan nad telefonskimi številkami. Pustite prazno, da uporabite privzeto sporočilo. S številnimi telefoni, ki so že označeni, kratko sporočilo najbolje deluje – ne ponavljajte urnika v prozi.",
+              "src": "machine",
+              "h": "2592b327adad"
+            },
+            "addCriticalAlert": {
+              "t": "+ Dodaj kritično opozorilo",
+              "src": "machine",
+              "h": "7c22262ec843"
+            },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
             },
             "thisLocationIsOutsideTheService": {
               "t": "Ta lokacija je izven območja.",
@@ -36011,11 +39260,21 @@
               "t": "Predloži poročilo",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Hvala! Vaša skrb je bila podana.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Za najhitrejši odgovor pokličite številko spodaj. To poročilo lahko še vedno predložite na spletu, vendar telefonski klic zagotavlja, da se nekdo takoj odzove.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "sr": {
-          "file": "037e2d550d21",
+          "file": "b9fdbc8f306d",
           "counts": {
             "esri": 7,
             "esri-check": 1,
@@ -36024,21 +39283,21 @@
             "existing": 0,
             "machine": 0,
             "stale": 0,
-            "missing": 112
+            "missing": 115
           },
           "entries": {}
         },
         "sv": {
-          "file": "bcdc2ff2d2a9",
+          "file": "a0d5adbda01a",
           "counts": {
-            "esri": 8,
+            "esri": 9,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 108,
+            "machine": 111,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -36566,6 +39825,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Denna plats ligger utanför serviceområdet.",
               "src": "machine",
@@ -36580,18 +39844,28 @@
               "t": "Submit Report",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Tack! Din oro har lämnats in.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "För det snabbaste svaret, ring numret nedan. Du kan fortfarande skicka denna rapport online, men ett telefonsamtal garanterar att någon svarar omedelbart.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "th": {
-          "file": "0a3c0b6948b6",
+          "file": "f0d7e61fcbb4",
           "counts": {
             "esri": 10,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 107,
+            "machine": 110,
             "stale": 0,
             "missing": 3
           },
@@ -37116,6 +40390,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https/sportal/sharing/prixy? htttps server/.../Featurer/0.",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "สถานที่นี้อยู่นอกพื้นที่บริการ",
               "src": "machine",
@@ -37130,20 +40409,30 @@
               "t": "ส่งรายงาน",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "ขอบคุณ! ความห่วงใยของเจ้าได้ถูกส่งมอบแล้ว",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "สําหรับการตอบสนองที่เร็วที่สุด กรุณาโทรตามหมายเลขด้านล่างนี้ คุณ อาจ ยัง คง ส่ง รายงาน นี้ ทาง อินเทอร์เน็ต แต่ การ โทรศัพท์ ทํา ให้ แน่ ใจ ว่า มี คน ตอบ รับ ทันที.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "tr": {
-          "file": "7bdba6b5aa53",
+          "file": "f1d63869a4f4",
           "counts": {
-            "esri": 8,
+            "esri": 9,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 107,
+            "machine": 110,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -37666,6 +40955,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/share/proxy?https://server/.../WorkServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Bu konum hizmet alanının dışındadır.",
               "src": "machine",
@@ -37680,18 +40974,28 @@
               "t": "Teklif Raporu",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Teşekkür ederim! Endişeniz sunuldu.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "En hızlı yanıt için lütfen aşağıdaki numarayı arayın. Bu raporu hala online olarak gönderebilirsiniz, ancak bir telefon görüşmesi, birinin hemen yanıt vermesini sağlar.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "zh-cn": {
-          "file": "2517f341ad9c",
+          "file": "323fbdc00acd",
           "counts": {
             "esri": 10,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 107,
+            "machine": 110,
             "stale": 0,
             "missing": 3
           },
@@ -38216,6 +41520,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/share/proxy?https://server/.../FeatureServer/0 请检查isbn=值 (帮助).",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "这个地点在服务区之外。",
               "src": "machine",
@@ -38230,20 +41539,30 @@
               "t": "提交报表",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "谢谢! 你的问题已经解决了",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "最快的答复请打电话到下面的号码。 您仍可在网上提交此报告, 但电话会确保有人立即回复。",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "uk": {
-          "file": "e745d17966c4",
+          "file": "f89066ca4001",
           "counts": {
-            "esri": 9,
+            "esri": 10,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 107,
+            "machine": 110,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -38766,6 +42085,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Це місце розташування поза зоною обслуговування.",
               "src": "machine",
@@ -38780,20 +42104,30 @@
               "t": "Подати заявку",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Дякуємо! Подано Ваше занепокоєння.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Для швидкого реагування, будь ласка, зателефонуйте номер нижче. Ви все ще можете подати цей звіт в Інтернеті, але телефонний дзвінок гарантує, що хтось реагує негайно.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "vi": {
-          "file": "5a6d3a027182",
+          "file": "8d2bc83f6789",
           "counts": {
-            "esri": 7,
+            "esri": 8,
             "esri-check": 1,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 108,
+            "machine": 111,
             "stale": 0,
-            "missing": 4
+            "missing": 3
           },
           "entries": {
             "settingsImportExport": {
@@ -39321,6 +42655,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "httpsportal/sharing/praxy?htps vội/.../FetureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "Vị trí này nằm ngoài khu vực phục vụ.",
               "src": "machine",
@@ -39335,18 +42674,28 @@
               "t": "Gởi báo cáo",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "Cảm ơn! Mối quan tâm của anh đã được nộp.",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "Để trả lời nhanh nhất, hãy gọi số dưới đây. Bạn vẫn có thể đăng báo cáo này lên mạng, nhưng một cuộc điện thoại đảm bảo có người sẽ trả lời ngay lập tức.",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "zh-hk": {
-          "file": "34369e83084d",
+          "file": "e6f0ea4a4629",
           "counts": {
             "esri": 10,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 107,
+            "machine": 110,
             "stale": 0,
             "missing": 3
           },
@@ -39871,6 +43220,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/share/proxy? https://server/.../featureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "這個位置在服務區外",
               "src": "machine",
@@ -39885,18 +43239,28 @@
               "t": "提交報告",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "謝謝你! 你的擔心已經提交",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "最快的回應請打到下面 但電話能讓人立刻回應。",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         },
         "zh-tw": {
-          "file": "34369e83084d",
+          "file": "e6f0ea4a4629",
           "counts": {
             "esri": 10,
             "esri-check": 0,
             "community": 0,
             "manual": 0,
             "existing": 0,
-            "machine": 107,
+            "machine": 110,
             "stale": 0,
             "missing": 3
           },
@@ -40421,6 +43785,11 @@
               "src": "machine",
               "h": "7c22262ec843"
             },
+            "uiHttpsPortalSharingProxyHttpsServer": {
+              "t": "https://portal/share/proxy? https://server/.../featureServer/0",
+              "src": "machine",
+              "h": "0249229883a0"
+            },
             "thisLocationIsOutsideTheService": {
               "t": "這個位置在服務區外",
               "src": "machine",
@@ -40435,6 +43804,16 @@
               "t": "提交報告",
               "src": "machine",
               "h": "1ca00033fee3"
+            },
+            "thankYouYourConcernHasBeen": {
+              "t": "謝謝你! 你的擔心已經提交",
+              "src": "machine",
+              "h": "2f1282925ede"
+            },
+            "forTheFastestResponsePleaseCall": {
+              "t": "最快的回應請打到下面 但電話能讓人立刻回應。",
+              "src": "machine",
+              "h": "b0ed358cbaa4"
             }
           }
         }

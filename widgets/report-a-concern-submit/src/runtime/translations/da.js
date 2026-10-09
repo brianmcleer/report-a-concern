@@ -127,20 +127,21 @@ System.register([], function (e) {
         pleaseDonTCloseThisWindow: "Luk ikke dette vindue, før det er færdigt.",
         reportAConcern: "Rapport A Bekymring",
         noMapWidgetConfigured: "Ingen kortkontrol indstillet.",
-        uiCall: "Call {trim}",
-        ticketComments: "Ticket Comments",
+        uiCall: "Opkald {trim}",
+        ticketComments: "Billetkommentarer",
         ticketTicketNumber: "Ticket #{ticketNumber}",
-        thisCategoryIsNotAvailableFor: "This category is not available for the selected location.",
-        serverError: "server error",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately.",
-        submissionRejected: "Submission rejected.",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        checkingAvailabilityForThisLocation: "⏳ Checking availability for this location…",
-        thisCategoryIsNotAvailableFor2: "⚠ This category is not available for the selected location.",
+        thisCategoryIsNotAvailableFor: "Denne kategori er ikke tilgængelig for det valgte sted.",
+        serverError: "serverfejl",
+        forTheFastestResponsePleaseCall: "For den hurtigste reaktion, bedes du ringe til nummeret nedenfor. Du kan stadig indsende denne rapport online, men et telefonopkald sikrer nogen reagerer straks.",
+        submissionRejected: "Indgivelse afvist.",
+        thankYouYourConcernHasBeen: "Tak! Din bekymring er blevet forelagt.",
+        checkingAvailabilityForThisLocation: "Tjekker tilgængelighed for denne placering...",
+        thisCategoryIsNotAvailableFor2: "Denne kategori er ikke tilgængelig for den valgte placering.",
         statusStatus: "Status {status}",
-        priorityPriority: "Priority {priority}",
-        unknownError: "unknown error",
-        unserializableError: "unserializable error"
+        priorityPriority: "Prioriteret {priority}",
+        unknownError: "ukendt fejl",
+        unserializableError: "userialiserbar fejl",
+        categoryCategory: "Category {category}"
       })
     }
   }

@@ -116,13 +116,16 @@ System.register([], function (e) {
         customMessageOptional: "Thông điệp tự chọn (tùy chọn)",
         optionalContextShownAboveThePhone: "Văn cảnh được hiển thị trên số điện thoại. Để trống để dùng thông điệp mặc định. Với nhiều điện thoại đã được dán nhãn, một tin nhắn ngắn hoạt động tốt nhất - không lặp lại lịch trình bằng văn bản.",
         addCriticalAlert: "Thêm cảnh báo nghiêm trọng",
-        uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
-        unknownError: "Unknown error",
+        uiHttpsPortalSharingProxyHttpsServer: "httpsportal/sharing/praxy?htps vội/.../FetureServer/0",
+        unknownError: "Lỗi không rõ",
         thisLocationIsOutsideTheService: "Vị trí này nằm ngoài khu vực phục vụ.",
         reportAConcern: "Báo cáo mối quan tâm",
         submitReport: "Gởi báo cáo",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately."
+        thankYouYourConcernHasBeen: "Cảm ơn! Mối quan tâm của anh đã được nộp.",
+        forTheFastestResponsePleaseCall: "Để trả lời nhanh nhất, hãy gọi số dưới đây. Bạn vẫn có thể đăng báo cáo này lên mạng, nhưng một cuộc điện thoại đảm bảo có người sẽ trả lời ngay lập tức.",
+        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
+        continue: "Continue?",
+        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
       })
     }
   }

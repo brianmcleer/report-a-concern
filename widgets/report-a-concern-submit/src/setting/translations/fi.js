@@ -116,13 +116,16 @@ System.register([], function (e) {
         customMessageOptional: "Oma viesti (valinnainen)",
         optionalContextShownAboveThePhone: "Valinnainen asiayhteys, joka näkyy yllä puhelinnumeroissa. Jätä oletusviesti tyhjäksi. Useita puhelimia on jo merkitty, lyhyt viesti toimii parhaiten älä toista aikataulu proosa.",
         addCriticalAlert: "+ Lisää kriittinen hälytys",
-        uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
-        unknownError: "Unknown error",
+        uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy?https://server/../FeatureServer/0",
+        unknownError: "Tuntematon virhe",
         thisLocationIsOutsideTheService: "Tämä paikka on huoltoalueen ulkopuolella.",
         reportAConcern: "Raportti",
         submitReport: "Lähetä raportti",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately."
+        thankYouYourConcernHasBeen: "Kiitos! Huolenne on esitetty.",
+        forTheFastestResponsePleaseCall: "Nopein vastaus, soita alla olevaan numeroon. Voit silti lähettää tämän raportin verkossa, mutta puhelu varmistaa, että joku vastaa välittömästi.",
+        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
+        continue: "Continue?",
+        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
       })
     }
   }

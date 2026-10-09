@@ -118,5 +118,8 @@ export default {
   reportAConcern: 'Report A Concern',
   submitReport: 'Submit Report',
   thankYouYourConcernHasBeen: 'Thank you! Your concern has been submitted.',
-  forTheFastestResponsePleaseCall: 'For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately.'
+  forTheFastestResponsePleaseCall: 'For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately.',
+  forThisViewTheMapWidget: 'for this view. The map widget selection will NOT be changed.',
+  continue: 'Continue?',
+  importingNameWillOverwriteTheCurrent: 'Importing "{name}" will overwrite the current widget settings'
 }

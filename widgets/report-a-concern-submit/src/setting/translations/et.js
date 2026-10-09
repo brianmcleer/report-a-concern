@@ -117,12 +117,15 @@ System.register([], function (e) {
         optionalContextShownAboveThePhone: "Valikuline kontekst, mida näidatakse telefoninumbrite kohal. Vaikimisi teate kasutamiseks jätta tühjaks. Mitme juba märgistatud telefoniga töötab kõige paremini lühike sõnum - ärge korrake ajakava proosas.",
         addCriticalAlert: "+ Lisa kriitiline hoiatus",
         uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
-        unknownError: "Unknown error",
+        unknownError: "Tundmatu viga",
         thisLocationIsOutsideTheService: "See asukoht asub väljaspool teeninduspiirkonda.",
         reportAConcern: "Murettekitav raport",
         submitReport: "Esitamisaruanne",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately."
+        thankYouYourConcernHasBeen: "Tänan teid! Teie mure on esitatud.",
+        forTheFastestResponsePleaseCall: "Kiireima vastuse saamiseks helistage allpool olevale numbrile. Te võite selle aruande siiski veebis esitada, kuid telefonikõne tagab, et keegi vastab kohe.",
+        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
+        continue: "Continue?",
+        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
       })
     }
   }

@@ -116,13 +116,16 @@ System.register([], function (e) {
         customMessageOptional: "Özel mesaj (optional)",
         optionalContextShownAboveThePhone: "Telefon numaraları üzerinde gösterilen Seçmeli bağlam. Varsayılan mesajı kullanmak için boş bırakın. Birden çok telefonla zaten etiketlendi, kısa bir mesaj en iyi çalışır - prose programı tekrar etmeyin.",
         addCriticalAlert: "+ Eleştirel Uyarı ekleyin",
-        uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
-        unknownError: "Unknown error",
+        uiHttpsPortalSharingProxyHttpsServer: "https://portal/share/proxy?https://server/.../WorkServer/0",
+        unknownError: "Bilinmeyen hata",
         thisLocationIsOutsideTheService: "Bu konum hizmet alanının dışındadır.",
         reportAConcern: "Rapor A Endişe",
         submitReport: "Teklif Raporu",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately."
+        thankYouYourConcernHasBeen: "Teşekkür ederim! Endişeniz sunuldu.",
+        forTheFastestResponsePleaseCall: "En hızlı yanıt için lütfen aşağıdaki numarayı arayın. Bu raporu hala online olarak gönderebilirsiniz, ancak bir telefon görüşmesi, birinin hemen yanıt vermesini sağlar.",
+        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
+        continue: "Continue?",
+        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
       })
     }
   }

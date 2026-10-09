@@ -340,5 +340,14 @@ export default {
   exporting: 'Exporting…',
   loading: 'Loading…',
   unknownError: 'unknown error',
-  unserializableError: 'unserializable error'
+  unserializableError: 'unserializable error',
+  ticketValueFullCatStatusStatusLabelPriority: 'Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}',
+  cardViewCompactMobileFriendlyList: 'Card view — compact, mobile-friendly list',
+  tableViewSortableColumnsWithAll: 'Table view — sortable columns with all fields visible',
+  ticketValueFullCatStatusStatusLabelPriority2: 'Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}',
+  dismissError: 'Dismiss error',
+  dismissMessage: 'Dismiss message',
+  departmentEAIsNotAValid: 'Department "{eA}" is not a valid option. Please re-select.',
+  categoryValueIsNotHandledBy: 'Category "{value}" is not handled by "{eA}". Please update the category.',
+  subcategoryValueIsNotValidFor: 'Subcategory value is not valid for "{value}". Please re-select.'
 }

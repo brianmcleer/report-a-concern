@@ -127,20 +127,21 @@ System.register([], function (e) {
         pleaseDonTCloseThisWindow: "Bitte schließen Sie dieses Fenster nicht bis zum Abschluss.",
         reportAConcern: "Bericht über Bedenken",
         noMapWidgetConfigured: "Kein Map Widget konfiguriert.",
-        uiCall: "Call {trim}",
-        ticketComments: "Ticket Comments",
+        uiCall: "Ruf {trim}",
+        ticketComments: "Ticketkommentare",
         ticketTicketNumber: "Ticket #{ticketNumber}",
-        thisCategoryIsNotAvailableFor: "This category is not available for the selected location.",
-        serverError: "server error",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately.",
-        submissionRejected: "Submission rejected.",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        checkingAvailabilityForThisLocation: "⏳ Checking availability for this location…",
-        thisCategoryIsNotAvailableFor2: "⚠ This category is not available for the selected location.",
+        thisCategoryIsNotAvailableFor: "Diese Kategorie ist für den ausgewählten Standort nicht verfügbar.",
+        serverError: "Serverfehler",
+        forTheFastestResponsePleaseCall: "Für die schnellste Antwort rufen Sie bitte die unten stehende Nummer an. Sie können diesen bericht immer noch online einreichen, aber ein anruf stellt sicher, dass jemand sofort reagiert.",
+        submissionRejected: "Das Vorbringen wurde abgelehnt.",
+        thankYouYourConcernHasBeen: "Vielen Dank! Ihre Besorgnis wurde geäußert.",
+        checkingAvailabilityForThisLocation: "⏳ Verfügbarkeit für diesen Standort prüfen...",
+        thisCategoryIsNotAvailableFor2: "⚠ Diese Kategorie ist für den ausgewählten Standort nicht verfügbar.",
         statusStatus: "Status {status}",
-        priorityPriority: "Priority {priority}",
-        unknownError: "unknown error",
-        unserializableError: "unserializable error"
+        priorityPriority: "Priorität {priority}",
+        unknownError: "Unbekannter Fehler",
+        unserializableError: "nichtialisierbarer Fehler",
+        categoryCategory: "Category {category}"
       })
     }
   }

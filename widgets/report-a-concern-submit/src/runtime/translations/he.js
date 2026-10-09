@@ -128,19 +128,20 @@ System.register([], function (e) {
         reportAConcern: "דיווח על",
         noMapWidgetConfigured: "שום מפה לא הוקמה.",
         uiCall: "Call {trim}",
-        ticketComments: "Ticket Comments",
-        ticketTicketNumber: "Ticket #{ticketNumber}",
-        thisCategoryIsNotAvailableFor: "This category is not available for the selected location.",
-        serverError: "server error",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately.",
-        submissionRejected: "Submission rejected.",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        checkingAvailabilityForThisLocation: "⏳ Checking availability for this location…",
-        thisCategoryIsNotAvailableFor2: "⚠ This category is not available for the selected location.",
-        statusStatus: "Status {status}",
-        priorityPriority: "Priority {priority}",
-        unknownError: "unknown error",
-        unserializableError: "unserializable error"
+        ticketComments: "הערות כרטיס",
+        ticketTicketNumber: "כרטיס #{ticketNumber}",
+        thisCategoryIsNotAvailableFor: "קטגוריה זו אינה זמינה למיקום שנבחר.",
+        serverError: "טעות בשר",
+        forTheFastestResponsePleaseCall: "לקבלת התגובה המהירה ביותר, אנא התקשר למספר להלן. אתה עדיין יכול להגיש את הדוח הזה באינטרנט, אבל שיחת טלפון מבטיחה שמישהו יגיב מיד.",
+        submissionRejected: "ההגשה נדחתה.",
+        thankYouYourConcernHasBeen: "תודה! הדאגה שלך הוגשה.",
+        checkingAvailabilityForThisLocation: "בדיקת זמינות למיקום זה...",
+        thisCategoryIsNotAvailableFor2: "קטגוריה זו אינה זמינה עבור המיקום שנבחר.",
+        statusStatus: "סטטוס {status}",
+        priorityPriority: "עדיפות {priority}",
+        unknownError: "טעות לא ידועה",
+        unserializableError: "טעות בלתי אפשרית",
+        categoryCategory: "Category {category}"
       })
     }
   }

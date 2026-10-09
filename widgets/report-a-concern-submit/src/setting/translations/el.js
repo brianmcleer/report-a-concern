@@ -116,13 +116,16 @@ System.register([], function (e) {
         customMessageOptional: "Προσαρμοσμένο μήνυμα (προαιρετικό)",
         optionalContextShownAboveThePhone: "Προαιρετικό πλαίσιο που εμφανίζεται πάνω από τους αριθμούς τηλεφώνου. Αφήστε κενό για χρήση του προεπιλεγμένου μηνύματος. Με πολλαπλά τηλέφωνα που έχουν ήδη ετικέτα, ένα σύντομο μήνυμα λειτουργεί καλύτερα — μην επαναλάβετε το πρόγραμμα στην πεζογραφία.",
         addCriticalAlert: "+ Προσθήκη κρίσιμης ειδοποίησης",
-        uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
-        unknownError: "Unknown error",
+        uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy;https://server/.../FeatureServer/0",
+        unknownError: "Αγνωστο σφάλμα",
         thisLocationIsOutsideTheService: "Αυτή η τοποθεσία είναι έξω από την περιοχή εξυπηρέτησης.",
         reportAConcern: "Έκθεση Αφορά",
         submitReport: "Υποβολή έκθεσης",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately."
+        thankYouYourConcernHasBeen: "Ευχαριστώ! Η ανησυχία σας υποβλήθηκε.",
+        forTheFastestResponsePleaseCall: "Για την ταχύτερη απάντηση, παρακαλούμε καλέστε τον αριθμό παρακάτω. Μπορείτε ακόμα να υποβάλετε αυτή την αναφορά online, αλλά ένα τηλεφώνημα εξασφαλίζει ότι κάποιος θα απαντήσει αμέσως.",
+        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
+        continue: "Continue?",
+        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
       })
     }
   }

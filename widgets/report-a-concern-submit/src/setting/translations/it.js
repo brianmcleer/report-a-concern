@@ -117,12 +117,15 @@ System.register([], function (e) {
         optionalContextShownAboveThePhone: "contesto opzionale mostrato sopra i numeri di telefono. Lascia vuoto per usare il messaggio predefinito. Con più telefoni già etichettati, un breve messaggio funziona meglio — non ripetere il programma in prosa.",
         addCriticalAlert: "+ Aggiungi allarme critico",
         uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
-        unknownError: "Unknown error",
+        unknownError: "Errore sconosciuto",
         thisLocationIsOutsideTheService: "Questa posizione è fuori dalla zona di servizio.",
         reportAConcern: "Relazione A",
         submitReport: "Relazione",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately."
+        thankYouYourConcernHasBeen: "Grazie! La vostra preoccupazione è stata presentata.",
+        forTheFastestResponsePleaseCall: "Per la risposta più veloce, si prega di chiamare il numero qui sotto. Si può ancora presentare questo rapporto online, ma una telefonata assicura che qualcuno risponde immediatamente.",
+        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
+        continue: "Continue?",
+        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
       })
     }
   }

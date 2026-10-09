@@ -148,7 +148,7 @@ export default class Setting extends React.PureComponent<AllWidgetSettingProps<C
                         <li>{__t("uiSaveTheWebMap")}</li>
                     </ol>
                     <p style={{ margin: "0 0 4px" }}>
-                        <strong>{__t("uiToVerify")}</strong> {__t("uiOpenTheBrowserConsoleAfterThe")} <code style={{ background: tk.surface, padding: "0 3px", borderRadius: 2 }}>{__t("uiRacManager")}</code>. Each table should show its title — if any say <em>{__t("uiNotFound")}</em>{__t("uiThatTableIsMissingFromThe")}
+                        <strong>{__t("uiToVerify")}</strong> {__t("uiOpenTheBrowserConsoleAfterThe")} <code style={{ background: tk.surface, padding: "0 3px", borderRadius: 2 }}>{__t("uiRacManager")}</code>{__t("eachTableShouldShowItsTitle")} <em>{__t("uiNotFound")}</em>{__t("uiThatTableIsMissingFromThe")}
                     </p>
                     <p style={{ margin: 0, color: tk.textSecondary }}>
                         {__t("uiAllAuthFlowsThroughThePortal")}

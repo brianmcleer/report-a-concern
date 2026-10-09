@@ -128,19 +128,20 @@ System.register([], function (e) {
         reportAConcern: "Report A Concern",
         noMapWidgetConfigured: "No hay widget de mapa configurado.",
         uiCall: "Call {trim}",
-        ticketComments: "Ticket Comments",
-        ticketTicketNumber: "Ticket #{ticketNumber}",
-        thisCategoryIsNotAvailableFor: "This category is not available for the selected location.",
-        serverError: "server error",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately.",
+        ticketComments: "Comentarios",
+        ticketTicketNumber: "Entrada{ticketNumber}",
+        thisCategoryIsNotAvailableFor: "Esta categoría no está disponible para la ubicación seleccionada.",
+        serverError: "error servidor",
+        forTheFastestResponsePleaseCall: "Para la respuesta más rápida, llame al número siguiente. Usted todavía puede presentar este informe en línea, pero una llamada telefónica asegura que alguien responda inmediatamente.",
         submissionRejected: "Submission rejected.",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        checkingAvailabilityForThisLocation: "⏳ Checking availability for this location…",
-        thisCategoryIsNotAvailableFor2: "⚠ This category is not available for the selected location.",
-        statusStatus: "Status {status}",
-        priorityPriority: "Priority {priority}",
-        unknownError: "unknown error",
-        unserializableError: "unserializable error"
+        thankYouYourConcernHasBeen: "¡Gracias! Su preocupación ha sido presentada.",
+        checkingAvailabilityForThisLocation: "⏳ Consultar disponibilidad para esta ubicación...",
+        thisCategoryIsNotAvailableFor2: "NOV Esta categoría no está disponible para la ubicación seleccionada.",
+        statusStatus: "Situación {status}",
+        priorityPriority: "Prioridad {priority}",
+        unknownError: "error desconocido",
+        unserializableError: "error unserializable",
+        categoryCategory: "Category {category}"
       })
     }
   }

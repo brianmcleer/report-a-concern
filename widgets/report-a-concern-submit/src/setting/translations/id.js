@@ -116,13 +116,16 @@ System.register([], function (e) {
         customMessageOptional: "Pesan gubahan (opsional)",
         optionalContextShownAboveThePhone: "Konteks opsional ditampilkan di atas nomor telepon. Tinggalkan kosong untuk menggunakan pesan baku. Dengan beberapa ponsel yang diberi label, pesan singkat bekerja dengan baik - jangan ulangi jadwal dalam prosa.",
         addCriticalAlert: "+ Tambah Peringatan Kritis",
-        uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
-        unknownError: "Unknown error",
+        uiHttpsPortalSharingProxyHttpsServer: "https: / / portal / sharing / proxy? https: / / server /... / FeatureServer / 0",
+        unknownError: "Galat tak dikenal",
         thisLocationIsOutsideTheService: "Lokasi ini di luar area pelayanan.",
         reportAConcern: "Laporkan Konser",
         submitReport: "Kirim Laporan",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately."
+        thankYouYourConcernHasBeen: "Terima kasih! Kekhawatiranmu telah diajukan.",
+        forTheFastestResponsePleaseCall: "Untuk respon tercepat, silahkan hubungi nomor di bawah ini. Anda mungkin masih mengirimkan laporan ini secara online, tapi panggilan telepon memastikan seseorang merespon segera.",
+        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
+        continue: "Continue?",
+        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
       })
     }
   }

@@ -117,12 +117,15 @@ System.register([], function (e) {
         optionalContextShownAboveThePhone: "電話番号の上に表示されたオプションのコンテキスト。 デフォルトメッセージを使用する空白のままにします。 複数の電話が既にラベルをつけていれば、短いメッセージは最もよく機能します。 予言のスケジュールを繰り返さないでください。",
         addCriticalAlert: "+ 重要なアラートを追加する",
         uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
-        unknownError: "unknown error",
+        unknownError: "未知のエラー",
         thisLocationIsOutsideTheService: "サービスエリアの外にございます。",
         reportAConcern: "懸念報告",
         submitReport: "レポートの提出",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately."
+        thankYouYourConcernHasBeen: "お問い合わせ 皆様のお越しをお待ちしております。",
+        forTheFastestResponsePleaseCall: "最速の対応については、下記の番号にご連絡ください。 このレポートをオンラインで送信しても構いませんが、電話は誰かがすぐに応答することを可能にします。",
+        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
+        continue: "Continue?",
+        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
       })
     }
   }

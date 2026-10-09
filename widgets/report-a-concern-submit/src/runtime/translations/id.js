@@ -128,19 +128,20 @@ System.register([], function (e) {
         reportAConcern: "Laporkan Konser",
         noMapWidgetConfigured: "Tak ada widget peta yang dikonfigurasi.",
         uiCall: "Call {trim}",
-        ticketComments: "Ticket Comments",
-        ticketTicketNumber: "Ticket #{ticketNumber}",
-        thisCategoryIsNotAvailableFor: "This category is not available for the selected location.",
-        serverError: "server error",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately.",
-        submissionRejected: "Submission rejected.",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        checkingAvailabilityForThisLocation: "⏳ Checking availability for this location…",
-        thisCategoryIsNotAvailableFor2: "⚠ This category is not available for the selected location.",
+        ticketComments: "Komentar Tiket",
+        ticketTicketNumber: "Tiket #{ticketNumber}",
+        thisCategoryIsNotAvailableFor: "Kategori ini tidak tersedia bagi lokasi yang dipilih.",
+        serverError: "galat server",
+        forTheFastestResponsePleaseCall: "Untuk respon tercepat, silahkan hubungi nomor di bawah ini. Anda mungkin masih mengirimkan laporan ini secara online, tapi panggilan telepon memastikan seseorang merespon segera.",
+        submissionRejected: "Submisi ditolak.",
+        thankYouYourConcernHasBeen: "Terima kasih! Kekhawatiranmu telah diajukan.",
+        checkingAvailabilityForThisLocation: "Memeriksa tersedia untuk lokasi ini...",
+        thisCategoryIsNotAvailableFor2: "Kategori ini tidak tersedia bagi lokasi yang dipilih.",
         statusStatus: "Status {status}",
-        priorityPriority: "Priority {priority}",
-        unknownError: "unknown error",
-        unserializableError: "unserializable error"
+        priorityPriority: "Prioritas {priority}",
+        unknownError: "galat tak dikenal",
+        unserializableError: "kesalahan tidak serialisasi",
+        categoryCategory: "Category {category}"
       })
     }
   }

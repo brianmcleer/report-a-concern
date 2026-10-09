@@ -37,7 +37,8 @@ System.register([], function (e) {
         uiNotFound: "NOT FOUND",
         uiThatTableIsMissingFromThe: ", that table is missing from the web map.",
         uiAllAuthFlowsThroughThePortal: "All auth flows through the Portal session — no extra tokens needed. To restrict access, share the app with a Portal group.",
-        tickets: "Tickets"
+        tickets: "Tickets",
+        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
       })
     }
   }

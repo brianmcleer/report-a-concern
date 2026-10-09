@@ -116,13 +116,16 @@ System.register([], function (e) {
         customMessageOptional: "ข้อความกําหนดเอง (ตัวเลือกเอง)",
         optionalContextShownAboveThePhone: "บริบททางเลือกที่แสดงอยู่เหนือหมายเลขโทรศัพท์ ทิ้งช่องว่างไว้ใช้จดหมายปริยาย ด้วยโทรศัพท์หลายเครื่องที่ถูกติดป้ายไว้แล้ว ข้อความสั้น ๆ จะทํางานได้ดีที่สุด — อย่าทวนตารางการชกซ้ํา",
         addCriticalAlert: "เพิ่มแจ้งเตือนวิกฤต",
-        uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
-        unknownError: "unknown error",
+        uiHttpsPortalSharingProxyHttpsServer: "https/sportal/sharing/prixy? htttps server/.../Featurer/0.",
+        unknownError: "ข้อผิดพลาดไม่ทราบสาเหตุ",
         thisLocationIsOutsideTheService: "สถานที่นี้อยู่นอกพื้นที่บริการ",
         reportAConcern: "รายงาน ที่ น่า เป็น ห่วง",
         submitReport: "ส่งรายงาน",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately."
+        thankYouYourConcernHasBeen: "ขอบคุณ! ความห่วงใยของเจ้าได้ถูกส่งมอบแล้ว",
+        forTheFastestResponsePleaseCall: "สําหรับการตอบสนองที่เร็วที่สุด กรุณาโทรตามหมายเลขด้านล่างนี้ คุณ อาจ ยัง คง ส่ง รายงาน นี้ ทาง อินเทอร์เน็ต แต่ การ โทรศัพท์ ทํา ให้ แน่ ใจ ว่า มี คน ตอบ รับ ทันที.",
+        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
+        continue: "Continue?",
+        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
       })
     }
   }

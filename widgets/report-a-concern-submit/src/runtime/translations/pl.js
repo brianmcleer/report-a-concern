@@ -128,19 +128,20 @@ System.register([], function (e) {
         reportAConcern: "Sprawozdanie A Concern",
         noMapWidgetConfigured: "Brak skonfigurowanego widżetu mapy.",
         uiCall: "Call {trim}",
-        ticketComments: "Ticket Comments",
-        ticketTicketNumber: "Ticket #{ticketNumber}",
-        thisCategoryIsNotAvailableFor: "This category is not available for the selected location.",
-        serverError: "server error",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately.",
-        submissionRejected: "Submission rejected.",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        checkingAvailabilityForThisLocation: "⏳ Checking availability for this location…",
-        thisCategoryIsNotAvailableFor2: "⚠ This category is not available for the selected location.",
-        statusStatus: "Status {status}",
-        priorityPriority: "Priority {priority}",
-        unknownError: "unknown error",
-        unserializableError: "unserializable error"
+        ticketComments: "Uwagi dotyczące biletu",
+        ticketTicketNumber: "Bilet #{ticketNumber}",
+        thisCategoryIsNotAvailableFor: "Ta kategoria nie jest dostępna dla wybranej lokalizacji.",
+        serverError: "błąd serwera",
+        forTheFastestResponsePleaseCall: "Aby uzyskać najszybszą odpowiedź, proszę zadzwonić pod poniższy numer. Możesz nadal składać ten raport online, ale telefon zapewnia natychmiastową reakcję.",
+        submissionRejected: "Zgłoszenie odrzucone.",
+        thankYouYourConcernHasBeen: "Dziękuję! Twoje obawy zostały przedstawione.",
+        checkingAvailabilityForThisLocation: "Kontrola dostępności dla tej lokalizacji...",
+        thisCategoryIsNotAvailableFor2: "Kategoria ta nie jest dostępna dla wybranej lokalizacji.",
+        statusStatus: "Stan {status}",
+        priorityPriority: "Priorytet {priority}",
+        unknownError: "nieznany błąd",
+        unserializableError: "błąd niezserializowalny",
+        categoryCategory: "Category {category}"
       })
     }
   }

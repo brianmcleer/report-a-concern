@@ -432,9 +432,9 @@ export default class Setting extends React.PureComponent<
         const inputEl = e.target;
 
         const ok = window.confirm(
-            `Importing "${file.name}" will overwrite the current widget settings ` +
-            `for this view. The map widget selection will NOT be changed. ` +
-            `\n\nContinue?`
+            "" + __t("importingNameWillOverwriteTheCurrent", { name: file.name }) + " " +
+            "" + __t("forThisViewTheMapWidget") + " " +
+            "\n\n" + __t("continue") + ""
         );
         if (!ok) {
             inputEl.value = "";

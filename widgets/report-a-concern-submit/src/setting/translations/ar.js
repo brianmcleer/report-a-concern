@@ -116,13 +116,16 @@ System.register([], function (e) {
         customMessageOptional: "الرسالة العرفية (اختيارية)",
         optionalContextShownAboveThePhone: "السياق الاختياري المبيّن أعلاه أرقام الهواتف. إتركْ فارغاً لتَستعملُ الرسالةَ الافتراضيةَ. مع هواتف متعددة ملصقة بالفعل، رسالة قصيرة تعمل بشكل أفضل - لا تكرر الجدول الزمني في المحترفين.",
         addCriticalAlert: "+ يضاف إنذار حرج",
-        uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
-        unknownError: "unknown error",
+        uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy? https://server/.../FeatureServer/0",
+        unknownError: "خطأ مجهول",
         thisLocationIsOutsideTheService: "هذا الموقع خارج منطقة الخدمة",
         reportAConcern: "التقرير A Concern",
         submitReport: "التقرير",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately."
+        thankYouYourConcernHasBeen: "شكراً لك لقد تم تقديم قلقك",
+        forTheFastestResponsePleaseCall: "وللاستجابة السريعة، يرجى الاتصال بالرقم أدناه. يمكنك أن تقدم هذا التقرير على الإنترنت، ولكن مكالمة هاتفية تضمن شخص ما يستجيب على الفور.",
+        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
+        continue: "Continue?",
+        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
       })
     }
   }

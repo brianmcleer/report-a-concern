@@ -117,12 +117,15 @@ System.register([], function (e) {
         optionalContextShownAboveThePhone: "Valfritt sammanhang som visas ovanför telefonnummer. Lämna tomt för att använda standardmeddelandet. Med flera telefoner redan märkta fungerar ett kort meddelande bäst - upprepa inte schemat i prosa.",
         addCriticalAlert: "Lägg till kritisk varning",
         uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
-        unknownError: "Unknown error",
+        unknownError: "Okänd fel",
         thisLocationIsOutsideTheService: "Denna plats ligger utanför serviceområdet.",
         reportAConcern: "Rapportera en oro",
         submitReport: "Submit Report",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately."
+        thankYouYourConcernHasBeen: "Tack! Din oro har lämnats in.",
+        forTheFastestResponsePleaseCall: "För det snabbaste svaret, ring numret nedan. Du kan fortfarande skicka denna rapport online, men ett telefonsamtal garanterar att någon svarar omedelbart.",
+        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
+        continue: "Continue?",
+        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
       })
     }
   }

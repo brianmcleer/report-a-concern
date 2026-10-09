@@ -117,12 +117,15 @@ System.register([], function (e) {
         optionalContextShownAboveThePhone: "Необов'язковий контекст, представлений над номерами телефонів. Залиште порожні для використання повідомлення за замовчуванням. З декількома телефонами вже позначено, коротке повідомлення працює краще — не повторюйте графік в прозі.",
         addCriticalAlert: "+ Додати критичне значення",
         uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
-        unknownError: "Unknown error",
+        unknownError: "Невідома помилка",
         thisLocationIsOutsideTheService: "Це місце розташування поза зоною обслуговування.",
         reportAConcern: "Звітність",
         submitReport: "Подати заявку",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately."
+        thankYouYourConcernHasBeen: "Дякуємо! Подано Ваше занепокоєння.",
+        forTheFastestResponsePleaseCall: "Для швидкого реагування, будь ласка, зателефонуйте номер нижче. Ви все ще можете подати цей звіт в Інтернеті, але телефонний дзвінок гарантує, що хтось реагує негайно.",
+        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
+        continue: "Continue?",
+        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
       })
     }
   }

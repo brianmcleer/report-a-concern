@@ -116,13 +116,16 @@ System.register([], function (e) {
         customMessageOptional: "Egyéni üzenet (nem kötelező)",
         optionalContextShownAboveThePhone: "A telefonszámok feletti opcionális kontextus. Hagyja üresen az alapértelmezett üzenetet. Több telefon már címkézve, egy rövid üzenet a legjobb - ne ismételje meg a menetrend prózában.",
         addCriticalAlert: "+ Kritikus figyelmeztetés hozzáadása",
-        uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
-        unknownError: "Unknown error",
+        uiHttpsPortalSharingProxyHttpsServer: "https: / / portal / sharing / proxy? https: / / server /... / FeatureServer / 0",
+        unknownError: "Ismeretlen hiba",
         thisLocationIsOutsideTheService: "Ez a hely a szolgálati területen kívül van.",
         reportAConcern: "Jelentés \"A Concern\"",
         submitReport: "Jelentés benyújtása",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately."
+        thankYouYourConcernHasBeen: "Köszönöm! Az aggodalmát benyújtottuk.",
+        forTheFastestResponsePleaseCall: "A leggyorsabb válaszért kérjük, hívja az alábbi számot. Lehet, hogy ezt a jelentést online is benyújthatja, de egy telefonhívás biztosítja, hogy valaki azonnal válaszoljon.",
+        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
+        continue: "Continue?",
+        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
       })
     }
   }

@@ -116,13 +116,16 @@ System.register([], function (e) {
         customMessageOptional: "Pielāgota vēstule (nav obligāti)",
         optionalContextShownAboveThePhone: "Izvēles konteksts parādīts virs tālruņa numuriem. Atstāt tukšu, lai izmantotu noklusēto vēstuli. Ar vairākiem telefoniem, kas jau marķēti, īsziņu darbojas vislabāk — neatkārtojiet grafiku prozā.",
         addCriticalAlert: "+ Pievienot kritisko brīdinājumu",
-        uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
-        unknownError: "Unknown error",
+        uiHttpsPortalSharingProxyHttpsServer: "Skatīt, piemēram, spriedumu lietā C-70/72 Komisija/Vācija, EU:C:1974:71, 13. punkts.",
+        unknownError: "Nezināma kļūda",
         thisLocationIsOutsideTheService: "Šī vieta atrodas ārpus pakalpojumu zonas.",
         reportAConcern: "Ziņojums par problēmām",
         submitReport: "Iesniegt ziņojumu",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately."
+        thankYouYourConcernHasBeen: "Paldies! Jūsu bažas ir iesniegtas.",
+        forTheFastestResponsePleaseCall: "Lai iegūtu ātrāko atbildi, zvaniet uz zemāk norādīto numuru. Jūs joprojām varat iesniegt šo ziņojumu tiešsaistē, bet tālruņa zvans nodrošina, ka kāds reaģē nekavējoties.",
+        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
+        continue: "Continue?",
+        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
       })
     }
   }

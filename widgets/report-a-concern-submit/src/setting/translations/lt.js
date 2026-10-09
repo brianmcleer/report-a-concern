@@ -116,13 +116,16 @@ System.register([], function (e) {
         customMessageOptional: "Pasirinktinis pranešimas (neprivaloma)",
         optionalContextShownAboveThePhone: "Neprivalomas kontekstas parodytas virš telefono numerių. Palikti tuščią numatytajam pranešimui naudoti. Su keliais telefonais, jau paženklinti, trumpas pranešimas veikia geriausiai - nekartoti prose tvarkaraštį.",
         addCriticalAlert: "+ Pridėti kritinį įspėjimą",
-        uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
-        unknownError: "Unknown error",
+        uiHttpsPortalSharingProxyHttpsServer: "https: / / portal / shared / proxy? https: / / server /... / FeatureServer / 0",
+        unknownError: "Nežinoma klaida",
         thisLocationIsOutsideTheService: "Ši vieta yra už aptarnavimo zonos ribų.",
         reportAConcern: "A ataskaita.",
         submitReport: "Pateikimo ataskaita",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately."
+        thankYouYourConcernHasBeen: "Ačiū! Jūsų susirūpinimas buvo pateiktas.",
+        forTheFastestResponsePleaseCall: "Norėdami gauti greičiausią atsakymą, skambinkite žemiau nurodytu numeriu. Jūs vis dar galite pateikti šią ataskaitą internete, bet telefono skambutis užtikrina, kad kas nors reaguoti nedelsiant.",
+        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
+        continue: "Continue?",
+        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
       })
     }
   }

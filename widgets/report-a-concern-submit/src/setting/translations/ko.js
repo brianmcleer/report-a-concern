@@ -117,12 +117,15 @@ System.register([], function (e) {
         optionalContextShownAboveThePhone: "전화 번호 위에 표시된 옵션 컨텍스트. 기본 메시지를 사용하는 공백을 남겨 주세요. 여러 전화가 이미 레테르를 붙였습니다. 짧은 메시지가 가장 잘 작동합니다. Prose에서 일정을 반복하지 마십시오.",
         addCriticalAlert: "+ Critical Alert 추가",
         uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
-        unknownError: "unknown error",
+        unknownError: "알 수없는 오류",
         thisLocationIsOutsideTheService: "이 위치는 서비스 구역 밖에 있습니다.",
         reportAConcern: "Concern 보고서",
         submitReport: "자주 묻는 질문",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately."
+        thankYouYourConcernHasBeen: "감사합니다! 당신의 관심사는 제출되었습니다.",
+        forTheFastestResponsePleaseCall: "가장 빠른 응답을 위해, 아래에 번호를 부르십시오. 이 보고서를 온라인으로 제출할 수 있지만, 전화 통화는 즉시 응답합니다.",
+        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
+        continue: "Continue?",
+        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
       })
     }
   }

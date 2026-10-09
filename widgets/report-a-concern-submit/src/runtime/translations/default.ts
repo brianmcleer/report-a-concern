@@ -136,5 +136,6 @@ export default {
   statusStatus: 'Status {status}',
   priorityPriority: 'Priority {priority}',
   unknownError: 'unknown error',
-  unserializableError: 'unserializable error'
+  unserializableError: 'unserializable error',
+  categoryCategory: 'Category {category}'
 }

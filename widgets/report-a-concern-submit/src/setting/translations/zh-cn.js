@@ -116,13 +116,16 @@ System.register([], function (e) {
         customMessageOptional: "自定义消息( 可选)",
         optionalContextShownAboveThePhone: "电话号码上显示的可选上下文 。 留空以使用默认信件 。 由于多部手机已经贴上标签,短信息效果最好——不要在散文中重复时间表.",
         addCriticalAlert: "+ 添加临界警告",
-        uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
-        unknownError: "unknown error",
+        uiHttpsPortalSharingProxyHttpsServer: "https://portal/share/proxy?https://server/.../FeatureServer/0 请检查isbn=值 (帮助).",
+        unknownError: "未知错误",
         thisLocationIsOutsideTheService: "这个地点在服务区之外。",
         reportAConcern: "报告A",
         submitReport: "提交报表",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately."
+        thankYouYourConcernHasBeen: "谢谢! 你的问题已经解决了",
+        forTheFastestResponsePleaseCall: "最快的答复请打电话到下面的号码。 您仍可在网上提交此报告, 但电话会确保有人立即回复。",
+        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
+        continue: "Continue?",
+        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
       })
     }
   }

@@ -116,13 +116,16 @@ System.register([], function (e) {
         customMessageOptional: "Mesaj personalizat (opțional)",
         optionalContextShownAboveThePhone: "Contextul opțional afișat deasupra numerelor de telefon. Lăsați gol pentru a utiliza mesajul implicit. Cu mai multe telefoane deja etichetate, un mesaj scurt funcționează cel mai bine",
         addCriticalAlert: "+ Adaugă alertă critică",
-        uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
-        unknownError: "Unknown error",
+        uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy?https://server/.../ featureServer/0",
+        unknownError: "Eroare necunoscută",
         thisLocationIsOutsideTheService: "Această locație este în afara zonei de serviciu.",
         reportAConcern: "Raportează o preocupare",
         submitReport: "Raport de depunere",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately."
+        thankYouYourConcernHasBeen: "Mulţumesc! Grija ta a fost prezentată.",
+        forTheFastestResponsePleaseCall: "Pentru cel mai rapid răspuns, vă rugăm să sunaţi la numărul de mai jos. Puteți depune încă acest raport on-line, dar un apel telefonic asigură cineva răspunde imediat.",
+        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
+        continue: "Continue?",
+        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
       })
     }
   }

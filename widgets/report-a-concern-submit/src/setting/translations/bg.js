@@ -117,12 +117,15 @@ System.register([], function (e) {
         optionalContextShownAboveThePhone: "Опционален контекст, показан над телефонните номера. Оставете празно за използване на съобщението по подразбиране. С няколко телефони вече етикетиран, кратко съобщение работи най-добре да не се повтаря графика в проза.",
         addCriticalAlert: "+ Добавяне на критична тревога",
         uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
-        unknownError: "Unknown error",
+        unknownError: "Неизвестна грешка",
         thisLocationIsOutsideTheService: "Това място е извън сервизната зона.",
         reportAConcern: "Доклад за загриженост",
         submitReport: "Представяне на доклад",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately."
+        thankYouYourConcernHasBeen: "Благодаря! Вашата загриженост е била представена.",
+        forTheFastestResponsePleaseCall: "За най-бързия отговор, моля обадете се на номера по-долу. Все още можете да подадете този доклад онлайн, но телефонно обаждане гарантира някой да отговори веднага.",
+        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
+        continue: "Continue?",
+        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
       })
     }
   }

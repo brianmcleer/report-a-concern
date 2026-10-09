@@ -127,20 +127,21 @@ System.register([], function (e) {
         pleaseDonTCloseThisWindow: "Prosim, ne zapirajte tega okna, dokler ni končano.",
         reportAConcern: "Poročaj o zaskrbljenosti",
         noMapWidgetConfigured: "Nastavljen ni noben gradnik zemljevida.",
-        uiCall: "Call {trim}",
-        ticketComments: "Ticket Comments",
-        ticketTicketNumber: "Ticket #{ticketNumber}",
-        thisCategoryIsNotAvailableFor: "This category is not available for the selected location.",
-        serverError: "server error",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately.",
-        submissionRejected: "Submission rejected.",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
+        uiCall: "Klic {trim}",
+        ticketComments: "Komentarji vozovnice",
+        ticketTicketNumber: "Vstopnica #{ticketNumber}",
+        thisCategoryIsNotAvailableFor: "Ta kategorija ni na voljo za izbrano lokacijo.",
+        serverError: "napaka strežnika",
+        forTheFastestResponsePleaseCall: "Za najhitrejši odgovor pokličite številko spodaj. To poročilo lahko še vedno predložite na spletu, vendar telefonski klic zagotavlja, da se nekdo takoj odzove.",
+        submissionRejected: "Predložitev zavrnjena.",
+        thankYouYourConcernHasBeen: "Hvala! Vaša skrb je bila podana.",
         checkingAvailabilityForThisLocation: "⏳ Checking availability for this location…",
         thisCategoryIsNotAvailableFor2: "⚠ This category is not available for the selected location.",
-        statusStatus: "Status {status}",
-        priorityPriority: "Priority {priority}",
-        unknownError: "unknown error",
-        unserializableError: "unserializable error"
+        statusStatus: "Stanje {status}",
+        priorityPriority: "Prednost {priority}",
+        unknownError: "neznana napaka",
+        unserializableError: "Neizvedljiva napaka",
+        categoryCategory: "Category {category}"
       })
     }
   }

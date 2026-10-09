@@ -13,7 +13,7 @@ import defaultMessages from "./translations/default";
 import { fmt, ago, agoFull, agoDate, ymd, fmtDay, matchAll, nameTokens } from "./lib/format";
 import { S, P, C, CT, statusLabel as statusLabelOf, priorityLabel, categoryLabel, toggleVal } from "./lib/labels";
 import __i18nDefaults from './translations/default'
-import { __setIntl, __tc } from './i18n-t'
+import { __locale, __setIntl, __tc } from './i18n-t'
 let __i18nIntl: any = null
 /** Module translator: app language via the widget intl, English from default.ts, {name} values filled. */
 const __t = (id: string, values?: { [key: string]: any }): string => {
@@ -85,16 +85,16 @@ const COL_FLOOR_WIDTH: Record<string, number> = {
 // Values prefixed with "_" are client-side badge sorts — the server query
 // falls back to created_date DESC and the page is re-sorted after badges load.
 const SORT_OPTS = [
-    { label: __t("newestFirst"), value: "created_date DESC" },
-    { label: __t("oldestFirst"), value: "created_date ASC" },
-    { label: __t("priority"), value: "priority DESC,created_date DESC" },
-    { label: __t("priority2"), value: "priority ASC,created_date DESC" },
-    { label: __t("ctlStatus"), value: "status ASC,created_date DESC" },
-    { label: __t("ctlCategory"), value: "category ASC,created_date DESC" },
-    { label: __t("commentsMost"), value: "_comments DESC" },
-    { label: __t("commentsFewest"), value: "_comments ASC" },
-    { label: __t("surveyYesFirst"), value: "_survey DESC" },
-    { label: __t("surveyNoFirst"), value: "_survey ASC" },
+    { get label () { return __t("newestFirst") }, value: "created_date DESC" },
+    { get label () { return __t("oldestFirst") }, value: "created_date ASC" },
+    { get label () { return __t("priority") }, value: "priority DESC,created_date DESC" },
+    { get label () { return __t("priority2") }, value: "priority ASC,created_date DESC" },
+    { get label () { return __t("ctlStatus") }, value: "status ASC,created_date DESC" },
+    { get label () { return __t("ctlCategory") }, value: "category ASC,created_date DESC" },
+    { get label () { return __t("commentsMost") }, value: "_comments DESC" },
+    { get label () { return __t("commentsFewest") }, value: "_comments ASC" },
+    { get label () { return __t("surveyYesFirst") }, value: "_survey DESC" },
+    { get label () { return __t("surveyNoFirst") }, value: "_survey ASC" },
 ];
 
 // ── Filter persistence ───────────────────────────────────────
@@ -238,20 +238,20 @@ function integrityWarning(
 ): string | null {
     // 1. Dept exists in the domain
     if (eA && !deptOptions.includes(eA)) {
-        return `Department "${eA}" is not a valid option. Please re-select.`;
+        return __t("departmentEAIsNotAValid", { eA: eA });
     }
     // 2. Category is valid for the selected dept (skip for unrestricted depts)
     if (eA && !UNRESTRICTED_DEPTS.has(eA)) {
         const valid = validCatsForDept(eA);
         if (!valid.includes(eC)) {
-            return `Category "${C[eC] || eC}" is not handled by "${eA}". Please update the category.`;
+            return __t("categoryValueIsNotHandledBy", { value: C[eC] || eC, eA: eA });
         }
     }
     // 3. Subcategory is valid for the selected category (only when options are defined)
     if (eSC) {
         const opts = catSubcatOptions[eC];
         if (opts && opts.length > 0 && !opts.some(o => o.code === eSC)) {
-            return `Subcategory value is not valid for "${C[eC] || eC}". Please re-select.`;
+            return __t("subcategoryValueIsNotValidFor", { value: C[eC] || eC });
         }
     }
     return null;
@@ -3015,7 +3015,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
             // Format epoch ms → readable date/time string.
             const fmtD = (ts: number | null | undefined): string => {
                 if (!ts) return "";
-                return new Date(ts).toLocaleString("en-US", {
+                return new Date(ts).toLocaleString(__locale(), {
                     year: "numeric", month: "short", day: "numeric",
                     hour: "2-digit", minute: "2-digit"
                 });
@@ -3138,12 +3138,12 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
             const filterDesc = filterParts.length ? filterParts.join("  |  ") : "None (all tickets)";
 
             // Export metadata rows
-            addSummaryRow("Export Date / Time", new Date().toLocaleString("en-US"));
+            addSummaryRow("Export Date / Time", new Date().toLocaleString(__locale()));
             addSummaryRow("Filters Applied", filterDesc);
-            addSummaryRow("Ticket Count", allTickets.length.toLocaleString());
-            addSummaryRow("Comment Count", allComments.length.toLocaleString());
-            addSummaryRow("Photo Count", allPhotos.length.toLocaleString());
-            addSummaryRow("Survey Count", allSurveys.length.toLocaleString());
+            addSummaryRow("Ticket Count", allTickets.length.toLocaleString(__locale()));
+            addSummaryRow("Comment Count", allComments.length.toLocaleString(__locale()));
+            addSummaryRow("Photo Count", allPhotos.length.toLocaleString(__locale()));
+            addSummaryRow("Survey Count", allSurveys.length.toLocaleString(__locale()));
 
             // ── Ticket statistics ──────────────────────────────────────────────
             // Build counts from the fetched data so the summary reflects the export.
@@ -3158,12 +3158,12 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
 
             addSummaryDivider("Tickets by Status");
             Object.entries(S).forEach(([k, v]) => {
-                addSummaryRow(v, (statusCounts[Number(k)] || 0).toLocaleString());
+                addSummaryRow(v, (statusCounts[Number(k)] || 0).toLocaleString(__locale()));
             });
 
             addSummaryDivider("Tickets by Priority");
             Object.entries(P).forEach(([k, v]) => {
-                addSummaryRow(v, (priorityCounts[Number(k)] || 0).toLocaleString());
+                addSummaryRow(v, (priorityCounts[Number(k)] || 0).toLocaleString(__locale()));
             });
 
             addSummaryDivider("Tickets by Category");
@@ -3171,7 +3171,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
             Object.entries(C)
                 .sort(([a], [b]) => (categoryCounts[Number(b)] || 0) - (categoryCounts[Number(a)] || 0))
                 .forEach(([k, v]) => {
-                    addSummaryRow(v, (categoryCounts[Number(k)] || 0).toLocaleString());
+                    addSummaryRow(v, (categoryCounts[Number(k)] || 0).toLocaleString(__locale()));
                 });
 
             // ── Sheet 2: Tickets ──────────────────────────────────────────────
@@ -3450,7 +3450,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
 
             this.setState({
                 exporting: false,
-                ok: `Export complete — ${allTickets.length.toLocaleString()} ticket${allTickets.length !== 1 ? "s" : ""} saved to RAC_Export_${dateStr}.xlsx`
+                ok: `Export complete — ${allTickets.length.toLocaleString(__locale())} ticket${allTickets.length !== 1 ? "s" : ""} saved to RAC_Export_${dateStr}.xlsx`
             });
 
         } catch (e: any) {
@@ -3472,8 +3472,8 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
             </button>
         );
         const row = { display: "flex", alignItems: "center", gap: 8, flexShrink: 0, padding: "5px 6px 5px 12px", margin: "4px 8px", borderRadius: 6, fontSize: 12, fontWeight: 500 } as const;
-        if (err) return <div role="alert" style={{ ...row, background: "#fff5f5", border: "1px solid #fecaca", borderLeft: `3px solid ${tk.danger}`, color: tk.danger }}><span style={{ minWidth: 0 }}>{err}</span>{closeBtn("Dismiss error", () => this.setState({ err: "" }), tk.danger)}</div>;
-        if (ok) return <div role="status" style={{ ...row, background: "#f0fdf4", border: "1px solid #bbf7d0", borderLeft: "3px solid #16a34a", color: "#14532d" }}><span style={{ minWidth: 0 }}>{ok}</span>{closeBtn("Dismiss message", () => this.setState({ ok: "" }), "#14532d")}</div>;
+        if (err) return <div role="alert" style={{ ...row, background: "#fff5f5", border: "1px solid #fecaca", borderLeft: `3px solid ${tk.danger}`, color: tk.danger }}><span style={{ minWidth: 0 }}>{err}</span>{closeBtn(__t("dismissError"), () => this.setState({ err: "" }), tk.danger)}</div>;
+        if (ok) return <div role="status" style={{ ...row, background: "#f0fdf4", border: "1px solid #bbf7d0", borderLeft: "3px solid #16a34a", color: "#14532d" }}><span style={{ minWidth: 0 }}>{ok}</span>{closeBtn(__t("dismissMessage"), () => this.setState({ ok: "" }), "#14532d")}</div>;
         return null;
     }
 
@@ -4536,7 +4536,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                     const scLabel = this.subcatLabel(t.subcategory);
                                     const fullCat = catLabel + (scLabel ? ` — ${scLabel}` : "");
                                     const badge = this.state.badges[t.ticket_id];
-                                    const rowLabel = `Ticket ${t.ticket_number != null ? "#" + t.ticket_number + ", " : ""}${fullCat}, status ${statusLabel}, priority ${priLabel}`;
+                                    const rowLabel = __t("ticketValueFullCatStatusStatusLabelPriority", { value: t.ticket_number != null ? "#" + t.ticket_number + ", " : "", fullCat: fullCat, statusLabel: statusLabel, priLabel: priLabel });
                                     return (
                                         <tr
                                             key={t.OBJECTID}
@@ -4684,9 +4684,9 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
 
                     {/* Filter buttons row */}
                     <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 8 }} role="toolbar" aria-label={__t("uiFilterTickets")}>
-                        {this.renderFilterButton("Status", "status", fS, S, SC)}
-                        {this.renderFilterButton("Category", "category", fC, C)}
-                        {this.renderFilterButton("Priority", "priority", fP, P, PC)}
+                        {this.renderFilterButton(__t("ctlStatus"), "status", fS, S, SC)}
+                        {this.renderFilterButton(__t("ctlCategory"), "category", fC, C)}
+                        {this.renderFilterButton(__t("ctlPriority"), "priority", fP, P, PC)}
                         {this.renderAssignedFilterButton()}
                         {hasFilters && (
                             <Button
@@ -4843,10 +4843,10 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                         >
                             {(["cards", "table"] as const).map((mode, i) => {
                                 const active = this.state.viewMode === mode;
-                                const label = mode === "cards" ? "Cards" : "Table";
+                                const label = mode === "cards" ? __t("ctlCards") : __t("ctlTable");
                                 const titleTxt = mode === "cards"
-                                    ? "Card view — compact, mobile-friendly list"
-                                    : "Table view — sortable columns with all fields visible";
+                                    ? __t("cardViewCompactMobileFriendlyList")
+                                    : __t("tableViewSortableColumnsWithAll");
                                 return (
                                     <button
                                         key={mode}
@@ -4918,7 +4918,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 6, padding: "5px 10px", borderBottom: `1px solid ${tk.divider}`, background: tk.surface }}>
                     <div role="status" aria-live="polite" style={{ fontSize: 11, color: tk.textSecondary, minWidth: 0 }}>
                         {total > 0
-                            ? <><strong style={{ color: tk.text }}>{end - off}</strong> {__t("uiOf")} <strong style={{ color: tk.text }}>{total.toLocaleString()}</strong> {__t("uiTicketsPg")} {pageNum}/{totalPages}</>
+                            ? <><strong style={{ color: tk.text }}>{end - off}</strong> {__t("uiOf")} <strong style={{ color: tk.text }}>{total.toLocaleString(__locale())}</strong> {__t("uiTicketsPg")} {pageNum}/{totalPages}</>
                             : __t("noTicketsFound")
                         }
                     </div>
@@ -4927,8 +4927,8 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                         {/* Export to Excel button */}
                         <button
                             type="button"
-                            title={total > 0 ? __t("exportAllToLocaleStringMatchingTicketsTo", { toLocaleString: total.toLocaleString() }) : __t("noTicketsToExport")}
-                            aria-label={exporting ? __t("exportingToExcelPleaseWait") : __t("exportToLocaleStringTicketsToExcel", { toLocaleString: total.toLocaleString() })}
+                            title={total > 0 ? __t("exportAllToLocaleStringMatchingTicketsTo", { toLocaleString: total.toLocaleString(__locale()) }) : __t("noTicketsToExport")}
+                            aria-label={exporting ? __t("exportingToExcelPleaseWait") : __t("exportToLocaleStringTicketsToExcel", { toLocaleString: total.toLocaleString(__locale()) })}
                             onClick={this.exportToExcel}
                             disabled={exporting || loading || total === 0}
                             style={{
@@ -5004,7 +5004,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                     const priLabel = priorityLabel(t.priority);
                                     const scLabel = this.subcatLabel(t.subcategory);
                                     const fullCat = catLabel + (scLabel ? ` - ${scLabel}` : "");
-                                    const cardLabel = `Ticket ${t.ticket_number != null ? "#" + t.ticket_number + ", " : ""}${fullCat}, status ${statusLabel}, priority ${priLabel}, ${agoFull(t.created_date)}`;
+                                    const cardLabel = __t("ticketValueFullCatStatusStatusLabelPriority2", { value: t.ticket_number != null ? "#" + t.ticket_number + ", " : "", fullCat: fullCat, statusLabel: statusLabel, priLabel: priLabel, value2: agoFull(t.created_date) });
                                     const badge = this.state.badges[t.ticket_id];
                                     const leftColor = SC[t.status] || tk.divider;
                                     return (
@@ -5083,7 +5083,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
         if (!t) return null;
 
         const scLabel = this.subcatLabel(t.subcategory);
-        const detailTitle = (C[t.category] || "Unknown") + (scLabel ? ` \u2014 ${scLabel}` : "");
+        const detailTitle = (C[t.category] || __t("unknown")) + (scLabel ? ` \u2014 ${scLabel}` : "");
 
         const tabDef: { id: TabId; label: string; badge?: string }[] = [
             { id: "details", label: __t("ctlDetails") },

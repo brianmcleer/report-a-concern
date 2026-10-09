@@ -116,13 +116,16 @@ System.register([], function (e) {
         customMessageOptional: "Vlastní zpráva (nepovinné)",
         optionalContextShownAboveThePhone: "Volitelný kontext zobrazený nad telefonními čísly. Zanechat prázdné pro použití výchozí zprávy. S několika již označenými telefony, krátká zpráva funguje nejlépe - neopakujte plán v próza.",
         addCriticalAlert: "+ Přidat kritický poplach",
-        uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
-        unknownError: "Unknown error",
+        uiHttpsPortalSharingProxyHttpsServer: "http: / / portal / sharing / proxy? https: / / server /... / FeatureServer / 0",
+        unknownError: "Neznámá chyba",
         thisLocationIsOutsideTheService: "Toto místo je mimo servisní oblast.",
         reportAConcern: "Zpráva A",
         submitReport: "Odeslat zprávu",
-        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
-        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately."
+        thankYouYourConcernHasBeen: "Díky! Vaše obavy byly předloženy.",
+        forTheFastestResponsePleaseCall: "Pro nejrychlejší odpověď volejte prosím na níže uvedené číslo. Stále můžete tuto zprávu předložit online, ale telefonát zajistí, že někdo okamžitě zareaguje.",
+        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
+        continue: "Continue?",
+        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
       })
     }
   }
