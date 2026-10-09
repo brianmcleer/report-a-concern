@@ -264,11 +264,13 @@ const DEFAULT_TOKENS: Tokens = {
     radius: "4px", radiusLg: "8px", shadow: "0 1px 3px rgba(0,0,0,0.10)", shadowHover: "0 6px 16px rgba(0,0,0,0.14)"
 };
 
+let racIntl: any = null; // set in Widget.render so the module-level t follows the app language
 // ── Help guide (Section 10) ──────────────────────────────────
 // Strings come from translations/default.ts. This is a class component, so
 // it reads defaultMessages directly (the Print Advanced pattern) instead of
 // useIntl(); {token} values are filled in by hand.
 const t = (id: string, values?: Record<string, string>): string => {
+    const __intl: any = racIntl; if (__intl && typeof __intl.formatMessage === "function") { try { return __intl.formatMessage({ id, defaultMessage: (defaultMessages as any)[id] ?? id }, values) } catch (e) { } }
     let s = String((defaultMessages as any)[id] ?? id);
     if (values) for (const k of Object.keys(values)) s = s.split(`{${k}}`).join(values[k]);
     return s;
@@ -5661,6 +5663,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
     // <Themed> reads the theme tokens (a hook, so it cannot run in the class)
     // and stores them on this.tk before the rest of the tree renders.
     render() {
+        racIntl = (this.props as any).intl;
         return <Themed>{(tk: Tokens) => { this.tk = tk; return this.renderRoot(); }}</Themed>;
     }
 

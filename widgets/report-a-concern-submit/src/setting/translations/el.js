@@ -84,7 +84,7 @@ System.register([], function (e) {
         nCategoriesLoaded: "{n} categories loaded",
         pickers: "Pickers:",
         url: "Διεύθυνση URL:",
-        none: "(none)",
+        none: "(Δεν υπάρχει)",
         refreshMetadata: "Refresh metadata",
         defaultWarningMessage: "Default warning message",
         shownAboveThePhoneNumberWhen: "Shown above the phone number when the alert's own Message field is blank.",
