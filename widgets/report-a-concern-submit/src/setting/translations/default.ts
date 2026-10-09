@@ -111,5 +111,12 @@ export default {
   addAnotherPhone: '+ Add another phone',
   customMessageOptional: 'Custom message (optional)',
   optionalContextShownAboveThePhone: 'Optional context shown above the phone numbers. Leave blank to use the default message. With multiple phones already labeled, a short message works best — don\'t repeat the schedule in prose.',
-  addCriticalAlert: '+ Add Critical Alert'
+  addCriticalAlert: '+ Add Critical Alert',
+  uiHttpsPortalSharingProxyHttpsServer: 'https://portal/sharing/proxy?https://server/.../FeatureServer/0',
+  unknownError: 'Unknown error',
+  thisLocationIsOutsideTheService: 'This location is outside the service area.',
+  reportAConcern: 'Report A Concern',
+  submitReport: 'Submit Report',
+  thankYouYourConcernHasBeen: 'Thank you! Your concern has been submitted.',
+  forTheFastestResponsePleaseCall: 'For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately.'
 }

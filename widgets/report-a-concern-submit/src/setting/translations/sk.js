@@ -3,11 +3,11 @@ System.register([], function (e) {
   return {
     execute: function () {
       e({
-        settingsImportExport: "Settings Import / Export",
+        settingsImportExport: "Nastavenia Import / Export",
         exportToXml: "⬇ Export to XML",
-        downloadCurrentSettingsAsAnXml: "Download current settings as an XML file",
-        importFromXml: "⬆ Import from XML",
-        importSettingsFromAPreviouslyExported: "Import settings from a previously exported XML file",
+        downloadCurrentSettingsAsAnXml: "Stiahnuť aktuálne nastavenia ako XML súbor",
+        importFromXml: "Import z XML",
+        importSettingsFromAPreviouslyExported: "Importovať nastavenia z predtým exportovaného XML súboru",
         exportToCopyTheseSettingsTo: "Export to copy these settings to another device view (mobile, tablet, desktop) within the same Experience. The selected map widget is NOT included — each view stays bound to its own map.",
         mapSource: "Map Source",
         selectMapWidget: "Vybrať mapový widget",
@@ -95,7 +95,7 @@ System.register([], function (e) {
         sewer: "Sewer",
         selectCategory: "— Select category —",
         categoryNotInLayer: "{category} (not in layer)",
-        subcategory: "Subcategory",
+        subcategory: "Podkategória",
         overflowSpillBlankWholeCategory: "Overflow / Spill (blank = whole category)",
         anySubcategoryWholeCategory: "(any subcategory — whole category)",
         subcategoryNotInDomain: "{subcategory} (not in domain)",
@@ -115,7 +115,14 @@ System.register([], function (e) {
         addAnotherPhone: "+ Add another phone",
         customMessageOptional: "Custom message (optional)",
         optionalContextShownAboveThePhone: "Optional context shown above the phone numbers. Leave blank to use the default message. With multiple phones already labeled, a short message works best — don't repeat the schedule in prose.",
-        addCriticalAlert: "+ Add Critical Alert"
+        addCriticalAlert: "+ Add Critical Alert",
+        uiHttpsPortalSharingProxyHttpsServer: "https://portal/sharing/proxy?https://server/.../FeatureServer/0",
+        unknownError: "Unknown error",
+        thisLocationIsOutsideTheService: "Toto miesto je mimo servisnej oblasti.",
+        reportAConcern: "Správa A",
+        submitReport: "Predložiť správu",
+        thankYouYourConcernHasBeen: "Thank you! Your concern has been submitted.",
+        forTheFastestResponsePleaseCall: "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately."
       })
     }
   }

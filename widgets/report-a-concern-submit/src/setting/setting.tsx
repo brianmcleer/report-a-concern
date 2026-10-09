@@ -10,6 +10,18 @@ import {
 import { TextInput, TextArea, NumericInput, Switch, Select, Option } from "jimu-ui";
 import type { IMConfig } from "../config";
 import defaultMessages from "./translations/default";
+import __i18nDefaults from './translations/default'
+import { __setIntl, __tc } from './i18n-t'
+let __i18nIntl: any = null
+/** Module translator: app language via the widget intl, English from default.ts, {name} values filled. */
+const __t = (id: string, values?: { [key: string]: any }): string => {
+  const msg: string = (__i18nDefaults as any)[id] ?? id
+  if (__i18nIntl && typeof __i18nIntl.formatMessage === 'function') {
+    try { return __i18nIntl.formatMessage({ id, defaultMessage: msg }, values) } catch (e) { }
+  }
+  return msg.replace(/\{(\w+)\}/g, (m: string, k: string) => (values && values[k] != null ? String(values[k]) : m))
+}
+
 
 /**
  * Panel colors read from the builder theme, with the same paths and fallbacks as
@@ -405,7 +417,7 @@ export default class Setting extends React.PureComponent<
             });
         } catch (err: any) {
             this.setState({
-                importStatus: `Export failed: ${err?.message || "Unknown error"}`,
+                importStatus: `Export failed: ${__tc(err?.message, "unknownError")}`,
                 importIsError: true,
             });
         }
@@ -440,7 +452,7 @@ export default class Setting extends React.PureComponent<
                 });
             } catch (err: any) {
                 this.setState({
-                    importStatus: `Import failed: ${err?.message || "Unknown error"}`,
+                    importStatus: `Import failed: ${__tc(err?.message, "unknownError")}`,
                     importIsError: true,
                 });
             } finally {
@@ -583,6 +595,8 @@ export default class Setting extends React.PureComponent<
 
 
     render() {
+    __setIntl((this.props as any).intl)
+    __i18nIntl = (this.props as any).intl
         const cfg = this.props.config;
         const c = panelColors(this.props.theme);
         const { importStatus, importIsError } = this.state;
@@ -724,8 +738,7 @@ export default class Setting extends React.PureComponent<
                     <SettingRow label={this.nls('outsideBoundaryMessage')} flow="wrap">
                         <TextArea
                             className="w-100" height={80}
-                            value={cfg.outsideBoundaryMessage ??
-                                "This location is outside the service area."}
+                            value={__tc(cfg.outsideBoundaryMessage, "thisLocationIsOutsideTheService")}
                             onAcceptValue={(val: string) => this.setConfig("outsideBoundaryMessage", val)}
                         />
                     </SettingRow>
@@ -851,7 +864,7 @@ export default class Setting extends React.PureComponent<
                             {this.nls('urlForWritingTicketsAllFields')}
                             <br />
                             <code style={{ fontSize: 10, wordBreak: "break-all" }}>
-                                https://portal/sharing/proxy?https://server/.../FeatureServer/0
+                                {__t("uiHttpsPortalSharingProxyHttpsServer")}
                             </code>
                             <br />
                             {this.nls('theFeatureServerShouldBeSecuredShared')}
@@ -929,7 +942,7 @@ export default class Setting extends React.PureComponent<
                     <SettingRow label={this.nls('headerTitle')} flow="wrap">
                         <TextInput
                             className="w-100" size="sm"
-                            value={cfg.headerTitle ?? "Report A Concern"}
+                            value={__tc(cfg.headerTitle, "reportAConcern")}
                             onChange={(e) => this.setConfig("headerTitle", e.target.value)}
                         />
                     </SettingRow>
@@ -1076,7 +1089,7 @@ export default class Setting extends React.PureComponent<
                     <SettingRow label={this.nls('submitButtonLabel')} flow="wrap">
                         <TextInput
                             className="w-100" size="sm"
-                            value={cfg.submitButtonLabel ?? "Submit Report"}
+                            value={__tc(cfg.submitButtonLabel, "submitReport")}
                             onChange={(e) =>
                                 this.setConfig("submitButtonLabel", e.target.value)
                             }
@@ -1086,8 +1099,7 @@ export default class Setting extends React.PureComponent<
                     <SettingRow label={this.nls('successMessage')} flow="wrap">
                         <TextArea
                             className="w-100" height={80}
-                            value={cfg.successMessage ??
-                                "Thank you! Your concern has been submitted."}
+                            value={__tc(cfg.successMessage, "thankYouYourConcernHasBeen")}
                             onAcceptValue={(val: string) =>
                                 this.setConfig("successMessage", val)
                             }
@@ -1175,8 +1187,7 @@ export default class Setting extends React.PureComponent<
                     <SettingRow label={this.nls('defaultWarningMessage')} flow="wrap">
                         <TextArea
                             className="w-100" height={80}
-                            value={cfg.criticalAlertDefaultMessage ??
-                                "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately."}
+                            value={__tc(cfg.criticalAlertDefaultMessage, "forTheFastestResponsePleaseCall")}
                             onAcceptValue={(val: string) =>
                                 this.setConfig("criticalAlertDefaultMessage", val)
                             }

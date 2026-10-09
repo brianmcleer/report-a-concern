@@ -8,6 +8,18 @@ import { isValidEmail, PHONE_DIGITS_RE, stripPhoneDigits } from "./lib/validator
 import { containsProfanity } from "./lib/profanity";
 import { CATEGORY_BOUNDARY_MAP } from "./lib/categoryBoundaries";
 import defaultMessages from "./translations/default";
+import __i18nDefaults from './translations/default'
+import { __setIntl, __tc } from './i18n-t'
+let __i18nIntl: any = null
+/** Module translator: app language via the widget intl, English from default.ts, {name} values filled. */
+const __t = (id: string, values?: { [key: string]: any }): string => {
+  const msg: string = (__i18nDefaults as any)[id] ?? id
+  if (__i18nIntl && typeof __i18nIntl.formatMessage === 'function') {
+    try { return __i18nIntl.formatMessage({ id, defaultMessage: msg }, values) } catch (e) { }
+  }
+  return msg.replace(/\{(\w+)\}/g, (m: string, k: string) => (values && values[k] != null ? String(values[k]) : m))
+}
+
 
 // ╔═══════════════════════════════════════════════════════════╗
 // ║  Report A Concern — Public Submission Widget             ║
@@ -1983,7 +1995,7 @@ function linkifyPhones(text: string, style: React.CSSProperties): React.ReactNod
                 <React.Fragment key={i}>
                     {needsSpace && " "}
                     <a href={`tel:${tel}`} style={style}
-                        aria-label={`Call ${part.trim()}`} role="link">
+                        aria-label={__t("uiCall", { trim: part.trim() })} role="link">
                         {part.trim()}
                     </a>
                 </React.Fragment>
@@ -2443,7 +2455,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                 try {
                     const allTables = (map as any).allTables?.toArray() || [];
                     await Promise.all(allTables.map((t: any) => t.load().catch(() => { })));
-                    const cTokens = (this.props.config?.commentsTableName || "Ticket Comments")
+                    const cTokens = (__tc(this.props.config?.commentsTableName, "ticketComments"))
                         .toLowerCase().replace(/_/g, " ").split(/\s+/);
                     const commentsTable = allTables.find((t: any) =>
                         matchAllTokens(t.title || "", cTokens) || matchAllTokens(t.name || "", cTokens)
@@ -2758,11 +2770,11 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                     fetchFeatures: true,
                 });
             } else {
-                (view as any).openPopup({ title: `Ticket #${ticketNumber}`, location: pt });
+                (view as any).openPopup({ title: __t("ticketTicketNumber", { ticketNumber: ticketNumber }), location: pt });
             }
         } catch {
             try {
-                (view as any).openPopup({ title: `Ticket #${ticketNumber}`, location: pt });
+                (view as any).openPopup({ title: __t("ticketTicketNumber", { ticketNumber: ticketNumber }), location: pt });
             } catch { }
         }
     };
@@ -2878,7 +2890,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
         if (!mapPoint) { this.setState({ fieldErrors: { location: "Please set a location." } }); return false; }
         if (geofence.checking) { this.setState({ fieldErrors: { location: "Checking service area..." } }); return false; }
         if (!geofence.insideBoundary) {
-            this.setState({ fieldErrors: { location: this.props.config?.outsideBoundaryMessage || "This location is outside the service area." } });
+            this.setState({ fieldErrors: { location: __tc(this.props.config?.outsideBoundaryMessage, "thisLocationIsOutsideTheService") } });
             return false;
         }
         this.setState({ fieldErrors: {} });
@@ -2902,7 +2914,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                 errors.category = "This category is not available for the selected location.";
             } else if (entry && !entry.isValid) {
                 // Explicit invalid entry — use redirect message if available.
-                errors.category = entry.redirectMessage || "This category is not available for the selected location.";
+                errors.category = __tc(entry.redirectMessage, "thisCategoryIsNotAvailableFor");
             }
         } else if (categoryGeofence.valid === false) {
             // Fallback path: hardcoded CATEGORY_BOUNDARY_MAP check.
@@ -3066,7 +3078,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
             if (json.error) {
                 this.setState({
                     geofence: { ...EMPTY_GEOFENCE },
-                    fieldErrors: { location: `Geofence error: ${json.error.message || "server error"}` },
+                    fieldErrors: { location: `Geofence error: ${__tc(json.error.message, "serverError")}` },
                 });
                 return;
             }
@@ -3344,7 +3356,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
             const json = await resp.json();
 
             if (json.error) {
-                this.setState({ lookupLoading: false, lookupLoaded: true, lookupError: `Lookup error: ${json.error.message || "server error"}`, lookupData: [] });
+                this.setState({ lookupLoading: false, lookupLoaded: true, lookupError: `Lookup error: ${__tc(json.error.message, "serverError")}`, lookupData: [] });
                 return;
             }
 
@@ -3407,7 +3419,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                 result.push({ code: st.code, name: st.name, isValid: true, redirectMessage: "" });
             } else {
                 if (behavior === "hide") continue;
-                result.push({ code: st.code, name: st.name, isValid: false, redirectMessage: lookup.redirectMessage || "This category is not available for the selected location." });
+                result.push({ code: st.code, name: st.name, isValid: false, redirectMessage: __tc(lookup.redirectMessage, "thisCategoryIsNotAvailableFor") });
             }
         }
 
@@ -3916,7 +3928,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
         const t = this.getTheme();
         const defaultMsg =
             (this.props.config as any)?.criticalAlertDefaultMessage ||
-            "For the fastest response, please call the number below. You may still submit this report online, but a phone call ensures someone responds immediately.";
+            __t("forTheFastestResponsePleaseCall");
         const body = (alert.message && alert.message.trim()) || defaultMsg;
 
         const boxStyle: React.CSSProperties = {
@@ -4129,7 +4141,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
         if (!addResults.length) { this.setState({ submitting: false, submitResult: "error", submitMessage: "No result from server.", liveMessage: "No result from server.", submitPhase: "", submitProgress: 0 }); return; }
 
         const r = addResults[0];
-        if (r.error) { const msg = r.error.description || r.error.message || "Submission rejected."; this.setState({ submitting: false, submitResult: "error", submitMessage: msg, liveMessage: msg, submitPhase: "", submitProgress: 0 }); return; }
+        if (r.error) { const msg = __tc(r.error.description || r.error.message, "submissionRejected"); this.setState({ submitting: false, submitResult: "error", submitMessage: msg, liveMessage: msg, submitPhase: "", submitProgress: 0 }); return; }
 
         // ── Upload attachments to enterprise FeatureServer (non-fatal) ──
         // addAttachment on enterprise ArcGIS Server works anonymously for public
@@ -4169,7 +4181,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
 
         if (result.addFeatureResults?.length > 0) {
             const r = result.addFeatureResults[0];
-            if (r.error) { const msg = r.error.message || "Submission rejected."; this.setState({ submitting: false, submitResult: "error", submitMessage: msg, liveMessage: msg, submitPhase: "", submitProgress: 0 }); return; }
+            if (r.error) { const msg = __tc(r.error.message, "submissionRejected"); this.setState({ submitting: false, submitResult: "error", submitMessage: msg, liveMessage: msg, submitPhase: "", submitProgress: 0 }); return; }
             // ── Upload attachments to enterprise FeatureServer (non-fatal) ──
             if (r.objectId != null && photoFiles.length > 0) {
                 const total = photoFiles.length;
@@ -4210,7 +4222,7 @@ export default class ReportAConcernSubmit extends React.PureComponent<
 
         this.setState({
             submitting: false, submitResult: "success",
-            submitMessage: this.props.config?.successMessage || "Thank you! Your concern has been submitted.",
+            submitMessage: __tc(this.props.config?.successMessage, "thankYouYourConcernHasBeen"),
             submitPhase: "", submitProgress: 0,
             ticketNumber, form: { ...EMPTY_FORM }, mapPoint: null,
             photoFiles: [], photoPreviews: [], photoErrors: [],
@@ -4948,12 +4960,12 @@ export default class ReportAConcernSubmit extends React.PureComponent<
                         <div aria-live="polite" aria-atomic="true">
                             {catGeoChecking && (
                                 <div style={S.gfChecking}>
-                                    &#9203; Checking availability for this location&hellip;
+                                    {__t("checkingAvailabilityForThisLocation")}
                                 </div>
                             )}
                             {catGeoBlocked && (
                                 <div style={S.gfOutside} role="alert">
-                                    &#9888; This category is not available for the selected location.
+                                    {__t("thisCategoryIsNotAvailableFor2")}
                                 </div>
                             )}
                         </div>
@@ -5535,8 +5547,8 @@ export default class ReportAConcernSubmit extends React.PureComponent<
         if (!statusViewTicket) return null;
 
         const tk = statusViewTicket;
-        const statusLabel = STATUS_LABELS[tk.status ?? 0] || `Status ${tk.status}`;
-        const priorityLabel = PRIORITY_LABELS[tk.priority ?? 0] || `Priority ${tk.priority}`;
+        const statusLabel = STATUS_LABELS[tk.status ?? 0] || __t("statusStatus", { status: tk.status });
+        const priorityLabel = PRIORITY_LABELS[tk.priority ?? 0] || __t("priorityPriority", { priority: tk.priority });
         const categoryName = this.state.subtypes.find((s) => s.code === tk.category)?.name
             || (tk.category != null ? `Category ${tk.category}` : "—");
         const subcategoryName = tk.subcategory
@@ -5821,6 +5833,8 @@ export default class ReportAConcernSubmit extends React.PureComponent<
     // ══════════════════════════════════════════════════════════
 
     render() {
+    __setIntl((this.props as any).intl)
+    __i18nIntl = (this.props as any).intl
         const S = this.getStyles();
         const cfg = this.props.config;
         const mid = cfg?.useMapWidgetIds?.[0];

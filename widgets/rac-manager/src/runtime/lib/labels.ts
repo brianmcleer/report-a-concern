@@ -1,3 +1,4 @@
+import { __t } from '../i18n-t'
 // Coded value lookups and label helpers, moved out of widget.tsx unchanged so
 // they can be tested with node --test (tests/labels.test.js). No React, no esri.
 // The codes mirror the Tickets layer domains; keep them in step with the schema.
@@ -18,11 +19,11 @@ export const CT: Record<string, string> = {
 };
 
 /** Label for a status code, "Unknown" when the code is not in the domain. */
-export function statusLabel(code: number | null | undefined): string { return S[code as number] || "Unknown"; }
+export function statusLabel(code: number | null | undefined): string { return S[code as number] || __t("unknown"); }
 /** Label for a priority code, "Unknown" when the code is not in the domain. */
-export function priorityLabel(code: number | null | undefined): string { return P[code as number] || "Unknown"; }
+export function priorityLabel(code: number | null | undefined): string { return P[code as number] || __t("unknown"); }
 /** Label for a category code, "Unknown" when the code is not in the domain. */
-export function categoryLabel(code: number | null | undefined): string { return C[code as number] || "Unknown"; }
+export function categoryLabel(code: number | null | undefined): string { return C[code as number] || __t("unknown"); }
 
 /** Adds or removes a value from a numeric filter array (used by the toolbar filters). */
 export function toggleVal(arr: number[], val: number): number[] { return arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val]; }

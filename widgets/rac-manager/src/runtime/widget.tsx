@@ -12,6 +12,18 @@ import { buildHelpSections, type HelpFeatures } from "./helpSections";
 import defaultMessages from "./translations/default";
 import { fmt, ago, agoFull, agoDate, ymd, fmtDay, matchAll, nameTokens } from "./lib/format";
 import { S, P, C, CT, statusLabel as statusLabelOf, priorityLabel, categoryLabel, toggleVal } from "./lib/labels";
+import __i18nDefaults from './translations/default'
+import { __setIntl, __tc } from './i18n-t'
+let __i18nIntl: any = null
+/** Module translator: app language via the widget intl, English from default.ts, {name} values filled. */
+const __t = (id: string, values?: { [key: string]: any }): string => {
+  const msg: string = (__i18nDefaults as any)[id] ?? id
+  if (__i18nIntl && typeof __i18nIntl.formatMessage === 'function') {
+    try { return __i18nIntl.formatMessage({ id, defaultMessage: msg }, values) } catch (e) { }
+  }
+  return msg.replace(/\{(\w+)\}/g, (m: string, k: string) => (values && values[k] != null ? String(values[k]) : m))
+}
+
 // ExcelJS is loaded from CDN at export time to avoid webpack/Node
 // compatibility issues with the npm package in browser builds.
 
@@ -73,16 +85,16 @@ const COL_FLOOR_WIDTH: Record<string, number> = {
 // Values prefixed with "_" are client-side badge sorts — the server query
 // falls back to created_date DESC and the page is re-sorted after badges load.
 const SORT_OPTS = [
-    { label: "Newest First", value: "created_date DESC" },
-    { label: "Oldest First", value: "created_date ASC" },
-    { label: "Priority \u2193", value: "priority DESC,created_date DESC" },
-    { label: "Priority \u2191", value: "priority ASC,created_date DESC" },
-    { label: "Status", value: "status ASC,created_date DESC" },
-    { label: "Category", value: "category ASC,created_date DESC" },
-    { label: "Comments: Most", value: "_comments DESC" },
-    { label: "Comments: Fewest", value: "_comments ASC" },
-    { label: "Survey: Yes First", value: "_survey DESC" },
-    { label: "Survey: No First", value: "_survey ASC" },
+    { label: __t("newestFirst"), value: "created_date DESC" },
+    { label: __t("oldestFirst"), value: "created_date ASC" },
+    { label: __t("priority"), value: "priority DESC,created_date DESC" },
+    { label: __t("priority2"), value: "priority ASC,created_date DESC" },
+    { label: __t("ctlStatus"), value: "status ASC,created_date DESC" },
+    { label: __t("ctlCategory"), value: "category ASC,created_date DESC" },
+    { label: __t("commentsMost"), value: "_comments DESC" },
+    { label: __t("commentsFewest"), value: "_comments ASC" },
+    { label: __t("surveyYesFirst"), value: "_survey DESC" },
+    { label: __t("surveyNoFirst"), value: "_survey ASC" },
 ];
 
 // ── Filter persistence ───────────────────────────────────────
@@ -1067,10 +1079,10 @@ async function validateMediaFile(
 // toggleVal lives in ./lib/labels (pure, covered by tests/labels.test.js).
 
 function stars(tk: Tokens, rating: number | null, max = 5) {
-    if (rating == null) return <span style={{ color: tk.textSecondary, fontSize: 12 }}>No rating</span>;
+    if (rating == null) return <span style={{ color: tk.textSecondary, fontSize: 12 }}>{__t("uiNoRating")}</span>;
     const filled = Math.min(Math.max(Math.round(rating), 0), max);
     return (
-        <span role="img" aria-label={`${rating} out of ${max} stars`} style={{ fontSize: 16, letterSpacing: 2 }}>
+        <span role="img" aria-label={__t("uiOutOfStars", { rating: rating, max: max })} style={{ fontSize: 16, letterSpacing: 2 }}>
             {Array.from({ length: max }, (_, i) => (
                 <span key={i} aria-hidden="true" style={{ color: i < filled ? "#b5650f" : tk.divider }}>{"\u2605"}</span>
             ))}
@@ -1910,7 +1922,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
             await Promise.all(allTables.map((t: any) => t.load().catch(() => { })));
 
             const cfg = this.props.config || {};
-            const tTitle = cfg.ticketsLayerTitle || "Tickets";
+            const tTitle = __tc(cfg.ticketsLayerTitle, "uiTickets");
             const cTokens = nameTokens(cfg.commentsTableName || "Ticket Comments");
             const pTokens = nameTokens(cfg.photosTableName || "Ticket Photos");
             const sTokens = nameTokens(cfg.surveyTableName || "Survey Responses");
@@ -2949,7 +2961,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
             ]);
 
             // ── Step 3: Build workbook ──────────────────────────────────────────
-            const orgName = (this.props.config as any)?.orgName || "GIS Division";
+            const orgName = (this.props.config as any)?.orgName || __t("gisDivision");
             const wb = new ExcelJS.Workbook();
             wb.creator = orgName;
             wb.lastModifiedBy = "RAC Manager";
@@ -3359,7 +3371,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                             cell.font = { size: 10, name: "Courier New", bold: true, color: { argb: BLUE } };
                         } else if (colNumber === 6 && p.photo_url) {
                             // Render URL as a clickable hyperlink with the filename as label.
-                            cell.value = { text: p.filename || "View Photo", hyperlink: p.photo_url };
+                            cell.value = { text: p.filename || __t("viewPhoto"), hyperlink: p.photo_url };
                             cell.font = { size: 10, name: "Calibri", color: { argb: BLUE }, underline: true };
                             cell.alignment = { vertical: "middle" };
                         } else {
@@ -3481,8 +3493,8 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                     type="button"
                     aria-expanded={isOpen}
                     aria-controls={panelId}
-                    aria-label={`Filter by ${label}. ${summary}`}
-                    title={`Filter by ${label} — ${summary}`}
+                    aria-label={__t("uiFilterBy", { label: label, summary: summary })}
+                    title={__t("uiFilterBy2", { label: label, summary: summary })}
                     onClick={() => this.toggleFilterPanel(panel)}
                     onKeyDown={(e: any) => { if (e.key === "Escape") this.setState({ openFilter: "none" }); }}
                     style={{
@@ -3508,7 +3520,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                     <div
                         id={panelId}
                         role="group"
-                        aria-label={`${label} filter options`}
+                        aria-label={__t("uiFilterOptions", { label: label })}
                         style={{
                             position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, zIndex: 100,
                             background: tk.surface, border: `1px solid ${tk.divider}`, borderRadius: 8,
@@ -3540,12 +3552,12 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                 <button
                                     type="button"
                                     onClick={() => this.setState({ [field]: [] } as any, () => { this.load(0); this.persistFilters(); })}
-                                    aria-label={`Clear all ${label.toLowerCase()} filters`}
+                                    aria-label={__t("uiClearAllFilters", { toLowerCase: label.toLowerCase() })}
                                     style={{ fontSize: 11, color: tk.primary, cursor: "pointer", background: "none", border: "none", padding: 0, textDecoration: "underline", outline: "none" }}
                                     onFocus={(e: any) => { e.currentTarget.style.boxShadow = FOCUS_RING; }}
                                     onBlur={(e: any) => { e.currentTarget.style.boxShadow = "none"; }}
                                 >
-                                    Clear {label.toLowerCase()}
+                                    {__t("uiClear")} {label.toLowerCase()}
                                 </button>
                             </div>
                         )}
@@ -3575,8 +3587,8 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                     type="button"
                     aria-expanded={isOpen}
                     aria-controls={panelId}
-                    aria-label={`Filter by Assigned. ${summary}`}
-                    title={`Filter by Assigned — ${summary}`}
+                    aria-label={__t("uiFilterByAssigned", { summary: summary })}
+                    title={__t("uiFilterByAssigned2", { summary: summary })}
                     onClick={() => this.toggleFilterPanel(panel)}
                     onKeyDown={(e: any) => { if (e.key === "Escape") this.setState({ openFilter: "none" }); }}
                     style={{
@@ -3590,7 +3602,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                     onFocus={(e: any) => { e.currentTarget.style.boxShadow = FOCUS_RING; }}
                     onBlur={(e: any) => { e.currentTarget.style.boxShadow = "none"; }}
                 >
-                    Assigned
+                    {__t("ctlAssigned")}
                     {count > 0 && (
                         <span aria-hidden="true" style={{ background: tk.primary, color: tk.primaryText, borderRadius: 99, padding: "0 5px", fontSize: 10, marginLeft: 4 }}>
                             {count}
@@ -3602,7 +3614,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                     <div
                         id={panelId}
                         role="group"
-                        aria-label="Assigned filter options"
+                        aria-label={__t("uiAssignedFilterOptions")}
                         style={{
                             position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, zIndex: 100,
                             background: tk.surface, border: `1px solid ${tk.divider}`, borderRadius: 8,
@@ -3611,7 +3623,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                         }}
                     >
                         {(deptOptions || []).filter(Boolean).length === 0 && (
-                            <div style={{ padding: "8px 10px", fontSize: 12, color: tk.textSecondary }}>No departments available</div>
+                            <div style={{ padding: "8px 10px", fontSize: 12, color: tk.textSecondary }}>{__t("uiNoDepartmentsAvailable")}</div>
                         )}
                         {(deptOptions || []).filter(Boolean).map((name: string) => {
                             const checked = fA.includes(name);
@@ -3633,12 +3645,12 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                 <button
                                     type="button"
                                     onClick={() => this.setState({ fA: [], off: 0 } as any, () => { this.load(0); this.persistFilters(); })}
-                                    aria-label="Clear all assigned filters"
+                                    aria-label={__t("uiClearAllAssignedFilters")}
                                     style={{ fontSize: 11, color: tk.primary, cursor: "pointer", background: "none", border: "none", padding: 0, textDecoration: "underline", outline: "none" }}
                                     onFocus={(e: any) => { e.currentTarget.style.boxShadow = FOCUS_RING; }}
                                     onBlur={(e: any) => { e.currentTarget.style.boxShadow = "none"; }}
                                 >
-                                    Clear assigned
+                                    {__t("uiClearAssigned")}
                                 </button>
                             </div>
                         )}
@@ -3807,9 +3819,9 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                 // Activity badges — fixed three options, label matches
                 // what's shown in the table column.
                 listEntries = [
-                    { value: "comments", label: "Has comments" },
-                    { value: "photos", label: "Has photos" },
-                    { value: "survey", label: "Has survey response" },
+                    { value: "comments", label: __t("hasComments") },
+                    { value: "photos", label: __t("hasPhotos") },
+                    { value: "survey", label: __t("hasSurveyResponse") },
                 ];
             }
         }
@@ -3848,13 +3860,13 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
         if (kind === "text") {
             const value = (cf as any)[colKey] as string;
             return (
-                <div role="dialog" aria-label="Filter" style={popoverStyle} onClick={stop} onMouseDown={stop}>
+                <div role="dialog" aria-label={__t("uiFilter")} style={popoverStyle} onClick={stop} onMouseDown={stop}>
                     <input
                         type="text"
                         autoFocus
                         value={value}
-                        placeholder="Ticket # contains…"
-                        aria-label={`Filter ${colKey}`}
+                        placeholder={__t("uiTicketContains")}
+                        aria-label={__t("uiFilter2", { colKey: colKey })}
                         onChange={(e: any) => this.setState((p: St) => ({
                             tableColFilters: { ...p.tableColFilters, [colKey]: e.target.value } as any,
                         }))}
@@ -3877,13 +3889,13 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                     tableColFilters: { ...p.tableColFilters, [colKey]: "" } as any,
                                 }))}
                                 style={{ fontSize: 11, padding: "3px 8px", border: "1px solid #fecaca", background: "#fef2f2", color: tk.danger, borderRadius: 4, cursor: "pointer", fontWeight: 600 }}
-                            >Clear</button>
+                            >{__t("uiClear")}</button>
                         )}
                         <button
                             type="button"
                             onClick={close}
                             style={{ fontSize: 11, padding: "3px 10px", border: `1px solid ${tk.primary}`, background: tk.primary, color: tk.primaryText, borderRadius: 4, cursor: "pointer", fontWeight: 600 }}
-                        >Done</button>
+                        >{__t("ctlDone")}</button>
                     </div>
                 </div>
             );
@@ -3897,15 +3909,15 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                 return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
             })();
             return (
-                <div role="dialog" aria-label="Filter by date" style={popoverStyle} onClick={stop} onMouseDown={stop}>
+                <div role="dialog" aria-label={__t("uiFilterByDate")} style={popoverStyle} onClick={stop} onMouseDown={stop}>
                     <div style={{ fontSize: 11, color: tk.textSecondary, marginBottom: 4 }}>
-                        Show tickets {colKey === "modified_date" ? "updated" : colKey === "resolved_date" ? "resolved" : "created"} on:
+                        {__t("uiShowTickets")} {colKey === "modified_date" ? "updated" : colKey === "resolved_date" ? "resolved" : "created"} {__t("uiOn")}
                     </div>
                     <input
                         type="date"
                         autoFocus
                         value={value}
-                        aria-label={`Filter by ${colKey === "modified_date" ? "updated" : colKey === "resolved_date" ? "resolved" : "created"} date`}
+                        aria-label={__t("uiFilterByDate2", { value: colKey === "modified_date" ? "updated" : colKey === "resolved_date" ? "resolved" : "created" })}
                         onChange={(e: any) => this.setState((p: St) => ({
                             tableColFilters: { ...p.tableColFilters, [colKey]: e.target.value } as any,
                         }))}
@@ -3936,7 +3948,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                 borderRadius: 4,
                                 cursor: value === todayISO ? "not-allowed" : "pointer",
                             }}
-                        >Today</button>
+                        >{__t("ctlToday")}</button>
                     </div>
                     <div style={{ display: "flex", gap: 6, marginTop: 8, justifyContent: "flex-end", borderTop: `1px solid ${tk.divider}`, paddingTop: 8 }}>
                         {value && (
@@ -3946,13 +3958,13 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                     tableColFilters: { ...p.tableColFilters, [colKey]: "" } as any,
                                 }))}
                                 style={{ fontSize: 11, padding: "3px 8px", border: "1px solid #fecaca", background: "#fef2f2", color: tk.danger, borderRadius: 4, cursor: "pointer", fontWeight: 600 }}
-                            >Clear</button>
+                            >{__t("uiClear")}</button>
                         )}
                         <button
                             type="button"
                             onClick={close}
                             style={{ fontSize: 11, padding: "3px 10px", border: `1px solid ${tk.primary}`, background: tk.primary, color: tk.primaryText, borderRadius: 4, cursor: "pointer", fontWeight: 600 }}
-                        >Done</button>
+                        >{__t("ctlDone")}</button>
                     </div>
                 </div>
             );
@@ -3977,12 +3989,12 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
         }));
 
         return (
-            <div role="dialog" aria-label="Filter" style={popoverStyle} onClick={stop} onMouseDown={stop}
+            <div role="dialog" aria-label={__t("uiFilter")} style={popoverStyle} onClick={stop} onMouseDown={stop}
                 onKeyDown={(e: any) => { if (e.key === "Escape") { e.stopPropagation(); close(); } }}>
                 <div style={{ maxHeight: 240, overflowY: "auto", padding: "2px 0" }}>
                     {listEntries.length === 0 && (
                         <div style={{ padding: "8px 6px", color: tk.textSecondary, fontSize: 11, fontStyle: "italic" }}>
-                            No values available.
+                            {__t("uiNoValuesAvailable")}
                         </div>
                     )}
                     {listEntries.map(({ value, label }) => {
@@ -4049,12 +4061,12 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                             cursor: selected.length === 0 ? "not-allowed" : "pointer",
                             fontWeight: 600,
                         }}
-                    >Clear</button>
+                    >{__t("uiClear")}</button>
                     <button
                         type="button"
                         onClick={close}
                         style={{ fontSize: 11, padding: "3px 10px", border: `1px solid ${tk.primary}`, background: tk.primary, color: tk.primaryText, borderRadius: 4, cursor: "pointer", fontWeight: 600 }}
-                    >Done</button>
+                    >{__t("ctlDone")}</button>
                 </div>
             </div>
         );
@@ -4109,14 +4121,14 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
             align?: "left" | "center" | "right";
         }> = [
                 { key: "ticket_number", label: "#", sortAsc: "ticket_number ASC", sortDesc: "ticket_number DESC", width: w("ticket_number") },
-                { key: "status", label: "Status", sortAsc: "status ASC,created_date DESC", sortDesc: "status DESC,created_date DESC", width: w("status") },
-                { key: "priority", label: "Priority", sortAsc: "priority ASC,created_date DESC", sortDesc: "priority DESC,created_date DESC", width: w("priority") },
-                { key: "category", label: "Category", sortAsc: "category ASC,created_date DESC", sortDesc: "category DESC,created_date DESC", width: w("category") },
-                { key: "assigned_to", label: "Assigned", sortAsc: "assigned_to ASC,created_date DESC", sortDesc: "assigned_to DESC,created_date DESC", width: w("assigned_to") },
-                { key: "created_date", label: "Created", sortAsc: "created_date ASC", sortDesc: "created_date DESC", width: w("created_date") },
-                { key: "modified_date", label: "Updated", sortAsc: "modified_date ASC", sortDesc: "modified_date DESC", width: w("modified_date") },
-                { key: "resolved_date", label: "Resolved", sortAsc: "resolved_date ASC", sortDesc: "resolved_date DESC", width: w("resolved_date") },
-                { key: "badges", label: "Activity", width: w("badges"), align: "center" },
+                { key: "status", label: __t("ctlStatus"), sortAsc: "status ASC,created_date DESC", sortDesc: "status DESC,created_date DESC", width: w("status") },
+                { key: "priority", label: __t("ctlPriority"), sortAsc: "priority ASC,created_date DESC", sortDesc: "priority DESC,created_date DESC", width: w("priority") },
+                { key: "category", label: __t("ctlCategory"), sortAsc: "category ASC,created_date DESC", sortDesc: "category DESC,created_date DESC", width: w("category") },
+                { key: "assigned_to", label: __t("ctlAssigned"), sortAsc: "assigned_to ASC,created_date DESC", sortDesc: "assigned_to DESC,created_date DESC", width: w("assigned_to") },
+                { key: "created_date", label: __t("created"), sortAsc: "created_date ASC", sortDesc: "created_date DESC", width: w("created_date") },
+                { key: "modified_date", label: __t("updated"), sortAsc: "modified_date ASC", sortDesc: "modified_date DESC", width: w("modified_date") },
+                { key: "resolved_date", label: __t("resolved"), sortAsc: "resolved_date ASC", sortDesc: "resolved_date DESC", width: w("resolved_date") },
+                { key: "badges", label: __t("activity"), width: w("badges"), align: "center" },
             ];
 
         // Helper: derive (column, direction) tuple from the current
@@ -4184,7 +4196,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                     containerType: "inline-size",
                 }}
                 role="region"
-                aria-label="Ticket table"
+                aria-label={__t("uiTicketTable")}
                 aria-busy={loading}
                 onClick={() => { this.setState({ openFilter: "none" }); this.clearHoverHl(); }}
             >
@@ -4195,7 +4207,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                 <table
                     className="rac-ttbl"
                     role="grid"
-                    aria-label="Tickets"
+                    aria-label={__t("uiTickets")}
                     aria-rowcount={visibleTickets.length}
                     ref={this.tableRef}
                     style={{
@@ -4332,7 +4344,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                             <span
                                                 role={sortable ? "button" : undefined}
                                                 tabIndex={sortable ? 0 : -1}
-                                                title={sortable ? "Click to sort" : undefined}
+                                                title={sortable ? __t("clickToSort") : undefined}
                                                 onClick={(e: any) => { e.stopPropagation(); if (sortable) cycleSort(col); }}
                                                 onKeyDown={(e: any) => {
                                                     if (sortable && (e.key === "Enter" || e.key === " ")) {
@@ -4362,10 +4374,10 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                             {filterKind && (
                                                 <button
                                                     type="button"
-                                                    aria-label={`Filter ${col.label}${isFiltered ? " (filter active)" : ""}`}
+                                                    aria-label={__t("uiFilter3", { label: col.label, value: isFiltered ? " (filter active)" : "" })}
                                                     aria-haspopup="dialog"
                                                     aria-expanded={popoverOpen}
-                                                    title={isFiltered ? `Filter active — click to edit` : `Filter ${col.label}`}
+                                                    title={isFiltered ? __t("filterActiveClickToEdit") : __t("filterLabel", { label: col.label })}
                                                     onMouseDown={(e: any) => e.stopPropagation()}
                                                     onClick={(e: any) => {
                                                         e.stopPropagation();
@@ -4417,11 +4429,11 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                                 <span
                                                     role="separator"
                                                     aria-orientation="vertical"
-                                                    aria-label={`Resize ${col.label} column`}
+                                                    aria-label={__t("uiResizeColumn", { label: col.label })}
                                                     aria-valuenow={this.state.tableColWidths[col.key] || COL_DEFAULT_WIDTH[col.key] || 100}
                                                     aria-valuemin={COL_MIN_WIDTH}
                                                     aria-valuemax={COL_MAX_WIDTH}
-                                                    title="Drag to resize · double-click to reset · arrow keys with the keyboard"
+                                                    title={__t("uiDragToResizeDoubleClickTo")}
                                                     tabIndex={0}
                                                     onMouseDown={(e: any) => this.startColResize(e, col.key)}
                                                     onDoubleClick={(e: any) => {
@@ -4513,7 +4525,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                 ? (
                                     <tr>
                                         <td colSpan={columns.length + 1} style={{ padding: 30, textAlign: "center", color: tk.textSecondary, fontStyle: "italic" }}>
-                                            No tickets match the current filters.
+                                            {__t("uiNoTicketsMatchTheCurrentFilters")}
                                         </td>
                                     </tr>
                                 )
@@ -4646,32 +4658,32 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
         const pageNum = Math.floor(off / PG) + 1;
         const totalPages = Math.max(1, Math.ceil(total / PG));
 
-        if (!ready) return <div role="status" style={{ padding: 20, textAlign: "center", color: tk.textSecondary }}>Connecting to map...</div>;
+        if (!ready) return <div role="status" style={{ padding: 20, textAlign: "center", color: tk.textSecondary }}>{__t("uiConnectingToMap")}</div>;
 
         return (
-            <div style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }} role="region" aria-label="Ticket list">
+            <div style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }} role="region" aria-label={__t("uiTicketList")}>
 
                 <div ref={this.filterRef} style={{ padding: "10px 10px 0", borderBottom: `1px solid ${tk.divider}`, background: tk.surface }}>
 
                     {/* Search row */}
-                    <div style={{ display: "flex", gap: 6, marginBottom: 8 }} role="search" aria-label="Search tickets">
+                    <div style={{ display: "flex", gap: 6, marginBottom: 8 }} role="search" aria-label={__t("uiSearchTickets")}>
                         <TextInput
                             style={{ flex: 1 }}
-                            placeholder="Search tickets…"
+                            placeholder={__t("uiSearchTickets2")}
                             value={search}
-                            aria-label="Search tickets by number, description, or address"
-                            title="Search by ticket number, description, or address"
+                            aria-label={__t("uiSearchTicketsByNumberDescriptionOr")}
+                            title={__t("uiSearchByTicketNumberDescriptionOr")}
                             onChange={(e: any) => this.setState({ search: e.target.value })}
                             onKeyDown={(e: any) => { if (e.key === "Enter") this.setState({ off: 0, openFilter: "none" }, () => { this.load(0); this.persistFilters(); }); }}
                         />
-                        <Button size="sm" type="primary" onClick={() => this.setState({ off: 0, openFilter: "none" }, () => { this.load(0); this.persistFilters(); })} aria-label="Search">
-                            Search
+                        <Button size="sm" type="primary" onClick={() => this.setState({ off: 0, openFilter: "none" }, () => { this.load(0); this.persistFilters(); })} aria-label={__t("ctlSearch")}>
+                            {__t("ctlSearch")}
                         </Button>
                         {this.renderHelpButton()}
                     </div>
 
                     {/* Filter buttons row */}
-                    <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 8 }} role="toolbar" aria-label="Filter tickets">
+                    <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 8 }} role="toolbar" aria-label={__t("uiFilterTickets")}>
                         {this.renderFilterButton("Status", "status", fS, S, SC)}
                         {this.renderFilterButton("Category", "category", fC, C)}
                         {this.renderFilterButton("Priority", "priority", fP, P, PC)}
@@ -4680,8 +4692,8 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                             <Button
                                 size="sm"
                                 style={{ flexShrink: 0 }}
-                                title="Clear all filters, search, date range, and column filters"
-                                aria-label="Clear all filters"
+                                title={__t("uiClearAllFiltersSearchDateRange")}
+                                aria-label={__t("uiClearAllFilters2")}
                                 onClick={() => this.setState(
                                     {
                                         // Toolbar filters
@@ -4704,7 +4716,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                     () => { this.load(0); this.persistFilters(); }
                                 )}
                             >
-                                Clear All
+                                {__t("ctlClearAll")}
                             </Button>
                         )}
                     </div>
@@ -4716,7 +4728,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                 <button
                                     type="button"
                                     aria-pressed={fHasComments}
-                                    title="Show only tickets that have at least one comment"
+                                    title={__t("uiShowOnlyTicketsThatHaveAt")}
                                     onClick={() => this.setState(
                                         (p: St) => ({ fHasComments: !p.fHasComments }),
                                         () => { this.persistFilters(); this.refreshBadgeFilter(); }
@@ -4732,14 +4744,14 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                     onFocus={(e: any) => { e.currentTarget.style.boxShadow = FOCUS_RING; }}
                                     onBlur={(e: any) => { e.currentTarget.style.boxShadow = "none"; }}
                                 >
-                                    💬 Has Comments
+                                    {__t("uiHasComments")}
                                 </button>
                             )}
                             {this.state.surveyTable && (
                                 <button
                                     type="button"
                                     aria-pressed={fHasSurvey}
-                                    title="Show only tickets that have a survey response"
+                                    title={__t("uiShowOnlyTicketsThatHaveA")}
                                     onClick={() => this.setState(
                                         (p: St) => ({ fHasSurvey: !p.fHasSurvey }),
                                         () => { this.persistFilters(); this.refreshBadgeFilter(); }
@@ -4755,13 +4767,13 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                     onFocus={(e: any) => { e.currentTarget.style.boxShadow = FOCUS_RING; }}
                                     onBlur={(e: any) => { e.currentTarget.style.boxShadow = "none"; }}
                                 >
-                                    ⭐ Has Survey
+                                    {__t("uiHasSurvey")}
                                 </button>
                             )}
                             <button
                                 type="button"
                                 aria-pressed={fHasPhotos}
-                                title="Show only tickets that have photos"
+                                title={__t("uiShowOnlyTicketsThatHavePhotos")}
                                 onClick={() => this.setState(
                                     (p: St) => ({ fHasPhotos: !p.fHasPhotos }),
                                     () => { this.persistFilters(); this.refreshBadgeFilter(); }
@@ -4777,26 +4789,26 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                 onFocus={(e: any) => { e.currentTarget.style.boxShadow = FOCUS_RING; }}
                                 onBlur={(e: any) => { e.currentTarget.style.boxShadow = "none"; }}
                             >
-                                📷 Has Photos
+                                {__t("uiHasPhotos")}
                             </button>
                         </div>
                     )}
 
                     {/* Date range row */}
                     <div style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 8, flexWrap: "wrap" }}>
-                        <label style={{ fontSize: 11, color: tk.textSecondary, fontWeight: 600, whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: "0.05em" }}>Date</label>
+                        <label style={{ fontSize: 11, color: tk.textSecondary, fontWeight: 600, whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: "0.05em" }}>{__t("ctlDate")}</label>
                         <input
                             type="date" value={fDateFrom}
-                            aria-label="Filter from date"
-                            title="Filter tickets created on or after this date"
+                            aria-label={__t("uiFilterFromDate")}
+                            title={__t("uiFilterTicketsCreatedOnOrAfter")}
                             style={{ fontSize: 12, padding: "3px 8px", border: `1px solid ${tk.divider}`, borderRadius: 6, flex: 1, minWidth: 120, color: tk.text, outline: "none" }}
                             onChange={(e: any) => this.setState({ fDateFrom: e.target.value, off: 0 }, () => { this.load(0); this.persistFilters(); })}
                         />
-                        <span style={{ fontSize: 11, color: tk.textSecondary }}>to</span>
+                        <span style={{ fontSize: 11, color: tk.textSecondary }}>{__t("uiTo")}</span>
                         <input
                             type="date" value={fDateTo}
-                            aria-label="Filter to date"
-                            title="Filter tickets created on or before this date"
+                            aria-label={__t("uiFilterToDate")}
+                            title={__t("uiFilterTicketsCreatedOnOrBefore")}
                             style={{ fontSize: 12, padding: "3px 8px", border: `1px solid ${tk.divider}`, borderRadius: 6, flex: 1, minWidth: 120, color: tk.text, outline: "none" }}
                             onChange={(e: any) => this.setState({ fDateTo: e.target.value, off: 0 }, () => { this.load(0); this.persistFilters(); })}
                         />
@@ -4804,12 +4816,12 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
 
                     {/* Sort + extent filter row */}
                     <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", paddingBottom: 10 }}>
-                        <label htmlFor="rac-sort" style={{ fontSize: 11, color: tk.textSecondary, fontWeight: 600, whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: "0.05em" }}>Sort</label>
+                        <label htmlFor="rac-sort" style={{ fontSize: 11, color: tk.textSecondary, fontWeight: 600, whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: "0.05em" }}>{__t("ctlSort")}</label>
                         <select
                             id="rac-sort"
                             value={sortOrder}
-                            aria-label="Sort tickets"
-                            title="Choose sort order for ticket list"
+                            aria-label={__t("uiSortTickets")}
+                            title={__t("uiChooseSortOrderForTicketList")}
                             style={{ fontSize: 12, padding: "3px 8px", border: `1px solid ${tk.divider}`, borderRadius: 6, flex: compact ? "1 1 calc(100% - 50px)" : 1, minWidth: 120, background: tk.surface, color: tk.text, outline: "none" }}
                             onChange={(e: any) => this.setState({ sortOrder: e.target.value, off: 0 }, () => { this.load(0); this.persistFilters(); })}
                         >
@@ -4826,7 +4838,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                             sees it on every revisit. */}
                         <div
                             role="radiogroup"
-                            aria-label="List view style"
+                            aria-label={__t("uiListViewStyle")}
                             style={{ display: "inline-flex", border: `1px solid ${tk.divider}`, borderRadius: 6, overflow: "hidden", flexShrink: 0 }}
                         >
                             {(["cards", "table"] as const).map((mode, i) => {
@@ -4888,16 +4900,16 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                         </div>
                         <label
                             style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, color: extentFilter ? tk.primary : tk.textSecondary, cursor: "pointer", userSelect: "none", whiteSpace: "nowrap" }}
-                            title="Only show tickets visible in the current map view"
+                            title={__t("uiOnlyShowTicketsVisibleInThe")}
                         >
                             <input
                                 type="checkbox"
                                 checked={extentFilter}
                                 onChange={() => this.setState((p: St) => ({ extentFilter: !p.extentFilter, off: 0 }), () => this.load(0))}
-                                aria-label="Filter by current map extent"
+                                aria-label={__t("uiFilterByCurrentMapExtent")}
                                 style={{ width: 15, height: 15, accentColor: tk.primary }}
                             />
-                            Map extent
+                            {__t("ctlMapExtent")}
                         </label>
                     </div>
                 </div>
@@ -4906,8 +4918,8 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 6, padding: "5px 10px", borderBottom: `1px solid ${tk.divider}`, background: tk.surface }}>
                     <div role="status" aria-live="polite" style={{ fontSize: 11, color: tk.textSecondary, minWidth: 0 }}>
                         {total > 0
-                            ? <><strong style={{ color: tk.text }}>{end - off}</strong> of <strong style={{ color: tk.text }}>{total.toLocaleString()}</strong> tickets &middot; pg {pageNum}/{totalPages}</>
-                            : "No tickets found"
+                            ? <><strong style={{ color: tk.text }}>{end - off}</strong> {__t("uiOf")} <strong style={{ color: tk.text }}>{total.toLocaleString()}</strong> {__t("uiTicketsPg")} {pageNum}/{totalPages}</>
+                            : __t("noTicketsFound")
                         }
                     </div>
                     <div style={{ display: "flex", gap: 5 }}>
@@ -4915,8 +4927,8 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                         {/* Export to Excel button */}
                         <button
                             type="button"
-                            title={total > 0 ? `Export all ${total.toLocaleString()} matching tickets to Excel` : "No tickets to export"}
-                            aria-label={exporting ? "Exporting to Excel, please wait..." : `Export ${total.toLocaleString()} tickets to Excel`}
+                            title={total > 0 ? __t("exportAllToLocaleStringMatchingTicketsTo", { toLocaleString: total.toLocaleString() }) : __t("noTicketsToExport")}
+                            aria-label={exporting ? __t("exportingToExcelPleaseWait") : __t("exportToLocaleStringTicketsToExcel", { toLocaleString: total.toLocaleString() })}
                             onClick={this.exportToExcel}
                             disabled={exporting || loading || total === 0}
                             style={{
@@ -4939,14 +4951,14 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                             <svg aria-hidden="true" width="11" height="11" viewBox="0 0 20 20" fill="currentColor">
                                 <path d="M3 3h14v14H3V3zm2 2v10h10V5H5zm2 2h2v2H7V7zm4 0h2v2h-2V7zM7 11h2v2H7v-2zm4 0h2v2h-2v-2z" />
                             </svg>
-                            {exporting ? "Exporting…" : "Export"}
+                            {exporting ? __t("exporting") : __t("ctlExport")}
                         </button>
 
                         {/* Refresh button */}
                         <button
                             type="button"
-                            title="Refresh ticket list"
-                            aria-label="Refresh ticket list"
+                            title={__t("uiRefreshTicketList")}
+                            aria-label={__t("uiRefreshTicketList")}
                             onClick={() => this.load(off)}
                             disabled={loading}
                             style={{
@@ -4966,7 +4978,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                                 <path d="M9 3a6 6 0 1 0 5.66 4h-1.83A4.5 4.5 0 1 1 9 4.5V3z" />
                                 <path d="M9 0v5l3.5-2.5L9 0z" />
                             </svg>
-                            {loading ? "Loading…" : "Refresh"}
+                            {loading ? __t("loading") : __t("ctlRefresh")}
                         </button>
                     </div>
                 </div>
@@ -4983,7 +4995,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                 {this.state.viewMode === "table"
                     ? this.renderTicketTable(visibleTickets, loading)
                     : (
-                        <div style={{ flex: 1, overflowY: "auto", padding: "6px 8px", background: tk.background }} role="list" aria-label="Tickets" aria-busy={loading} onClick={() => { this.setState({ openFilter: "none" }); this.clearHoverHl(); }}>
+                        <div style={{ flex: 1, overflowY: "auto", padding: "6px 8px", background: tk.background }} role="list" aria-label={__t("uiTickets")} aria-busy={loading} onClick={() => { this.setState({ openFilter: "none" }); this.clearHoverHl(); }}>
                             {loading
                                 ? Array.from({ length: 5 }, (_, i) => <SkeletonCard key={i} tk={tk} />)
                                 : visibleTickets.map((t: any) => {
@@ -5047,15 +5059,15 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
                     )}
 
                 {/* Pagination */}
-                <nav aria-label="Ticket list pagination" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "6px 10px", borderTop: `1px solid ${tk.divider}`, background: tk.surface }}>
+                <nav aria-label={__t("uiTicketListPagination")} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "6px 10px", borderTop: `1px solid ${tk.divider}`, background: tk.surface }}>
                     <div style={{ display: "flex", gap: 4 }}>
-                        <Button size="sm" disabled={off === 0} onClick={() => this.load(0)} aria-label="First page">« First</Button>
-                        <Button size="sm" disabled={off === 0} onClick={() => this.load(Math.max(0, off - PG))} aria-label="Previous page">← Prev</Button>
+                        <Button size="sm" disabled={off === 0} onClick={() => this.load(0)} aria-label={__t("uiFirstPage")}>{__t("uiFirst")}</Button>
+                        <Button size="sm" disabled={off === 0} onClick={() => this.load(Math.max(0, off - PG))} aria-label={__t("uiPreviousPage")}>{__t("uiPrev")}</Button>
                     </div>
-                    <span style={{ fontSize: 11, color: tk.textSecondary }} aria-live="polite">Page {pageNum} of {totalPages}</span>
+                    <span style={{ fontSize: 11, color: tk.textSecondary }} aria-live="polite">{__t("uiPage")} {pageNum} {__t("uiOf")} {totalPages}</span>
                     <div style={{ display: "flex", gap: 4 }}>
-                        <Button size="sm" disabled={end >= total} onClick={() => this.load(off + PG)} aria-label="Next page">Next →</Button>
-                        <Button size="sm" disabled={end >= total} onClick={() => this.load((totalPages - 1) * PG)} aria-label="Last page">Last »</Button>
+                        <Button size="sm" disabled={end >= total} onClick={() => this.load(off + PG)} aria-label={__t("uiNextPage")}>{__t("uiNext")}</Button>
+                        <Button size="sm" disabled={end >= total} onClick={() => this.load((totalPages - 1) * PG)} aria-label={__t("uiLastPage")}>{__t("uiLast")}</Button>
                     </div>
                 </nav>
             </div>
@@ -5074,10 +5086,10 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
         const detailTitle = (C[t.category] || "Unknown") + (scLabel ? ` \u2014 ${scLabel}` : "");
 
         const tabDef: { id: TabId; label: string; badge?: string }[] = [
-            { id: "details", label: "Details" },
-            { id: "comments", label: "Comments", badge: `${comments.length}` },
-            { id: "photos", label: "Photos", badge: `${photos.length}` },
-            { id: "survey", label: "Survey", badge: survey ? "\u2713" : undefined },
+            { id: "details", label: __t("ctlDetails") },
+            { id: "comments", label: __t("ctlComments"), badge: `${comments.length}` },
+            { id: "photos", label: __t("ctlPhotos"), badge: `${photos.length}` },
+            { id: "survey", label: __t("ctlSurvey"), badge: survey ? "\u2713" : undefined },
         ];
 
         return (
@@ -5663,6 +5675,8 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
     // <Themed> reads the theme tokens (a hook, so it cannot run in the class)
     // and stores them on this.tk before the rest of the tree renders.
     render() {
+    __setIntl((this.props as any).intl)
+    __i18nIntl = (this.props as any).intl
         racIntl = (this.props as any).intl;
         return <Themed>{(tk: Tokens) => { this.tk = tk; return this.renderRoot(); }}</Themed>;
     }
@@ -5671,7 +5685,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, St>
         const tk = this.tk;
         const mid = this.props.config?.useMapWidgetIds?.[0];
         return (
-            <div ref={this.rootRef} className={ROOT_CLASS} style={{ width: "100%", height: "100%", overflow: "hidden", display: "flex", flexDirection: "column", position: "relative", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif", background: tk.surface, color: tk.text }} role="region" aria-label="Report A Concern Manager">
+            <div ref={this.rootRef} className={ROOT_CLASS} style={{ width: "100%", height: "100%", overflow: "hidden", display: "flex", flexDirection: "column", position: "relative", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif", background: tk.surface, color: tk.text }} role="region" aria-label={__t("uiReportAConcernManager")}>
                 {mid && <JimuMapViewComponent useMapWidgetId={mid} onActiveViewChange={this.onView} />}
                 {this.renderMsg()}
                 {/* The pane fills whatever height the banner leaves, so the
