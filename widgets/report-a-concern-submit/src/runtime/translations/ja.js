@@ -141,7 +141,7 @@ System.register([], function (e) {
         priorityPriority: "優先順位 {priority}",
         unknownError: "未知のエラー",
         unserializableError: "unserializable エラー",
-        categoryCategory: "Category {category}"
+        categoryCategory: "カテゴリー {category}"
       })
     }
   }

@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "Прикрепен към вътрешна бележка, която не е показана на подателя",
         attachedToAPublicCommentVisible: "Прикрепен към публичен коментар, видим на страницата за публичен статут",
         uploadedByTheSubmitter: "Качена от подателя",
-        _1pxSolidRgba255255255: "1px твърд rgba(255,255,255,0.25)",
-        background015s: "фон 0.15s",
         mediaViewerAttNameLbIdxOf: "Медиен екран: {att_name} ({lbIdx} на {total})",
         closeMediaViewer: "Затваряне на медиен екран",
         previousMedia: "Предишни медии",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "Зареждане…",
         unknownError: "неизвестна грешка",
         unserializableError: "несериозна грешка",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "Билет {value}{fullCat}, статус {statusLabel}, приоритет {priLabel}",
+        cardViewCompactMobileFriendlyList: "Преглед на картите - компактен, удобен за движение списък",
+        tableViewSortableColumnsWithAll: "Гледка към масите - колони за сортиране с всички видими полета",
+        ticketValueFullCatStatusStatusLabelPriority2: "Билет {value}{fullCat}, статус {statusLabel}, приоритет {priLabel}, {value2}",
         dismissError: "Грешка при изключване",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "Свободно съобщение",
+        departmentEAIsNotAValid: "Отдел \"{eA}\" не е валиден вариант. Моля преизбери.",
+        categoryValueIsNotHandledBy: "Категория \"{value}\"не се обработва от\"{eA}\". Моля, актуализирайте категорията.",
+        subcategoryValueIsNotValidFor: "Подкатегорията не е валидна за \"{value}Моля, преизбери."
       })
     }
   }

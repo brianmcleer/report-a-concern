@@ -141,7 +141,7 @@ System.register([], function (e) {
         priorityPriority: "Prednost {priority}",
         unknownError: "neznana napaka",
         unserializableError: "Neizvedljiva napaka",
-        categoryCategory: "Category {category}"
+        categoryCategory: "Kategorija {category}"
       })
     }
   }

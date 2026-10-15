@@ -123,9 +123,9 @@ System.register([], function (e) {
         submitReport: "Представить доклад",
         thankYouYourConcernHasBeen: "Спасибо! Ваше беспокойство было представлено.",
         forTheFastestResponsePleaseCall: "Для быстрого ответа, пожалуйста, позвоните по номеру ниже. Вы все еще можете отправить этот отчет онлайн, но телефонный звонок гарантирует, что кто-то ответит немедленно.",
-        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
-        continue: "Continue?",
-        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
+        forThisViewTheMapWidget: "с этой точки зрения. Выбор виджета карты не будет изменен.",
+        continue: "Продолжай?",
+        importingNameWillOverwriteTheCurrent: "Импорт \"{name}\"перезапишет текущие настройки виджета"
       })
     }
   }

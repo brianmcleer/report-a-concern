@@ -123,9 +123,9 @@ System.register([], function (e) {
         submitReport: "Esitamisaruanne",
         thankYouYourConcernHasBeen: "Tänan teid! Teie mure on esitatud.",
         forTheFastestResponsePleaseCall: "Kiireima vastuse saamiseks helistage allpool olevale numbrile. Te võite selle aruande siiski veebis esitada, kuid telefonikõne tagab, et keegi vastab kohe.",
-        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
-        continue: "Continue?",
-        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
+        forThisViewTheMapWidget: "selle vaatega. Kaardi vidina valikut EI muudeta.",
+        continue: "Jätkake?",
+        importingNameWillOverwriteTheCurrent: "Import{name}\" kirjutab aktiivse vidina seadistused üle"
       })
     }
   }

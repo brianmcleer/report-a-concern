@@ -19,6 +19,10 @@ for the symbol name if a line has moved.
 | `src/exb-editor-shims.d.ts` | Ambient declarations of react, jimu and esri modules for the editor (mode B). Copy of the master, do not rewrite. Not shipped in the zip. |
 | `src/setting/setting.tsx` | Settings panel: every builder switch, the critical alert editor, XML import and export. Imports nothing from `esri/*`. |
 | `src/shared/beacon.ts` | Shared telemetry module. |
+| `src/runtime/translations/default.ts`, `*.js` | Every English string the runtime shows (generated keys from the October 2026 exb-i18n-kit pass) and the 39 locale files `exb-i18n sync` builds from it. Never hand edit the locale files; use `exb-i18n review` and `import`. |
+| `src/runtime/i18n-t.ts`, `src/setting/i18n-t.ts` | Generated translators (`__t`, `__tc`, `__m`, `__locale`). The runtime class also has `this.nls()`, which reads the same catalog through the widget intl. |
+| `src/setting/translations/default.ts`, `*.js` | Same for the settings panel. |
+| `i18n/translations.lock.json`, `i18n/STATUS.md` | exb-i18n-kit state and coverage report. Generated; `i18n/backup/` stays local. |
 | `tests/` | `transpile.js` and the node test files. `tests/build/` is generated and ignored. |
 | `docs/handover/` | This folder. |
 

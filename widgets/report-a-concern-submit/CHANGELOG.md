@@ -2,6 +2,12 @@
 
 Newest first. Every release bumps `manifest.json` and `package.json` together.
 
+## 3.3.0 (2026-10-15)
+
+- Added: interface and settings panel strings localized into 39 languages with exb-i18n-kit (`translatedLocales` in `manifest.json`, `src/runtime/translations/*.js`, `src/setting/translations/*.js`, `i18n-t.ts` in each part). The app language drives the widget; English is the fallback. Dates and numbers format in the app locale.
+- Changed: `package-lock.json` brought in line with `manifest.json` and `package.json` (it still said 3.1.4).
+- Changed: placeholder phone numbers in the settings panel and `config.ts` use the fictional 555 exchange instead of a real local number.
+
 ## 3.2.0 (2026-09-25)
 
 - Added: `src/runtime/theme.ts`, the family's shared token reader (byte copy of the reference). `resolveTheme()` in the widget and `panelColors()` in the settings panel now read the same theme paths (primary, surface, background, text, hint, divider, error) with the previous fallbacks; hard-coded hex colors in `widget.tsx` and `setting.tsx` replaced with theme fields where one fits. No visual change on the default theme.

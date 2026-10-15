@@ -123,9 +123,9 @@ System.register([], function (e) {
         submitReport: "Jelentés benyújtása",
         thankYouYourConcernHasBeen: "Köszönöm! Az aggodalmát benyújtottuk.",
         forTheFastestResponsePleaseCall: "A leggyorsabb válaszért kérjük, hívja az alábbi számot. Lehet, hogy ezt a jelentést online is benyújthatja, de egy telefonhívás biztosítja, hogy valaki azonnal válaszoljon.",
-        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
-        continue: "Continue?",
-        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
+        forThisViewTheMapWidget: "Ezért a kilátásért. A térkép widget kiválasztása NEM változik.",
+        continue: "Folytassam?",
+        importingNameWillOverwriteTheCurrent: "Importálás \"{name}\"felülírja az aktuális widget beállításokat"
       })
     }
   }

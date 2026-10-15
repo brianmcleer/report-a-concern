@@ -1,6 +1,6 @@
 {
   "name": "report-a-concern-submit",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "Multi-step public ticket submission form for Report A Concern with geofenced service boundary validation. Submits to the Tickets feature layer via applyEdits.",
   "keywords": [
     "exb-widget",

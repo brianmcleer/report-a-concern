@@ -141,7 +141,7 @@ System.register([], function (e) {
         priorityPriority: "Öncelik {priority}",
         unknownError: "Bilinmeyen hata",
         unserializableError: "Başarısız olmayan hata",
-        categoryCategory: "Category {category}"
+        categoryCategory: "Kategori Kategori {category}"
       })
     }
   }

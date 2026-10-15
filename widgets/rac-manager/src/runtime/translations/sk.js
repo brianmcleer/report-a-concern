@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "Pripojený k internej poznámke",
         attachedToAPublicCommentVisible: "Pripojená k verejnej poznámke",
         uploadedByTheSubmitter: "Nahraný odosielateľom",
-        _1pxSolidRgba255255255: "1px tuhá látka rgba [255,255,255,0.25]",
-        background015s: "Pozadie 0,15s",
         mediaViewerAttNameLbIdxOf: "Prehliadač médií: {att_name} ({lbIdx} z {total})",
         closeMediaViewer: "Zavrieť zobrazenie médií",
         previousMedia: "Predchádzajúce médiá",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "Načítava sa…",
         unknownError: "neznáma chyba",
         unserializableError: "neserializovateľná chyba",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "Lístok {value}{fullCat}, stav {statusLabel}, priorita {priLabel}",
+        cardViewCompactMobileFriendlyList: "Výhľad na kartu",
+        tableViewSortableColumnsWithAll: "Zobrazenie tabuľky",
+        ticketValueFullCatStatusStatusLabelPriority2: "Lístok {value}{fullCat}, stav {statusLabel}, priorita {priLabel}, {value2}",
         dismissError: "Chyba pri vymazaní",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "Zamietnuť správu",
+        departmentEAIsNotAValid: "Oddelenie \"{eA}\"nie je platná možnosť. Prosím, znovu zvoľte.",
+        categoryValueIsNotHandledBy: "Kategória \"{value}\" nie je riešená \"{eA}\". Prosím aktualizovať kategóriu.",
+        subcategoryValueIsNotValidFor: "Hodnota podkategórie neplatí pre \"{value}\"Prosím, znovu zvoľte."
       })
     }
   }

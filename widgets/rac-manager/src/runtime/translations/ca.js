@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "Adjunta a una nota interna no es mostra al remitent",
         attachedToAPublicCommentVisible: "Adjunta a un comentari públic visible a la pàgina d' estat pública",
         uploadedByTheSubmitter: "Pujat per l' enviament",
-        _1pxSolidRgba255255255: "1px sòlid rgba( 255, 255, 255, 255, 0. 25)",
-        background015s: "background 0. 15s",
         mediaViewerAttNameLbIdxOf: "Visor de suports: {att_name} ({lbIdx} de {total})",
         closeMediaViewer: "Tanca el visor dels suports",
         previousMedia: "Suport previ",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "S'està carregant...",
         unknownError: "error desconegut",
         unserializableError: "Error no llegible",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "Rebut {value}{fullCat}, estat {statusLabel}, prioritat {priLabel}",
+        cardViewCompactMobileFriendlyList: "Vista de les cartes compactar, llista d'amics mòbils",
+        tableViewSortableColumnsWithAll: "Vista de la taula columnes editables amb tots els camps visibles",
+        ticketValueFullCatStatusStatusLabelPriority2: "Rebut {value}{fullCat}, estat {statusLabel}, prioritat {priLabel}, {value2}",
         dismissError: "Descarta l' error",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "Descarta el missatge",
+        departmentEAIsNotAValid: "Departament \"{eA}\"no és una opció vàlida. Si us plau, seleccioneu- lo.",
+        categoryValueIsNotHandledBy: "Categoria \"{value}\"No està gestionat per\"{eA}\". Si us plau, actualitzeu la categoria.",
+        subcategoryValueIsNotValidFor: "El valor de la subcategoria no és vàlid per a \"{value}\". Si us plau, torneu a seleccionar."
       })
     }
   }

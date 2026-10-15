@@ -123,9 +123,9 @@ System.register([], function (e) {
         submitReport: "Odeslat zprávu",
         thankYouYourConcernHasBeen: "Díky! Vaše obavy byly předloženy.",
         forTheFastestResponsePleaseCall: "Pro nejrychlejší odpověď volejte prosím na níže uvedené číslo. Stále můžete tuto zprávu předložit online, ale telefonát zajistí, že někdo okamžitě zareaguje.",
-        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
-        continue: "Continue?",
-        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
+        forThisViewTheMapWidget: "pro tento výhled. Výběr widget mapy NEBUDE změněn.",
+        continue: "Pokračovat?",
+        importingNameWillOverwriteTheCurrent: "Dovoz \"{name}\"přepíše aktuální nastavení widget"
       })
     }
   }

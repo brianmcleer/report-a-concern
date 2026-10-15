@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: ", see tabel puudub veebikaardilt.",
         uiAllAuthFlowsThroughThePortal: "Kogu autentimine voolab läbi Portaali seansi – lisamärke pole vaja. Juurdepääsu piiramiseks jagage rakendust portaali rühmaga.",
         tickets: "Piletid",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: "Iga tabel peaks näitama oma pealkirja - kui keegi ütleb"
       })
     }
   }

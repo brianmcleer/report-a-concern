@@ -123,9 +123,9 @@ System.register([], function (e) {
         submitReport: "Υποβολή έκθεσης",
         thankYouYourConcernHasBeen: "Ευχαριστώ! Η ανησυχία σας υποβλήθηκε.",
         forTheFastestResponsePleaseCall: "Για την ταχύτερη απάντηση, παρακαλούμε καλέστε τον αριθμό παρακάτω. Μπορείτε ακόμα να υποβάλετε αυτή την αναφορά online, αλλά ένα τηλεφώνημα εξασφαλίζει ότι κάποιος θα απαντήσει αμέσως.",
-        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
-        continue: "Continue?",
-        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
+        forThisViewTheMapWidget: "για αυτή τη θέα. Η επιλογή γραφικού συστατικού χάρτη δεν θα αλλάξει.",
+        continue: "Να συνεχίσω;",
+        importingNameWillOverwriteTheCurrent: "Εισαγωγή \"{name}\" θα αντικαταστήσει τις τρέχουσες ρυθμίσεις γραφικού συστατικού"
       })
     }
   }

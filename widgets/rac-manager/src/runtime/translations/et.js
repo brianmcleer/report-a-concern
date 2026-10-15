@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "Lisatud siseteatisele – esitajale ei näidata",
         attachedToAPublicCommentVisible: "Lisatud avalikule kommentaarile – nähtav avaliku staatuse lehel",
         uploadedByTheSubmitter: "Esitaja laadib üles",
-        _1pxSolidRgba255255255: "1px tahke rgba(255,255,255,0,25)",
-        background015s: "taust 0, 15s",
         mediaViewerAttNameLbIdxOf: "Meedia vaataja: {att_name} ((){lbIdx} ühest {total})",
         closeMediaViewer: "Sulge meedia vaataja",
         previousMedia: "Eelmine meedia",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "Laadimine...",
         unknownError: "tundmatu viga",
         unserializableError: "seeriaviisiline viga",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "Pilet {value}{fullCat}staatust {statusLabel}prioriteet {priLabel}",
+        cardViewCompactMobileFriendlyList: "Kaardivaade – kompaktne, mobiilisõbralik nimekiri",
+        tableViewSortableColumnsWithAll: "Tabelivaade – sorteeritavad veerud kõigi nähtavate väljadega",
+        ticketValueFullCatStatusStatusLabelPriority2: "Pilet {value}{fullCat}staatust {statusLabel}prioriteet {priLabel}, {value2}",
         dismissError: "Tagasilükkamisviga",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "Tühista teade",
+        departmentEAIsNotAValid: "Osakond{eA}\" ei ole õige valik. Palun vali uuesti.",
+        categoryValueIsNotHandledBy: "Kategooria{value}\" ei tegele \"{eA}Palun uuenda kategooriat.",
+        subcategoryValueIsNotValidFor: "Alamkategooria väärtus ei kehti{value}Palun vali uuesti."
       })
     }
   }

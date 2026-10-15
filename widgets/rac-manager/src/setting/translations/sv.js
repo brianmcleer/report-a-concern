@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: "Tabellen saknas från webbkartan.",
         uiAllAuthFlowsThroughThePortal: "All auth strömmar genom portalsessionen - inga extra tokens behövs. För att begränsa åtkomsten, dela appen med en portalgrupp.",
         tickets: "Biljetter",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: "Varje tabell ska visa sin titel - om någon säger"
       })
     }
   }

@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "Przyłączony do notatki wewnętrznej - niepokazany do składającego",
         attachedToAPublicCommentVisible: "Załączone do komentarza publicznego - widoczne na stronie statusu publicznego",
         uploadedByTheSubmitter: "Wysłany przez podmiot przekazujący dane",
-        _1pxSolidRgba255255255: "1px stały rgba (255,255,255,0,25)",
-        background015s: "tło 0.15s",
         mediaViewerAttNameLbIdxOf: "Przeglądarka mediów: {att_name} ({lbIdx} z {total})",
         closeMediaViewer: "Zamknij przeglądarkę mediów",
         previousMedia: "Poprzednie media",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "Wczytywanie...",
         unknownError: "nieznany błąd",
         unserializableError: "błąd niezserializowalny",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "Bilet {value}{fullCat}, status {statusLabel}, priorytet {priLabel}",
+        cardViewCompactMobileFriendlyList: "Widok karty - kompaktowa, przyjazna dla telefonów lista",
+        tableViewSortableColumnsWithAll: "Widok tabeli - sortowalne kolumny ze wszystkimi widocznymi polami",
+        ticketValueFullCatStatusStatusLabelPriority2: "Bilet {value}{fullCat}, status {statusLabel}, priorytet {priLabel}, {value2}",
         dismissError: "Usuń błąd",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "Odrzuć wiadomość",
+        departmentEAIsNotAValid: "Departament \"{eA}\"nie jest poprawną opcją. Proszę wybrać ponownie.",
+        categoryValueIsNotHandledBy: "Kategoria \"{value}\"nie jest obsługiwany przez\"{eA}\"Proszę zaktualizować kategorię.",
+        subcategoryValueIsNotValidFor: "Wartość podkategorii nie jest ważna dla \"{value}\"Proszę wybrać ponownie."
       })
     }
   }

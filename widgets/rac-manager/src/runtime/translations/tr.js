@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "İç bir nota atadım - gönderime gösterilen",
         attachedToAPublicCommentVisible: "Bir kamu yorumuna bağlı olarak - halk durumu sayfasında görünür",
         uploadedByTheSubmitter: "Yemin ederim,",
-        _1pxSolidRgba255255255: "1px sağlam rgba(255,255,0.25)",
-        background015s: "Arka plan 0.15s",
         mediaViewerAttNameLbIdxOf: "Media viewer: {att_name} ({lbIdx} Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of Of {total})",
         closeMediaViewer: "Close media viewer",
         previousMedia: "Önceki medya",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "Yükleniyor…",
         unknownError: "Bilinmeyen hata",
         unserializableError: "Başarısız olmayan hata",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "Bilet bilet bilet bilet bilet bileti {value}{fullCat}, statü {statusLabel}, öncelik {priLabel}",
+        cardViewCompactMobileFriendlyList: "Kart görüşü - kompakt, mobil dostu liste",
+        tableViewSortableColumnsWithAll: "Tablo görünümü - tüm alanlarda görünür sütunlar görünür",
+        ticketValueFullCatStatusStatusLabelPriority2: "Bilet bilet bilet bilet bilet bileti {value}{fullCat}, statü {statusLabel}, öncelik {priLabel}, {value2}",
         dismissError: "İzinsiz hata",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "İzinsiz mesaj",
+        departmentEAIsNotAValid: "Bölüm \"{eA}\" geçerli bir seçenek değil. Lütfen re-select.",
+        categoryValueIsNotHandledBy: "Kategori \" Kategori\"{value}\" tarafından ele alınmaz\"{eA}\"Lütfen kategoriyi güncelleyin.",
+        subcategoryValueIsNotValidFor: "Subcategory değeri \" için geçerli değildir\"{value}\"Lütfen yeniden-select."
       })
     }
   }

@@ -123,9 +123,9 @@ System.register([], function (e) {
         submitReport: "التقرير",
         thankYouYourConcernHasBeen: "شكراً لك لقد تم تقديم قلقك",
         forTheFastestResponsePleaseCall: "وللاستجابة السريعة، يرجى الاتصال بالرقم أدناه. يمكنك أن تقدم هذا التقرير على الإنترنت، ولكن مكالمة هاتفية تضمن شخص ما يستجيب على الفور.",
-        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
-        continue: "Continue?",
-        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
+        forThisViewTheMapWidget: "لهذا المنظر لن يتغيّر انتقاء الخرائط",
+        continue: "أكمل؟",
+        importingNameWillOverwriteTheCurrent: "استيراد{name}\"سيقوم بكتابة المناديل الحالية\""
       })
     }
   }

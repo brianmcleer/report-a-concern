@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "Priložena notranji opombi – ni prikazana predlagatelju",
         attachedToAPublicCommentVisible: "Priložen javnemu komentarju – viden na strani javnega statusa",
         uploadedByTheSubmitter: "Pošiljatelj",
-        _1pxSolidRgba255255255: "1px trdna rgba(255,255,255,0.25)",
-        background015s: "ozadje 0.15s",
         mediaViewerAttNameLbIdxOf: "Pregledovalnik medijev: {att_name} ({lbIdx} o {total})",
         closeMediaViewer: "Zapri večpredstavnostni pregledovalnik",
         previousMedia: "Prejšnji mediji",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "Nalaganje…",
         unknownError: "neznana napaka",
         unserializableError: "Neizvedljiva napaka",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "Vstopnica {value}{fullCat}, status {statusLabel}, prioriteta {priLabel}",
+        cardViewCompactMobileFriendlyList: "Pogled kart – kompakten, mobilno prijazen seznam",
+        tableViewSortableColumnsWithAll: "Prikaz tabele – razvrstljivi stolpci z vsemi vidnimi polji",
+        ticketValueFullCatStatusStatusLabelPriority2: "Vstopnica {value}{fullCat}, status {statusLabel}, prioriteta {priLabel}, {value2}",
         dismissError: "Zavrni napako",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "Razveljavi sporočilo",
+        departmentEAIsNotAValid: "Oddelek.{eA}\"ni veljavna možnost. Prosim, ponovno izberi.",
+        categoryValueIsNotHandledBy: "Kategorija „{value}\"se ne ravna z \"{eA}\". Prosimo, posodobite kategorijo.",
+        subcategoryValueIsNotValidFor: "Vrednost podkategorije ne velja za „{value}Prosim, ponovno izberi."
       })
     }
   }

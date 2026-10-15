@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: "Masa aia lipseşte din harta web.",
         uiAllAuthFlowsThroughThePortal: "Toate Auth curge prin sesiunea portalului Pentru a restrânge accesul, partajați aplicația cu un grup portal.",
         tickets: "Bilete",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: "Fiecare tabel ar trebui să-şi arate titlul, dacă există"
       })
     }
   }

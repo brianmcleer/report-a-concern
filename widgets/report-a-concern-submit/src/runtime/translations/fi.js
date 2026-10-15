@@ -141,7 +141,7 @@ System.register([], function (e) {
         priorityPriority: "Painopiste {priority}",
         unknownError: "tuntematon virhe",
         unserializableError: "epätavallinen virhe",
-        categoryCategory: "Category {category}"
+        categoryCategory: "Luokka {category}"
       })
     }
   }

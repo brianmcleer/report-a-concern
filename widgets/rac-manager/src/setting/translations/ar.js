@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: "تلك الطاولة مفقودة من خريطة الإنترنت",
         uiAllAuthFlowsThroughThePortal: "فكل ذلك يتدفق من خلال دورة الميناء - لا حاجة إلى مداخل إضافية. لتقييد الوصول، مشاركة التطبيق مع مجموعة بورتال.",
         tickets: "تذاكر",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: "وينبغي لكل جدول أن يبين عنوانه - إذا كان هناك ما يقول"
       })
     }
   }

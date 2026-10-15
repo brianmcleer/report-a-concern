@@ -123,9 +123,9 @@ System.register([], function (e) {
         submitReport: "Iesniegt ziņojumu",
         thankYouYourConcernHasBeen: "Paldies! Jūsu bažas ir iesniegtas.",
         forTheFastestResponsePleaseCall: "Lai iegūtu ātrāko atbildi, zvaniet uz zemāk norādīto numuru. Jūs joprojām varat iesniegt šo ziņojumu tiešsaistē, bet tālruņa zvans nodrošina, ka kāds reaģē nekavējoties.",
-        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
-        continue: "Continue?",
-        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
+        forThisViewTheMapWidget: "šim uzskatam. Kartes logdaļu izvēle netiks mainīta.",
+        continue: "Turpināt?",
+        importingNameWillOverwriteTheCurrent: "Importē \"{name}\" pārrakstīs pašreizējos logdaļu iestatījumus"
       })
     }
   }

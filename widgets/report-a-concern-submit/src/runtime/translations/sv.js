@@ -141,7 +141,7 @@ System.register([], function (e) {
         priorityPriority: "Prioritet {priority}",
         unknownError: "Okänd fel",
         unserializableError: "oserialiserbart fel",
-        categoryCategory: "Category {category}"
+        categoryCategory: "Kategori {category}"
       })
     }
   }

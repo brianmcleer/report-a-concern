@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: ", ka tabula ir trūkst tīmekļa kartē.",
         uiAllAuthFlowsThroughThePortal: "Visa auth plūst caur Portālu sesiju — nekādas papildu žetonus nepieciešams. Lai ierobežotu piekļuvi, kopīgojiet lietotni ar Portālu grupu.",
         tickets: "Biļetes",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: ". Katrā tabulā jāuzrāda tās nosaukums – ja ir teikšana"
       })
     }
   }

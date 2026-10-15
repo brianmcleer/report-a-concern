@@ -123,9 +123,9 @@ System.register([], function (e) {
         submitReport: "Подати заявку",
         thankYouYourConcernHasBeen: "Дякуємо! Подано Ваше занепокоєння.",
         forTheFastestResponsePleaseCall: "Для швидкого реагування, будь ласка, зателефонуйте номер нижче. Ви все ще можете подати цей звіт в Інтернеті, але телефонний дзвінок гарантує, що хтось реагує негайно.",
-        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
-        continue: "Continue?",
-        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
+        forThisViewTheMapWidget: "для цього виду. Вибір віджету карти не буде змінено.",
+        continue: "Продовжити?",
+        importingNameWillOverwriteTheCurrent: "Імпорт{name}\" перезаписати налаштування поточного віджету"
       })
     }
   }

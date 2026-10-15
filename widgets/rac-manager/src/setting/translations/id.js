@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: ", meja yang hilang dari peta web.",
         uiAllAuthFlowsThroughThePortal: "Semua auth mengalir melalui sesi Portal - tidak ada token tambahan yang diperlukan. Untuk membatasi akses, berbagi aplikasi dengan grup Portal.",
         tickets: "Tiket",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: "Setiap meja harus menunjukkan judulnya jika ada yang mengatakan"
       })
     }
   }

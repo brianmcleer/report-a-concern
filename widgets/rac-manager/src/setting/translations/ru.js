@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: "Таблица отсутствует на веб-карте.",
         uiAllAuthFlowsThroughThePortal: "Весь аут проходит через сессию Портала — никаких дополнительных токенов не требуется. Чтобы ограничить доступ, поделитесь приложением с группой порталов.",
         tickets: "билеты",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: "Каждая таблица должна показывать свое название — если кто-то скажет"
       })
     }
   }

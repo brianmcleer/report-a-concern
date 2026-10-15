@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "ติด กับ โน้ต ภาย ใน — ไม่ ได้ แสดง แก่ ผู้ ส่ง",
         attachedToAPublicCommentVisible: "ติด ต่อ กับ ความ คิด เห็น ของ สาธารณชน — เห็น ได้ จาก หน้า รายงาน สาธารณะ",
         uploadedByTheSubmitter: "อัปโหลดโดย ผู้ส่ง",
-        _1pxSolidRgba255255255: "1px sin rgba(2), 255, 255,0.25)",
-        background015s: "พื้นหลัง 0.15s",
         mediaViewerAttNameLbIdxOf: "ตัวแสดงสื่อ: {att_name} ({lbIdx} ของ {total})",
         closeMediaViewer: "ปิดตัวแสดงสื่อ",
         previousMedia: "สื่อก่อนหน้า",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "กำลังโหลด…",
         unknownError: "ข้อผิดพลาดไม่ทราบสาเหตุ",
         unserializableError: "ข้อผิดพลาดที่ไม่สามารถตรวจสอบได้",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "ตั๋ว {value}{fullCat}สถานะ {statusLabel}ลําดับความสําคัญ {priLabel}",
+        cardViewCompactMobileFriendlyList: "ทัศนะ ด้าน บัตร — รายการ ที่ ทัน สมัย, เป็น มิตร กับ โทรศัพท์",
+        tableViewSortableColumnsWithAll: "มุม มอง ของ ตาราง — คอลัมน์ ที่ เรียบ เรียง ได้ และ ทุก สาขา มอง เห็น ได้",
+        ticketValueFullCatStatusStatusLabelPriority2: "ตั๋ว {value}{fullCat}สถานะ {statusLabel}ลําดับความสําคัญ {priLabel}. {value2}",
         dismissError: "ผิดพลาด",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "ไม่สนใจจดหมาย",
+        departmentEAIsNotAValid: "แผนก\"{eA}\"ไม่ใช่ตัวเลือกที่ถูกต้อง กรุณาเลือกใหม่",
+        categoryValueIsNotHandledBy: "หมวดหมู่{value}\"ไม่ได้จัดการโดย\"{eA}\"กรุณาปรับปรุงหมวดหมู่ด้วย\"",
+        subcategoryValueIsNotValidFor: "ค่าบันทึกค่าย่อยไม่ถูกต้องสําหรับ \"{value}\"ได้โปรดเลือกอีกครั้ง"
       })
     }
   }

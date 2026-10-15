@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "Lampirkan ke catatan internal - tidak ditampilkan ke subway",
         attachedToAPublicCommentVisible: "Terkait ke komentar publik - terlihat pada halaman status publik",
         uploadedByTheSubmitter: "Diunggah oleh subway",
-        _1pxSolidRgba255255255: "1 px solid rgba (255.255,255,0.25)",
-        background015s: "latar belakang 0.15s",
         mediaViewerAttNameLbIdxOf: "Pemutar media: {att_name} ({lbIdx} dari {total})",
         closeMediaViewer: "Tutup penampil media",
         previousMedia: "Media sebelumnya",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "Memuat…",
         unknownError: "galat tak dikenal",
         unserializableError: "kesalahan tidak serialisasi",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "Tiket {value}{fullCat}, status {statusLabel}, prioritas {priLabel}",
+        cardViewCompactMobileFriendlyList: "Tampilan kartu - kompak, mobil- ramah daftar",
+        tableViewSortableColumnsWithAll: "Tilikan tabel - kolom yang dapat disortabel dengan seluruh ruas nampak",
+        ticketValueFullCatStatusStatusLabelPriority2: "Tiket {value}{fullCat}, status {statusLabel}, prioritas {priLabel}, {value2}",
         dismissError: "Dismiss error",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "Bubarkan pesan",
+        departmentEAIsNotAValid: "Departemen \"{eA}\"bukan pilihan yang valid. Silakan pilih kembali.",
+        categoryValueIsNotHandledBy: "Kategori \"{value}\"tidak ditangani oleh\"{eA}\". Tolong perbarui kategori.",
+        subcategoryValueIsNotValidFor: "Nilai subkategori tidak valid untuk \"{value}\". Silakan re- pilih."
       })
     }
   }

@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: "השולחן חסר ממפת האינטרנט.",
         uiAllAuthFlowsThroughThePortal: "כל האתחול זורם דרך מושב השער - אין צורך בסימון נוסף. כדי להגביל גישה, לשתף את האפליקציה עם קבוצת פורטל.",
         tickets: "כרטיסים",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: "כל שולחן צריך להראות את הכותרת שלו - אם בכלל"
       })
     }
   }

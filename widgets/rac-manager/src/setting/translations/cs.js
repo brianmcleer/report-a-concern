@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: "Ten stůl chybí v mapě.",
         uiAllAuthFlowsThroughThePortal: "Všechny auty proudí přes Portál session - žádné další žetony potřebné. Chcete-li omezit přístup, sdílejte aplikaci se skupinou Portal.",
         tickets: "Vstupenky",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: ". Každý stůl by měl ukázat svůj titul - pokud někdo říká"
       })
     }
   }

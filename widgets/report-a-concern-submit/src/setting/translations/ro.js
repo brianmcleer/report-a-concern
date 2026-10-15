@@ -123,9 +123,9 @@ System.register([], function (e) {
         submitReport: "Raport de depunere",
         thankYouYourConcernHasBeen: "Mulţumesc! Grija ta a fost prezentată.",
         forTheFastestResponsePleaseCall: "Pentru cel mai rapid răspuns, vă rugăm să sunaţi la numărul de mai jos. Puteți depune încă acest raport on-line, dar un apel telefonic asigură cineva răspunde imediat.",
-        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
-        continue: "Continue?",
-        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
+        forThisViewTheMapWidget: "pentru această privelişte. Selectarea widget hartă NU va fi schimbată.",
+        continue: "Să continui?",
+        importingNameWillOverwriteTheCurrent: "Importare \"{name}\" va suprascrie setările widget-ului curent"
       })
     }
   }

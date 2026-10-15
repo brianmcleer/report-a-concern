@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "Theo sát một lời ghi chú bên trong — không cho thấy người gửi thư",
         attachedToAPublicCommentVisible: "Theo sát lời bình luận của công chúng — có thể thấy trên trang nhất",
         uploadedByTheSubmitter: "Được người gửi tải lên",
-        _1pxSolidRgba255255255: "1px rắn rgba(255,255,255,0.25)",
-        background015s: "nền 0.15s",
         mediaViewerAttNameLbIdxOf: "Bộ xem phương tiện: {att_name} (Tiếng cười){lbIdx} Kho {total})",
         closeMediaViewer: "Đóng trình xem phương tiện",
         previousMedia: "Phương tiện trước",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "Đang tải…",
         unknownError: "lỗi không rõ",
         unserializableError: "Lỗi không thể gửi đi được",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "Vé {value}{fullCat}Trạng thái {statusLabel}, ưu tiên {priLabel}",
+        cardViewCompactMobileFriendlyList: "Comment",
+        tableViewSortableColumnsWithAll: "Xem bảng — Những cột có thể sắp xếp với mọi lĩnh vực nhìn thấy",
+        ticketValueFullCatStatusStatusLabelPriority2: "Vé {value}{fullCat}Trạng thái {statusLabel}, ưu tiên {priLabel}. {value2}",
         dismissError: "Lỗi phân tách",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "Giải tán tin nhắn",
+        departmentEAIsNotAValid: "Cục \"{eA}\"không phải là một lựa chọn hợp lệ. Xin hãy tái đắc cử.",
+        categoryValueIsNotHandledBy: "Loại \"{value}\"không được xử lý bởi...\"{eA}Xin cập nhật tình hình.",
+        subcategoryValueIsNotValidFor: "Giá trị phân loại con không hợp lệ cho \"{value}\"Xin hãy tái bầu cử."
       })
     }
   }

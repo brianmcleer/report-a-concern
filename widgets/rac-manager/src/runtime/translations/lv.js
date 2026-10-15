@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "Pievienots iekšējai piezīmei – nav parādīts iesniedzējam",
         attachedToAPublicCommentVisible: "Pievienots publiskam komentāram – redzams publiskajā statusa lapā",
         uploadedByTheSubmitter: "Augšupielādējis iesniedzējs",
-        _1pxSolidRgba255255255: "1px cietais rgba(255,255,0,25)",
-        background015s: "fona 0.15s",
         mediaViewerAttNameLbIdxOf: "Mediju skatītājs: {att_name} ({lbIdx} skaits * {total})",
         closeMediaViewer: "Aizvērt multivides skatītāju",
         previousMedia: "Iepriekšējais datu nesējs",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "Ielādē…",
         unknownError: "nezināma kļūda",
         unserializableError: "nepārspējama kļūda",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "Biļete {value}{fullCat}, statuss {statusLabel}, prioritāte {priLabel}",
+        cardViewCompactMobileFriendlyList: "Kartes skats — kompakts, mobils un draudzīgs saraksts",
+        tableViewSortableColumnsWithAll: "Tabulas skats – sašķirojamas kolonnas, kurās redzami visi lauki",
+        ticketValueFullCatStatusStatusLabelPriority2: "Biļete {value}{fullCat}, statuss {statusLabel}, prioritāte {priLabel}, {value2}",
         dismissError: "Atlaišanas kļūda",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "Atteikšanās ziņojums",
+        departmentEAIsNotAValid: "Nodaļa \"{eA}\"nav derīga iespēja. Lūdzu izvēlieties vēlreiz.",
+        categoryValueIsNotHandledBy: "Kategorija \"{value}\"netiek apstrādāti ar \"{eA}\". Lūdzu, atjauniniet kategoriju.",
+        subcategoryValueIsNotValidFor: "Apakškategorijas vērtība nav derīga “{value}\". Lūdzu vēlreiz izvēlieties."
       })
     }
   }

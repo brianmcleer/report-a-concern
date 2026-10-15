@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "附于内部注释——未显示于提交者",
         attachedToAPublicCommentVisible: "附于公开评论之后,在公共状况网页上可见",
         uploadedByTheSubmitter: "由提交者上传",
-        _1pxSolidRgba255255255: "1px固体rg(255,255,255,0.25)",
-        background015s: "ưμ㼯A",
         mediaViewerAttNameLbIdxOf: "媒体观看器 : {att_name} (单位:千美元){lbIdx} 页:1 {total}页:1",
         closeMediaViewer: "关闭媒体查看器",
         previousMedia: "以往媒体",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "正在加载...",
         unknownError: "未知错误",
         unserializableError: "无序错误",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "车票 {value}{fullCat}状态 {statusLabel},优先级 {priLabel}",
+        cardViewCompactMobileFriendlyList: "卡片视图——紧凑,便于移动的列表",
+        tableViewSortableColumnsWithAll: "表视图 - 可排序列,所有字段可见",
+        ticketValueFullCatStatusStatusLabelPriority2: "车票 {value}{fullCat}状态 {statusLabel},优先级 {priLabel}, (中文). {value2}",
         dismissError: "解职错误",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "解职消息",
+        departmentEAIsNotAValid: "部门 \"{eA}\" 不是一个有效的选择。 请重选.",
+        categoryValueIsNotHandledBy: "类别 \"{value}\" 不由 \"{eA}\" 请更新这一类别。",
+        subcategoryValueIsNotValidFor: "子类值无效“{value}\",请重新选择."
       })
     }
   }

@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "Επισυναπτόμενη σε εσωτερική σημείωση — δεν εμφανίζεται στον υποβάλλοντα",
         attachedToAPublicCommentVisible: "Συνημμένο σε δημόσιο σχόλιο — ορατό στη σελίδα του δημόσιου καθεστώτος",
         uploadedByTheSubmitter: "Αποστολή από τον υποβάλλοντα",
-        _1pxSolidRgba255255255: "1px στερεό rgba(255,255,0,25)",
-        background015s: "φόντο 0.15s",
         mediaViewerAttNameLbIdxOf: "Προβολέας πολυμέσων: {att_name} ({lbIdx} του {total})",
         closeMediaViewer: "Κλείσιμο προβολής πολυμέσων",
         previousMedia: "Προηγούμενα μέσα",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "Φόρτωση...",
         unknownError: "άγνωστο σφάλμα",
         unserializableError: "σφάλμα μη ανιχνεύσιμο",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "Εισιτήριο {value}{fullCat}, κατάσταση {statusLabel}, προτεραιότητα {priLabel}",
+        cardViewCompactMobileFriendlyList: "Προβολή καρτών — συμπαγής, φιλικός προς τα κινητά κατάλογος",
+        tableViewSortableColumnsWithAll: "Προβολή πίνακα — ταξινομήσιμες στήλες με όλα τα πεδία ορατά",
+        ticketValueFullCatStatusStatusLabelPriority2: "Εισιτήριο {value}{fullCat}, κατάσταση {statusLabel}, προτεραιότητα {priLabel}, {value2}",
         dismissError: "Σφάλμα απόρριψης",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "Μήνυμα απόρριψης",
+        departmentEAIsNotAValid: "Τμήμα \"{eA}\" δεν είναι έγκυρη επιλογή. Παρακαλώ επανεκλέξτε.",
+        categoryValueIsNotHandledBy: "Κατηγορία \"{value}\" δεν το χειρίζονται \"{eA}\". Παρακαλώ ενημερώστε την κατηγορία.",
+        subcategoryValueIsNotValidFor: "Η τιμή υποκατηγορίας δεν ισχύει για \"{value}\". Παρακαλώ επανεκλέξτε."
       })
     }
   }

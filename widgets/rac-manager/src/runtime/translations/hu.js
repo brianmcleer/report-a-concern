@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "Egy belső feljegyzéshez csatolva - nem mutatható ki az adatközlő lapon",
         attachedToAPublicCommentVisible: "Nyilvános megjegyzéshez csatolva - látható a nyilvános állapot oldalon",
         uploadedByTheSubmitter: "Feltöltve az adatszolgáltató által",
-        _1pxSolidRgba255255255: "1px szilárd rgba (255,255,255,0.25)",
-        background015s: "háttér 0,15 s",
         mediaViewerAttNameLbIdxOf: "Média néző: {att_name} ({lbIdx} II. {total})",
         closeMediaViewer: "A médianézők bezárása",
         previousMedia: "Korábbi média",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "Betöltés…",
         unknownError: "ismeretlen hiba",
         unserializableError: "nem sorozható hiba",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "Jegyzet {value}{fullCat}, status {statusLabel}, prioritás {priLabel}",
+        cardViewCompactMobileFriendlyList: "Kártyanézet - kompakt, mobilbarát lista",
+        tableViewSortableColumnsWithAll: "Táblázat nézet - az összes látható mezőt tartalmazó sorolható oszlopok",
+        ticketValueFullCatStatusStatusLabelPriority2: "Jegyzet {value}{fullCat}, status {statusLabel}, prioritás {priLabel}, {value2}",
         dismissError: "Hiba törlése",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "Üzenet törlése",
+        departmentEAIsNotAValid: "Osztály \"{eA}\"nem érvényes opció. Kérem, válasszon újra.",
+        categoryValueIsNotHandledBy: "Kategória \"{value}\"nem a\"{eA}\"Kérjük, frissítse a kategóriát.",
+        subcategoryValueIsNotValidFor: "Az alkategória értéke nem érvényes \"{value}\"Kérem, válasszon újra."
       })
     }
   }

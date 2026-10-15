@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: ",该表在网络地图上缺失。",
         uiAllAuthFlowsThroughThePortal: "所有认证都流经了门户会话——不需要额外的符号. 为了限制访问,与一个门户网站组共享该应用程序.",
         tickets: "车票",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: "。每个表格应显示其标题——如果有的话。"
       })
     }
   }

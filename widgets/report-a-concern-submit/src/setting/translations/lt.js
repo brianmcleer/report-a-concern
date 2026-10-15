@@ -123,9 +123,9 @@ System.register([], function (e) {
         submitReport: "Pateikimo ataskaita",
         thankYouYourConcernHasBeen: "Ačiū! Jūsų susirūpinimas buvo pateiktas.",
         forTheFastestResponsePleaseCall: "Norėdami gauti greičiausią atsakymą, skambinkite žemiau nurodytu numeriu. Jūs vis dar galite pateikti šią ataskaitą internete, bet telefono skambutis užtikrina, kad kas nors reaguoti nedelsiant.",
-        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
-        continue: "Continue?",
-        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
+        forThisViewTheMapWidget: "šiam požiūriui. Žemėlapio valdiklio pasirinkimas NETAIKOMA.",
+        continue: "Tęsk?",
+        importingNameWillOverwriteTheCurrent: "Importuojama \"{name}\"bus perrašyti dabartinio valdiklio nustatymus"
       })
     }
   }

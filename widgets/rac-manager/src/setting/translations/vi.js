@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: "Cái bàn đó bị mất trong bản đồ web.",
         uiAllAuthFlowsThroughThePortal: "Tất cả các ống dẫn đều chảy qua cổng — không cần thêm vật dụng. Để hạn chế truy cập, chia sẻ ứng dụng với một nhóm Portal.",
         tickets: "Vé",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: ".. mỗi bàn nên hiển thị tiêu đề của nó — nếu có ai nói"
       })
     }
   }

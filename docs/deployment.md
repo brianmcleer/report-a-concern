@@ -154,6 +154,8 @@ Submit widget settings that must be same-origin with the page:
 | `commentsTableUrl`, `statusQueryUrl`, `boundariesLayerUrl` | Layers of the same Display service |
 | `geocoderUrl` | Your locator on `gis.example.gov`, with the ArcGIS World Geocoder as fallback |
 
+Languages need no extra step: each widget follows the app language (profile, browser, `?locale=xx` or the Language Switcher widget) and falls back to English. To check a language, open the app with `?locale=es` (or any of the 39 Experience Builder locales) and look at both the runtime and the settings panel.
+
 If the page is served from an alias, every one of these must use the alias too. A widget URL on a different host than the page is a CORS failure in the browser before the request ever reaches IIS.
 
 Publish the submit app to a folder under Default Web Site and make it an IIS application named `ReportAConcern`. Program: **IIS Manager (Run as administrator)**. Do not add any URL Rewrite rule or header inside that application; the next publish wipes it.

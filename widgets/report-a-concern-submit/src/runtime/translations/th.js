@@ -141,7 +141,7 @@ System.register([], function (e) {
         priorityPriority: "สูง {priority}",
         unknownError: "ข้อผิดพลาดไม่ทราบสาเหตุ",
         unserializableError: "ข้อผิดพลาดที่ไม่สามารถตรวจสอบได้",
-        categoryCategory: "Category {category}"
+        categoryCategory: "ประเภท {category}"
       })
     }
   }

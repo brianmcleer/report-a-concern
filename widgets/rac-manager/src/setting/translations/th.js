@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: "โต๊ะนั่นหายไปจากแผนที่",
         uiAllAuthFlowsThroughThePortal: "ไม่ จําเป็น ต้อง มี เครื่องหมาย พิเศษ. เพื่อจํากัดการเข้าถึง ให้ใช้แอพร่วมกับกลุ่ม Portal",
         tickets: "ตั๋ว",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: "แต่ ละ โต๊ะ ควร แสดง ชื่อ ของ มัน — ถ้า มี ใคร บอก"
       })
     }
   }

@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "Bifogad till en intern anteckning - inte visas för inlämnaren",
         attachedToAPublicCommentVisible: "Bifogad till en offentlig kommentar – synlig på sidan för offentlig status",
         uploadedByTheSubmitter: "Uppladdad av inlämnaren",
-        _1pxSolidRgba255255255: "1px solid rgba (255,255,255,0.25)",
-        background015s: "bakgrund 0,15",
         mediaViewerAttNameLbIdxOf: "Media viewer: {att_name} (b){lbIdx} av {total}) )",
         closeMediaViewer: "Nära media viewer",
         previousMedia: "Föregående media",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "Läser in...",
         unknownError: "Okänd fel",
         unserializableError: "oserialiserbart fel",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "Biljett {value}{fullCat}status {statusLabel}prioritet {priLabel}",
+        cardViewCompactMobileFriendlyList: "Kortvy - kompakt, mobilvänlig lista",
+        tableViewSortableColumnsWithAll: "Tabellvy - sorterbara kolumner med alla fält synliga",
+        ticketValueFullCatStatusStatusLabelPriority2: "Biljett {value}{fullCat}status {statusLabel}prioritet {priLabel}, {value2}",
         dismissError: "Avfärda fel",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "Avfärda meddelande",
+        departmentEAIsNotAValid: "Avdelning \"{eA}\"är inte ett giltigt alternativ. Vänligen återvälj.",
+        categoryValueIsNotHandledBy: "Kategori \"{value}inte hanteras av \"{eA}Vänligen uppdatera kategorin.",
+        subcategoryValueIsNotValidFor: "Subkategorivärde är inte giltigt för \"{value}Vänligen återvälj."
       })
     }
   }

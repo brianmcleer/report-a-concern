@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: ", 그 테이블은 웹지도에서 누락.",
         uiAllAuthFlowsThroughThePortal: "모든 auth는 포털 세션을 통해 흐릅니다 - 추가 토큰이 필요하지 않습니다. 액세스 제한, 포털 그룹과 앱 공유.",
         tickets: "상품정보",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: ". 각 테이블은 제목을 표시해야합니다 — 어떤 말"
       })
     }
   }

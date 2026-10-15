@@ -123,9 +123,9 @@ System.register([], function (e) {
         submitReport: "Gởi báo cáo",
         thankYouYourConcernHasBeen: "Cảm ơn! Mối quan tâm của anh đã được nộp.",
         forTheFastestResponsePleaseCall: "Để trả lời nhanh nhất, hãy gọi số dưới đây. Bạn vẫn có thể đăng báo cáo này lên mạng, nhưng một cuộc điện thoại đảm bảo có người sẽ trả lời ngay lập tức.",
-        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
-        continue: "Continue?",
-        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
+        forThisViewTheMapWidget: "cho khung cảnh này. Chọn ô điều khiển bản đồ sẽ không thay đổi.",
+        continue: "Tiếp tục?",
+        importingNameWillOverwriteTheCurrent: "Nhập \"{name}\"sẽ ghi đè thiết lập ô điều khiển hiện thời"
       })
     }
   }

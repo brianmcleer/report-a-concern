@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "Vedhæftet en intern note - ikke vist til anmelderen",
         attachedToAPublicCommentVisible: "Vedhæftet en offentlig kommentar - synlig på siden med offentlig status",
         uploadedByTheSubmitter: "Uploadet af anmelderen",
-        _1pxSolidRgba255255255: "1px solid rgba (255,255,255,0,25)",
-        background015s: "baggrund 0.15 s",
         mediaViewerAttNameLbIdxOf: "Medievisning: {att_name} ({lbIdx} af {total})",
         closeMediaViewer: "Luk mediefremviser",
         previousMedia: "Tidligere medier",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "Indlæser…",
         unknownError: "ukendt fejl",
         unserializableError: "userialiserbar fejl",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "Billet {value}{fullCat}, status {statusLabel}, prioritet {priLabel}",
+        cardViewCompactMobileFriendlyList: "Kortvisning - kompakt, mobilvenlig liste",
+        tableViewSortableColumnsWithAll: "Tabelvisning - sortable kolonner med alle synlige felter",
+        ticketValueFullCatStatusStatusLabelPriority2: "Billet {value}{fullCat}, status {statusLabel}, prioritet {priLabel}, {value2}",
         dismissError: "Manglende fejl",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "Kassér besked",
+        departmentEAIsNotAValid: "Afdeling \"{eA}\"er ikke en gyldig mulighed. Vælg igen.",
+        categoryValueIsNotHandledBy: "Kategori \"{value}\"ikke håndteres af\"{eA}\". Opdatér venligst kategorien.",
+        subcategoryValueIsNotValidFor: "Underkategori værdi er ikke gyldig for \"{value}\". Vær venlig at genvælge."
       })
     }
   }

@@ -141,7 +141,7 @@ System.register([], function (e) {
         priorityPriority: "Prioriteet {priority}",
         unknownError: "tundmatu viga",
         unserializableError: "seeriaviisiline viga",
-        categoryCategory: "Category {category}"
+        categoryCategory: "Kategooria {category}"
       })
     }
   }

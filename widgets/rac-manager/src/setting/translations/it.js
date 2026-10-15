@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: ", quel tavolo manca dalla mappa web.",
         uiAllAuthFlowsThroughThePortal: "Tutti i flussi auth attraverso la sessione Portal — nessun gettoni extra necessari. Per limitare l'accesso, condividere l'app con un gruppo Portal.",
         tickets: "Biglietti",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: ". Ogni tabella dovrebbe mostrare il suo titolo — se si dice"
       })
     }
   }

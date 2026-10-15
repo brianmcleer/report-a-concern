@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "Beigefügt zu einer internen Notiz — dem Einreicher nicht gezeigt",
         attachedToAPublicCommentVisible: "Angefügt an einen öffentlichen Kommentar – sichtbar auf der Public Status Page",
         uploadedByTheSubmitter: "Hochgeladen vom Submittenten",
-        _1pxSolidRgba255255255: "1px solid rgba(255,255,255,0,25)",
-        background015s: "Hintergrund 0.15s",
         mediaViewerAttNameLbIdxOf: "Media Viewer: {att_name} (){lbIdx} von {total})",
         closeMediaViewer: "Close Media Viewer",
         previousMedia: "Frühere Medien",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "Wird geladen…",
         unknownError: "Unbekannter Fehler",
         unserializableError: "nichtialisierbarer Fehler",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, Status {statusLabel}, Priorität {priLabel}",
+        cardViewCompactMobileFriendlyList: "Kartenansicht — kompakte, mobilfreundliche Liste",
+        tableViewSortableColumnsWithAll: "Tabellenansicht — sortierbare Spalten mit allen sichtbaren Feldern",
+        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, Status {statusLabel}, Priorität {priLabel}, {value2}",
         dismissError: "Abweisungsfehler",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "Abweisungsmeldung",
+        departmentEAIsNotAValid: "Abteilung „{eA}ist keine gültige Option. Bitte wieder auswählen.",
+        categoryValueIsNotHandledBy: "Kategorie \"{value}„wird nicht gehandhabt von{eA}Bitte aktualisieren Sie die Kategorie.",
+        subcategoryValueIsNotValidFor: "Der Wert der Unterkategorie ist nicht gültig für \"{value}\". Bitte wieder auswählen.\""
       })
     }
   }

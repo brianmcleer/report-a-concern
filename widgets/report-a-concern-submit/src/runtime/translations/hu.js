@@ -141,7 +141,7 @@ System.register([], function (e) {
         priorityPriority: "Prioritás {priority}",
         unknownError: "ismeretlen hiba",
         unserializableError: "nem sorozható hiba",
-        categoryCategory: "Category {category}"
+        categoryCategory: "Kategória {category}"
       })
     }
   }

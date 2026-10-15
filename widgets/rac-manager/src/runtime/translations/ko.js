@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "내부 메모에 첨부 — submitter에 표시되지 않음",
         attachedToAPublicCommentVisible: "공개 댓글에 첨부 — 공개 상태 페이지에 표시",
         uploadedByTheSubmitter: "제출자에 의해 업로드",
-        _1pxSolidRgba255255255: "1px 고체 rgba(255,255,255,0.25)",
-        background015s: "배경 0.15s",
         mediaViewerAttNameLbIdxOf: "미디어 뷰어: {att_name} (주){lbIdx} 이름 * {total}·",
         closeMediaViewer: "미디어 뷰어",
         previousMedia: "이전 미디어",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "불러오는 중...",
         unknownError: "알 수없는 오류",
         unserializableError: "unserializable 오류",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "이용안내 {value}{fullCat}, 상태 {statusLabel}, 우선권 {priLabel}",
+        cardViewCompactMobileFriendlyList: "카드보기 - 컴팩트, 모바일 친화적 인 목록",
+        tableViewSortableColumnsWithAll: "테이블보기 - 모든 필드를 가진 정렬 가능한 열",
+        ticketValueFullCatStatusStatusLabelPriority2: "이용안내 {value}{fullCat}, 상태 {statusLabel}, 우선권 {priLabel}· {value2}",
         dismissError: "오류 발생",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "메시지 삭제",
+        departmentEAIsNotAValid: "부서 \"{eA}\"는 유효한 옵션이 아닙니다. 선택해 주세요.",
+        categoryValueIsNotHandledBy: "범주 \"{value}\"은 \"에 의해 처리되지 않습니다{eA}\". 범주를 업데이트하십시오.",
+        subcategoryValueIsNotValidFor: "하위 카테고리 값은 유효하지 않습니다 \"{value}\". 선택해 주세요."
       })
     }
   }

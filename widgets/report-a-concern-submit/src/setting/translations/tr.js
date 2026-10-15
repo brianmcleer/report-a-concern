@@ -123,9 +123,9 @@ System.register([], function (e) {
         submitReport: "Teklif Raporu",
         thankYouYourConcernHasBeen: "Teşekkür ederim! Endişeniz sunuldu.",
         forTheFastestResponsePleaseCall: "En hızlı yanıt için lütfen aşağıdaki numarayı arayın. Bu raporu hala online olarak gönderebilirsiniz, ancak bir telefon görüşmesi, birinin hemen yanıt vermesini sağlar.",
-        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
-        continue: "Continue?",
-        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
+        forThisViewTheMapWidget: "Bu görüş için. Harita widget seçimi değiştirilemez.",
+        continue: "Devam et?",
+        importingNameWillOverwriteTheCurrent: "İthalat \"{name}“Mevcut widget ayarlarını yazacaktır"
       })
     }
   }

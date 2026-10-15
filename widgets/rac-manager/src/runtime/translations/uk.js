@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "Прикріплюється до внутрішньої замітки — не показаний до відправника",
         attachedToAPublicCommentVisible: "Прикріплений до публічного коментаря — видно на сторінці публічного статусу",
         uploadedByTheSubmitter: "Загружено гостем",
-        _1pxSolidRgba255255255: "1ПКС твердий rgba(255,255,255,0.25)",
-        background015s: "фон 0,15с",
         mediaViewerAttNameLbIdxOf: "Медіа-глядач: {att_name} (Українська){lbIdx} з {total}й",
         closeMediaViewer: "Закритий перегляд медіа",
         previousMedia: "Попередній медіа",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "Виконується завантаження...",
         unknownError: "Невідома помилка",
         unserializableError: "несеріалізована помилка",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "Про нас {value}{fullCat}, статус {statusLabel}, пріоритет {priLabel}",
+        cardViewCompactMobileFriendlyList: "Перегляд карт — компактний, безпечний список",
+        tableViewSortableColumnsWithAll: "Перегляд таблиці — відсортовані стовпчики з усіма полями",
+        ticketValueFullCatStatusStatusLabelPriority2: "Про нас {value}{fullCat}, статус {statusLabel}, пріоритет {priLabel}й {value2}",
         dismissError: "Помилки",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "Видалення повідомлення",
+        departmentEAIsNotAValid: "Департамент \"{eA}\"Не є дійсним варіантом. Будь ласка, переоберіть.",
+        categoryValueIsNotHandledBy: "Категорія \"{value}\"Не обробляється \"{eA}\". Будь ласка, встановіть категорію.",
+        subcategoryValueIsNotValidFor: "Значення субкатегорії не діє для \"{value}\". Будь ласка, переоберіть."
       })
     }
   }

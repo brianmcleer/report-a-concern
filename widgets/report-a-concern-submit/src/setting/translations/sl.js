@@ -123,9 +123,9 @@ System.register([], function (e) {
         submitReport: "Predloži poročilo",
         thankYouYourConcernHasBeen: "Hvala! Vaša skrb je bila podana.",
         forTheFastestResponsePleaseCall: "Za najhitrejši odgovor pokličite številko spodaj. To poročilo lahko še vedno predložite na spletu, vendar telefonski klic zagotavlja, da se nekdo takoj odzove.",
-        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
-        continue: "Continue?",
-        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
+        forThisViewTheMapWidget: "Za ta razgled. Izbira gradnika zemljevida NE bo spremenjena.",
+        continue: "Nadaljuj?",
+        importingNameWillOverwriteTheCurrent: "Uvoz \"{name}\" bo nadomestil trenutne nastavitve gradnikov"
       })
     }
   }

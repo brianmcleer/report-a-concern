@@ -141,7 +141,7 @@ System.register([], function (e) {
         priorityPriority: "Προτεραιότητα {priority}",
         unknownError: "άγνωστο σφάλμα",
         unserializableError: "σφάλμα μη ανιχνεύσιμο",
-        categoryCategory: "Category {category}"
+        categoryCategory: "Κατηγορία {category}"
       })
     }
   }

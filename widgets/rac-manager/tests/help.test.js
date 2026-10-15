@@ -95,7 +95,8 @@ test('writing rules: no dashes, no jargon, troubleshooting shape, contact line l
   assert.equal(messages.firstRunHelpLink, 'Open the guide.')
   assert.equal(messages.firstRunBody.split('. ').length, 1)
   assert.equal(messages.helpIntro.split('. ').length, 1)
-  for (const k of Object.keys(messages)) assert.ok(!/[\u2013\u2014]/.test(String(messages[k])), `dash in ${k}`)
+  // Guide, hint and control-name keys only: the widget's other UI strings also live in this file since the i18n pass.
+  for (const k of Object.keys(messages).filter(k => /^(help|firstRun|ctl)/.test(k))) assert.ok(!/[\u2013\u2014]/.test(String(messages[k])), `dash in ${k}`)
 })
 
 test('control names in the guide match the interface exactly', () => {
@@ -105,7 +106,8 @@ test('control names in the guide match the interface exactly', () => {
   for (const key of ctl) {
     const name = messages[key]
     assert.ok(text.includes(name), `control ${name} (${key}) not in guide`)
-    assert.ok(widgetSrc.includes(name), `control ${name} (${key}) not in widget.tsx`)
+    // The literal, or the key through the translator (the i18n pass moved most literals into default.ts).
+    assert.ok(widgetSrc.includes(name) || widgetSrc.includes(`'${key}'`) || widgetSrc.includes(`"${key}"`), `control ${name} (${key}) not in widget.tsx`)
   }
   // The two words the search placeholder suggests are really in the guide.
   const [, a, b] = messages.helpSearchPlaceholder.match(/"(.+)" or "(.+)"/)

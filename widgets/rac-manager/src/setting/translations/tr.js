@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: "Ancak bu masa web haritasından eksik.",
         uiAllAuthFlowsThroughThePortal: "Portal oturumu aracılığıyla tüm auth akışlar - ekstra jetonlar gerekli değil. Erişimi kısıtlamak için, bir Portal grubu ile uygulamayı paylaşın.",
         tickets: "Bilet Bilet Biletleri Bilet",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: "Her masa onun ünvanını göstermelidir - eğer herhangi bir söz varsa"
       })
     }
   }

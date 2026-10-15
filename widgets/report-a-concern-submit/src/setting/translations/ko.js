@@ -123,9 +123,9 @@ System.register([], function (e) {
         submitReport: "자주 묻는 질문",
         thankYouYourConcernHasBeen: "감사합니다! 당신의 관심사는 제출되었습니다.",
         forTheFastestResponsePleaseCall: "가장 빠른 응답을 위해, 아래에 번호를 부르십시오. 이 보고서를 온라인으로 제출할 수 있지만, 전화 통화는 즉시 응답합니다.",
-        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
-        continue: "Continue?",
-        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
+        forThisViewTheMapWidget: "이 전망입니다. 지도 위젯 선택은 변경되지 않습니다.",
+        continue: "계속?",
+        importingNameWillOverwriteTheCurrent: "수입 \"{name}\"는 현재 위젯 설정을 덮어"
       })
     }
   }

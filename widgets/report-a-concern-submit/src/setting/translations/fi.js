@@ -123,9 +123,9 @@ System.register([], function (e) {
         submitReport: "Lähetä raportti",
         thankYouYourConcernHasBeen: "Kiitos! Huolenne on esitetty.",
         forTheFastestResponsePleaseCall: "Nopein vastaus, soita alla olevaan numeroon. Voit silti lähettää tämän raportin verkossa, mutta puhelu varmistaa, että joku vastaa välittömästi.",
-        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
-        continue: "Continue?",
-        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
+        forThisViewTheMapWidget: "Tätä näkemystä varten. Karttaelementtien valintaa EI muuteta.",
+        continue: "Jatka?",
+        importingNameWillOverwriteTheCurrent: "Tuodaan \"{name}\" korvaa nykyisen widget asetukset"
       })
     }
   }

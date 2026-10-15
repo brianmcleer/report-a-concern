@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "Прикреплено к внутренней ноте — не показано отправителю",
         attachedToAPublicCommentVisible: "Прикреплено к публичному комментарию — видно на странице общественного статуса",
         uploadedByTheSubmitter: "Загружено отправителем",
-        _1pxSolidRgba255255255: "1px твердая ргба (255,255,255,0,25)",
-        background015s: "фон 0.15s",
         mediaViewerAttNameLbIdxOf: "Медиа-зритель: {att_name} (){lbIdx} из {total})",
         closeMediaViewer: "Близкий просмотр медиа",
         previousMedia: "Предыдущий СМИ",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "Загрузка…",
         unknownError: "Неизвестная ошибка",
         unserializableError: "несериализируемая ошибка",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "билет {value}{fullCat}статус {statusLabel}Приоритет {priLabel}",
+        cardViewCompactMobileFriendlyList: "Вид карты — компактный, мобильный список",
+        tableViewSortableColumnsWithAll: "Вид на стол — сортируемые колонки со всеми видимыми полями",
+        ticketValueFullCatStatusStatusLabelPriority2: "билет {value}{fullCat}статус {statusLabel}Приоритет {priLabel}, {value2}",
         dismissError: "Исключить ошибку",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "Отклонить сообщение",
+        departmentEAIsNotAValid: "Департамент.{eA}\"не является действительным вариантом. Пожалуйста, переизберите.",
+        categoryValueIsNotHandledBy: "Категория:{value}\"не управляется\"{eA}Пожалуйста, обновите категорию.",
+        subcategoryValueIsNotValidFor: "Значение подкатегории недействительно для \"{value}Пожалуйста, переизберите."
       })
     }
   }

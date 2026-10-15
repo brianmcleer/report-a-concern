@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "ملحق بمذكرة داخلية - غير مبينة للمقدم",
         attachedToAPublicCommentVisible: "ملحق بتعليق عام - مرئي على صفحة الحالة العامة",
         uploadedByTheSubmitter: "حمّل من قبل المُقدّم",
-        _1pxSolidRgba255255255: "1px solid rgba(255,255,255,0.25)",
-        background015s: "الخلفية",
         mediaViewerAttNameLbIdxOf: "مشاهد وسائط الإعلام: {att_name} )أ({lbIdx} of of {total})",
         closeMediaViewer: "مشاهد إعلامي وثيق",
         previousMedia: "وسائط الإعلام السابقة",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "تحميل…",
         unknownError: "خطأ مجهول",
         unserializableError: "خطأ غير معقول",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "التذاكر {value}{fullCat}الحالة {statusLabel}الأولوية {priLabel}",
+        cardViewCompactMobileFriendlyList: "النظر في البطاقات - قائمة مدمجة وسهلة الحركة",
+        tableViewSortableColumnsWithAll: "مطروحة - أعمدة قابلة للفرز مع جميع الميادين",
+        ticketValueFullCatStatusStatusLabelPriority2: "التذاكر {value}{fullCat}الحالة {statusLabel}الأولوية {priLabel}.. {value2}",
         dismissError: "خطأ",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "الرسالة",
+        departmentEAIsNotAValid: "إدارة{eA}ليس خياراً صالحاً الرجاء إعادة انتخاب.",
+        categoryValueIsNotHandledBy: "الفئة{value}\"لا يتم التعامل معها من قبل \"{eA}\"رجاءً استكملوا الفئة\"",
+        subcategoryValueIsNotValidFor: "قيمة الفئة الفرعية غير صالحة{value}من فضلك أعيدي الانتقاء"
       })
     }
   }

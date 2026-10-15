@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "Allegati a una nota interna — non mostrati al mittente",
         attachedToAPublicCommentVisible: "Attaccato a un commento pubblico — visibile sulla pagina di stato pubblico",
         uploadedByTheSubmitter: "Caricato dal mittente",
-        _1pxSolidRgba255255255: "1px solido rgba(255,255,255,0.25)",
-        background015s: "sfondo 0.15s",
         mediaViewerAttNameLbIdxOf: "Media viewer: {att_name} ({lbIdx} di {total})",
         closeMediaViewer: "Visualizzatore multimediale",
         previousMedia: "Precedente media",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "Caricamento in corso...",
         unknownError: "errore sconosciuto",
         unserializableError: "errore non serializzabile",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "Biglietto {value}{fullCat}, stato {statusLabel}, priorità {priLabel}",
+        cardViewCompactMobileFriendlyList: "Vista carta — lista compatta, mobile-friendly",
+        tableViewSortableColumnsWithAll: "Vista della tabella — colonne ordinabili con tutti i campi visibili",
+        ticketValueFullCatStatusStatusLabelPriority2: "Biglietto {value}{fullCat}, stato {statusLabel}, priorità {priLabel}♪ {value2}",
         dismissError: "Discorso di errore",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "Disdetta messaggio",
+        departmentEAIsNotAValid: "Dipartimento \"{eA}\" non è un'opzione valida. Per favore ri-seleziona.",
+        categoryValueIsNotHandledBy: "Categoria \"{value}\" non è gestito da \"{eA}\". Si prega di aggiornare la categoria.",
+        subcategoryValueIsNotValidFor: "Il valore della sottocategoria non è valido per \"{value}\". Per favore ri-seleziona."
       })
     }
   }

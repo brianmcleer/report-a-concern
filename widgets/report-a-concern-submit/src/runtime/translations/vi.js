@@ -141,7 +141,7 @@ System.register([], function (e) {
         priorityPriority: "Ưu tiên {priority}",
         unknownError: "lỗi không rõ",
         unserializableError: "Lỗi không thể gửi đi được",
-        categoryCategory: "Category {category}"
+        categoryCategory: "Loại {category}"
       })
     }
   }

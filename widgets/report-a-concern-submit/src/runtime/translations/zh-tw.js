@@ -141,7 +141,7 @@ System.register([], function (e) {
         priorityPriority: "优先 {priority}",
         unknownError: "未知的錯誤",
         unserializableError: "不串連的錯誤",
-        categoryCategory: "Category {category}"
+        categoryCategory: "分類 {category}"
       })
     }
   }

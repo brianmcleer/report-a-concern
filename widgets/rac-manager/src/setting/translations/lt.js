@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: ", kad lentelė trūksta iš interneto žemėlapyje.",
         uiAllAuthFlowsThroughThePortal: "All auth teka per portalo sesiją - nereikia jokių papildomų žetonų. NAME OF TRANSLATORS",
         tickets: "Bilietai",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: ". Kiekviena lentelė turėtų parodyti savo pavadinimą - jei kas nors sako"
       })
     }
   }

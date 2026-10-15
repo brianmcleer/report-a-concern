@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: "Aquesta taula ha desaparegut del mapa web.",
         uiAllAuthFlowsThroughThePortal: "L' autenticació flueix a través de la sessió Porta, no es necessiten fitxes extra. Per a restringir l'accés, comparteix l'aplicació amb un grup Portal.",
         tickets: "bitllet",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: ". Cada taula hauria de mostrar el seu títol si qualsevol diu"
       })
     }
   }

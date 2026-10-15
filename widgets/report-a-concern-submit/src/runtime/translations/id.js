@@ -141,7 +141,7 @@ System.register([], function (e) {
         priorityPriority: "Prioritas {priority}",
         unknownError: "galat tak dikenal",
         unserializableError: "kesalahan tidak serialisasi",
-        categoryCategory: "Category {category}"
+        categoryCategory: "Kategori {category}"
       })
     }
   }

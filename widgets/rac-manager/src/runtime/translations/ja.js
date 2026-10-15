@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "内部ノートに添付 — 提出者に表示されていない",
         attachedToAPublicCommentVisible: "公開コメントに添付 — 公開ステータスページで表示",
         uploadedByTheSubmitter: "投稿者によってアップロード",
-        _1pxSolidRgba255255255: "1px固体rgba(255,255,255,0.25)",
-        background015s: "背景 0.15s",
         mediaViewerAttNameLbIdxOf: "メディアビューア: {att_name} ( ){lbIdx} インフォメーション {total})",
         closeMediaViewer: "メディアビューアを閉じる",
         previousMedia: "メディア",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "読み込んでいます...",
         unknownError: "未知のエラー",
         unserializableError: "unserializable エラー",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "チケット {value}{fullCat}, ステータス {statusLabel}, 優先順位 {priLabel}",
+        cardViewCompactMobileFriendlyList: "カードビュー — コンパクトでモバイルフレンドリーなリスト",
+        tableViewSortableColumnsWithAll: "表ビュー — 目に見えるすべてのフィールドでソート可能な列",
+        ticketValueFullCatStatusStatusLabelPriority2: "チケット {value}{fullCat}, ステータス {statusLabel}, 優先順位 {priLabel}, {value2}",
         dismissError: "エラーを解除する",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "メッセージを送信する",
+        departmentEAIsNotAValid: "担当部署{eA}\" は有効なオプションではありません。 お問い合わせ",
+        categoryValueIsNotHandledBy: "カテゴリー \"{value}\" は \"{eA}「.」カテゴリを更新してください。",
+        subcategoryValueIsNotValidFor: "subcategory の値は \"\" では有効ではありません。{value}再選択してください。"
       })
     }
   }

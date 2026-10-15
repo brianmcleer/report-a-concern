@@ -141,7 +141,7 @@ System.register([], function (e) {
         priorityPriority: "회사연혁 {priority}",
         unknownError: "알 수없는 오류",
         unserializableError: "unserializable 오류",
-        categoryCategory: "Category {category}"
+        categoryCategory: "(주) {category}"
       })
     }
   }

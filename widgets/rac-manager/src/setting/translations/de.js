@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: "Diese Tabelle fehlt in der Webmap.",
         uiAllAuthFlowsThroughThePortal: "Alle auth fließen durch die portal-sitzung - keine zusätzlichen token erforderlich. Um den Zugriff einzuschränken, teilen Sie die App mit einer Portalgruppe.",
         tickets: "Tickets",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: "Jede Tabelle sollte ihren Titel tragen — wenn jemand sagt,"
       })
     }
   }

@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "Ataşat la o notă internă",
         attachedToAPublicCommentVisible: "Ataşat la un comentariu public",
         uploadedByTheSubmitter: "Încărcat de expeditor",
-        _1pxSolidRgba255255255: "1px RGBA solid (255,255,255,0.25)",
-        background015s: "fundal 0.15s",
         mediaViewerAttNameLbIdxOf: "Vizualizator media: {att_name} ({lbIdx} din {total})",
         closeMediaViewer: "Închide vizualizarea media",
         previousMedia: "Media anterioară",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "Se încarcă…",
         unknownError: "Eroare necunoscută",
         unserializableError: "eroare inoperabilă",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "Biletul {value}{fullCat}, stare {statusLabel}, prioritate {priLabel}",
+        cardViewCompactMobileFriendlyList: "Vedere card",
+        tableViewSortableColumnsWithAll: "Vedere tabel",
+        ticketValueFullCatStatusStatusLabelPriority2: "Biletul {value}{fullCat}, stare {statusLabel}, prioritate {priLabel}, {value2}",
         dismissError: "Respinge eroarea",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "Respinge mesajul",
+        departmentEAIsNotAValid: "Departamentul \"{eA}\" nu este o opțiune valabilă. Te rog să reselectezi.",
+        categoryValueIsNotHandledBy: "Categoria \"{value}\" nu este manipulat de \"{eA}\". Vă rugăm să actualizați categoria.",
+        subcategoryValueIsNotValidFor: "Valoarea subcategoria nu este valabilă pentru \"{value}\"Vă rugăm să reselectaţi."
       })
     }
   }

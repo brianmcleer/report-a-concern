@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "Liittyy sisäiseen huomautukseen ... ei näy toimittajalle",
         attachedToAPublicCommentVisible: "Liitetty julkiseen huomautukseen ...",
         uploadedByTheSubmitter: "Lähettäjän lataama",
-        _1pxSolidRgba255255255: "1px kiinteä rgba(255,255,255,0.25)",
-        background015s: "tausta 0,15s",
         mediaViewerAttNameLbIdxOf: "Median katsoja: {att_name} ({lbIdx} / {total})",
         closeMediaViewer: "Sulje medianäyttö",
         previousMedia: "Edellinen media",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "Ladataan…",
         unknownError: "tuntematon virhe",
         unserializableError: "epätavallinen virhe",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "Lippu {value}{fullCat}, tila {statusLabel}, ensisijainen {priLabel}",
+        cardViewCompactMobileFriendlyList: "Korttinäkymä",
+        tableViewSortableColumnsWithAll: "Taulukkonäkymä",
+        ticketValueFullCatStatusStatusLabelPriority2: "Lippu {value}{fullCat}, tila {statusLabel}, ensisijainen {priLabel}, {value2}",
         dismissError: "Jätä virhe",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "Jätä viesti",
+        departmentEAIsNotAValid: "Osasto \"{eA}\" ei ole kelvollinen vaihtoehto. Ole hyvä ja valitse uudestaan.",
+        categoryValueIsNotHandledBy: "Luokka \"{value}\" ei ole käsitelty \"{eA}\". Päivitä luokka.",
+        subcategoryValueIsNotValidFor: "Alaluokan arvo ei ole voimassa \"{value}\"Valitse uudelleen."
       })
     }
   }

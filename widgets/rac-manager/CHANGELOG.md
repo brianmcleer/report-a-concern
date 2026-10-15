@@ -5,6 +5,12 @@ All notable changes to the RAC Ticket Manager widget are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.2.3 (2026-10-15)
+
+- Fixed: the ticket table, ticket cards and the detail pane crashed with `TypeError: t is not a function` after the localization pass. The generated `t(...)` translation calls sat inside scopes where `t` is the ticket object (`filteredTickets.map((t) => ...)`, `visibleTickets.map((t) => ...)` and `const { sel: t } = this.state`), so the ticket shadowed the translator. All 130 calls now use the module translator `__t(...)`, which is never shadowed.
+- Fixed: two CSS values in the media viewer (`1px solid rgba(255,255,255,0.25)` and `background 0.15s`) had been harvested as translatable strings and were being machine translated. They are literals again and the keys `_1pxSolidRgba255255255` and `background015s` are removed from `translations/default.ts`, every locale file and `i18n/translations.lock.json`.
+- Added: interface strings localized into 39 languages with exb-i18n-kit (`translatedLocales` in `manifest.json`, `src/runtime/translations/*.js`, `src/runtime/i18n-t.ts`). The app language drives the widget; English is the fallback.
+
 ## 1.2.2 (2026-09-30)
 
 - Fixed: after Save changes (or any success message) the green banner never cleared and pushed the detail pane down, so the bottom of the pane (comment box and buttons) could not be reached even when scrolled to the end. The banner now sits in its own row and the list/detail pane takes the remaining height, success banners clear themselves after 5 seconds (a new message restarts the timer), and both success and error banners have a dismiss button.

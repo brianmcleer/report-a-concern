@@ -1431,7 +1431,7 @@ export default class Setting extends React.PureComponent<
                                                 </label>
                                                 <TextInput
                                                     className="w-100" size="sm"
-                                                    placeholder="(970) 244-1579"
+                                                    placeholder="(555) 555-0123"
                                                     value={p.number}
                                                     onChange={(e) =>
                                                         this.setAlertPhoneField(i, j, "number", e.target.value)

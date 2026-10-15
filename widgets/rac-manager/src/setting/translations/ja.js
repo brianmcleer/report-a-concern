@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: ", この表はウェブマップから欠落しています。",
         uiAllAuthFlowsThroughThePortal: "すべてのauthはポータルセッションを通して流れます。追加のトークンは必要ありません。 アクセスを制限するには、ポータルグループでアプリを共有します。",
         tickets: "チケット",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: ". 各テーブルはタイトルを表示する必要があります。"
       })
     }
   }

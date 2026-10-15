@@ -141,7 +141,7 @@ System.register([], function (e) {
         priorityPriority: "עדיפות {priority}",
         unknownError: "טעות לא ידועה",
         unserializableError: "טעות בלתי אפשרית",
-        categoryCategory: "Category {category}"
+        categoryCategory: "קטגוריה {category}"
       })
     }
   }

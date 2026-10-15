@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "המצורף להודעה פנימית - לא מוצג בפני השליח",
         attachedToAPublicCommentVisible: "המצורף להערה ציבורית - גלויה בדף הסטטוס הציבורי",
         uploadedByTheSubmitter: "מוצג על ידי The Sendter",
-        _1pxSolidRgba255255255: "1px rgba מוצק (25,255,255,0.25)",
-        background015s: "רקע 0.15",
         mediaViewerAttNameLbIdxOf: "צופה מדיה: {att_name} (){lbIdx} של {total})",
         closeMediaViewer: "צפייה בתקשורת",
         previousMedia: "מדיה קודמת",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "טוען...",
         unknownError: "טעות לא ידועה",
         unserializableError: "טעות בלתי אפשרית",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "כרטיס הכרטיס {value}{fullCat}סטטוס {statusLabel}עדיפות {priLabel}",
+        cardViewCompactMobileFriendlyList: "כרטיס תצוגה - קומפקטי, ידידותי לרשימה",
+        tableViewSortableColumnsWithAll: "תצוגת שולחן - עמודות חד פעמיות עם כל התחומים גלויים",
+        ticketValueFullCatStatusStatusLabelPriority2: "כרטיס הכרטיס {value}{fullCat}סטטוס {statusLabel}עדיפות {priLabel}, {value2}",
         dismissError: "טעות",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "הודעה מאכזבת",
+        departmentEAIsNotAValid: "המחלקה \"{eA}\"זו לא אפשרות תקפה. בבקשה, שוב select.",
+        categoryValueIsNotHandledBy: "קטגוריה:{value}\"לא מטופל על ידי\"{eA}בבקשה לעדכן את הקטגוריה.",
+        subcategoryValueIsNotValidFor: "ערך subcategory אינו בתוקף עבור \"{value}\"אנא, בבקשה, שוב."
       })
     }
   }

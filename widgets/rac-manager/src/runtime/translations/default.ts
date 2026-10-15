@@ -234,8 +234,6 @@ export default {
   attachedToAnInternalNoteNot: 'Attached to an internal note — not shown to the submitter',
   attachedToAPublicCommentVisible: 'Attached to a public comment — visible on the public status page',
   uploadedByTheSubmitter: 'Uploaded by the submitter',
-  _1pxSolidRgba255255255: '1px solid rgba(255,255,255,0.25)',
-  background015s: 'background 0.15s',
   mediaViewerAttNameLbIdxOf: 'Media viewer: {att_name} ({lbIdx} of {total})',
   closeMediaViewer: 'Close media viewer',
   previousMedia: 'Previous media',

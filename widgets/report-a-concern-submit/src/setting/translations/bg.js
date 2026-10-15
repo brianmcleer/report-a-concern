@@ -123,9 +123,9 @@ System.register([], function (e) {
         submitReport: "Представяне на доклад",
         thankYouYourConcernHasBeen: "Благодаря! Вашата загриженост е била представена.",
         forTheFastestResponsePleaseCall: "За най-бързия отговор, моля обадете се на номера по-долу. Все още можете да подадете този доклад онлайн, но телефонно обаждане гарантира някой да отговори веднага.",
-        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
-        continue: "Continue?",
-        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
+        forThisViewTheMapWidget: "за тази гледка. Изборът на карта джаджа няма да бъде променен.",
+        continue: "Да продължа?",
+        importingNameWillOverwriteTheCurrent: "Внасяне \"{name}\" ще презапише текущите настройки на джаджа"
       })
     }
   }

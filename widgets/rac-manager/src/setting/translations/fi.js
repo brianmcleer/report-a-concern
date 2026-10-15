@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: "Tuo pöytä puuttuu nettikartasta.",
         uiAllAuthFlowsThroughThePortal: "Kaikki auth virtaa läpi portaalin istunnon . Ei ylimääräisiä kuponkia tarvitaan. Rajoittaaksesi pääsyä, jaa sovellus portaaliryhmän kanssa.",
         tickets: "Liput",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: ". Jokainen taulukko olisi osoitettava sen otsikko ."
       })
     }
   }

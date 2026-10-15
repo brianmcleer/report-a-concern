@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "Připojeno k vnitřní notě - není uvedeno předkladateli",
         attachedToAPublicCommentVisible: "Přiloženo k veřejnému komentáři - viditelné na veřejné stránce",
         uploadedByTheSubmitter: "Uploadnul předkladatel",
-        _1pxSolidRgba255255255: "1px pevné rgba (255,255,255,0.25)",
-        background015s: "pozadí 0.15s",
         mediaViewerAttNameLbIdxOf: "Prohlížeč médií: {att_name} ({lbIdx} z {total})",
         closeMediaViewer: "Zavřít prohlížeč médií",
         previousMedia: "Předchozí média",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "Načítání…",
         unknownError: "neznámá chyba",
         unserializableError: "neserializovatelná chyba",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "Lístek {value}{fullCat}, status {statusLabel}, priorita {priLabel}",
+        cardViewCompactMobileFriendlyList: "Pohled na karty - kompaktní, mobilní seznam",
+        tableViewSortableColumnsWithAll: "Pohled na tabulku - soustružitelné sloupce se všemi viditelnými poli",
+        ticketValueFullCatStatusStatusLabelPriority2: "Lístek {value}{fullCat}, status {statusLabel}, priorita {priLabel}, {value2}",
         dismissError: "Chyba při vyřazení",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "Rozpustit zprávu",
+        departmentEAIsNotAValid: "Oddělení \"{eA}\"není platná volba. Prosím, zvolte znovu.",
+        categoryValueIsNotHandledBy: "Kategorie \"{value}\"není ovládán\"{eA}\"Prosím, aktualizujte kategorii.",
+        subcategoryValueIsNotValidFor: "Hodnota podkategorie není platná pro \"{value}\"Prosím, zvolte znovu."
       })
     }
   }

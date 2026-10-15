@@ -123,9 +123,9 @@ System.register([], function (e) {
         submitReport: "提交報告",
         thankYouYourConcernHasBeen: "謝謝你! 你的擔心已經提交",
         forTheFastestResponsePleaseCall: "最快的回應請打到下面 但電話能讓人立刻回應。",
-        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
-        continue: "Continue?",
-        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
+        forThisViewTheMapWidget: "此檢視 。 地圖元件選擇不變更 。",
+        continue: "繼續?",
+        importingNameWillOverwriteTheCurrent: "匯入中 \"{name}將覆寫目前的元件設定"
       })
     }
   }

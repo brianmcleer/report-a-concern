@@ -123,9 +123,9 @@ System.register([], function (e) {
         submitReport: "Sprawozdanie z przekazania",
         thankYouYourConcernHasBeen: "Dziękuję! Twoje obawy zostały przedstawione.",
         forTheFastestResponsePleaseCall: "Aby uzyskać najszybszą odpowiedź, proszę zadzwonić pod poniższy numer. Możesz nadal składać ten raport online, ale telefon zapewnia natychmiastową reakcję.",
-        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
-        continue: "Continue?",
-        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
+        forThisViewTheMapWidget: "dla tego widoku. Wybór widżetu mapy NIE zostanie zmieniony.",
+        continue: "Kontynuować?",
+        importingNameWillOverwriteTheCurrent: "Importowanie \"{name}\"nadpisze aktualne ustawienia widgetu"
       })
     }
   }

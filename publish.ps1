@@ -31,7 +31,8 @@
 param(
     [Parameter(Mandatory = $true)][string]$CommitMessage,
     [string]$Release = "",
-    [switch]$NoMirror
+    [switch]$NoMirror,
+    [switch]$SkipTranslations
 )
 
 $ErrorActionPreference = "Stop"
@@ -86,6 +87,20 @@ if (-not $NoMirror) {
         $pv = Get-JsonVersion (Join-Path $src "package.json")
         Write-Host "==> $w : manifest.json $mv, package.json $pv"
         if ($mv -and $pv -and ($mv -ne $pv)) { throw "$w : manifest.json is $mv but package.json is $pv. Bump both together, in the EB folder." }
+
+        # Translations: pull the exb-i18n-kit shared memory (machine translated by the kit's
+        # GitHub Action) into this widget's language files before the mirror. Only when the
+        # widget is localized (lock file) and the kit clone sits beside this repo.
+        $kitCli = Join-Path (Split-Path $RepoPath -Parent) "exb-i18n-kit\bin\exb-i18n.js"
+        if (-not $SkipTranslations -and (Test-Path $kitCli) -and (Test-Path (Join-Path $src "i18n\translations.lock.json")) -and (Get-Command node -ErrorAction SilentlyContinue)) {
+            $o = $ErrorActionPreference; $ErrorActionPreference = "Continue"
+            try {
+                if ($env:EXB_I18N_KIT_PULLED -ne "1") { git -C (Split-Path $kitCli -Parent | Split-Path -Parent) pull --ff-only --quiet 2>&1 | Out-Null }
+                Write-Host "==> $w : pulling shared translations ..."
+                & node $kitCli sync "$src" 2>&1 | ForEach-Object { Write-Host "    $_" -ForegroundColor DarkGray }
+                if ($LASTEXITCODE -ne 0) { Write-Warning "$w : exb-i18n sync exited with code $LASTEXITCODE; publishing the language files as they are." }
+            } catch { Write-Warning "$w : translations: $($_.Exception.Message)" } finally { $ErrorActionPreference = $o }
+        }
 
         # exb-i18n-kit: localize snapshots stay local; i18n\STATUS.md and the lock still publish.
         $xd = @("/XD") + $ExcludeDirs + @((Join-Path $src "i18n\backup"))

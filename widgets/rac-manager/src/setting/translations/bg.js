@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: "Тази маса липсва от картата.",
         uiAllAuthFlowsThroughThePortal: "Всички Auth потоци през Портал сесията не са необходими допълнителни символи. За да ограничите достъпа, споделете приложението с група портали.",
         tickets: "Билети",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: ". Всяка таблица трябва да покаже заглавието си ."
       })
     }
   }

@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: "Az az asztal hiányzik a webtérképről.",
         uiAllAuthFlowsThroughThePortal: "Minden audio átfolyik a portálon - nincs szükség extra zsetonra. A hozzáférés korlátozásához ossza meg az alkalmazást egy portálcsoporttal.",
         tickets: "Jegyek",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: ". Minden táblának meg kell mutatnia a címét - ha van beleszólása"
       })
     }
   }

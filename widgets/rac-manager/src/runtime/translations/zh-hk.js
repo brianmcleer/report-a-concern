@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "附于內部備忘錄中,",
         attachedToAPublicCommentVisible: "附于公開評論中,",
         uploadedByTheSubmitter: "由提交者上傳",
-        _1pxSolidRgba255255255: "1px 固体rgba(255,255,255,0.25)",
-        background015s: "背景 0.15s",
         mediaViewerAttNameLbIdxOf: "媒體檢視器 : {att_name} ({lbIdx} 四, {total})",
         closeMediaViewer: "關閉媒體檢視器",
         previousMedia: "上一個媒體",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "正在載入...",
         unknownError: "未知的錯誤",
         unserializableError: "不串連的錯誤",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "票 {value}{fullCat}狀態 {statusLabel}优先排序 {priLabel}",
+        cardViewCompactMobileFriendlyList: "卡片檢視 – 緊凑, 易動的清單",
+        tableViewSortableColumnsWithAll: "表格檢視 - 可分類列, 所有字段都能看到",
+        ticketValueFullCatStatusStatusLabelPriority2: "票 {value}{fullCat}狀態 {statusLabel}优先排序 {priLabel}, {value2}",
         dismissError: "解散錯誤",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "解除信件",
+        departmentEAIsNotAValid: "部{eA}\" 不是有效的選擇。 請重新選擇 。",
+        categoryValueIsNotHandledBy: "\"{value}\" 不由 \"{eA}\" 。",
+        subcategoryValueIsNotValidFor: "子類別數值無效於 \"{value}\"。請重新選擇。"
       })
     }
   }

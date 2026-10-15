@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: "Το τραπέζι λείπει από το χάρτη.",
         uiAllAuthFlowsThroughThePortal: "Όλες οι ωοθήκες περνούν από τη συνεδρία της Πύλης — δεν χρειάζονται επιπλέον μάρκες. Για να περιοριστεί η πρόσβαση, μοιραστείτε την εφαρμογή με μια ομάδα Portal.",
         tickets: "Εισιτήρια",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: ". Κάθε πίνακας θα πρέπει να δείχνει τον τίτλο του — αν υπάρχει"
       })
     }
   }

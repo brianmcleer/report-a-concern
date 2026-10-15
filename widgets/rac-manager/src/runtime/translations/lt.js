@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "Pridedama prie vidaus pažymos - nerodoma pateikėjui",
         attachedToAPublicCommentVisible: "Pridedama prie viešo komentaro - matomas viešo statuso puslapyje",
         uploadedByTheSubmitter: "Išsiųstas pateikėjo",
-        _1pxSolidRgba255255255: "1px kietas rgba (255,255,255,0,25)",
-        background015s: "fonas",
         mediaViewerAttNameLbIdxOf: "Medijos žiūryklė: {att_name} ({lbIdx} iš {total})",
         closeMediaViewer: "Užverti medijos žiūryklę",
         previousMedia: "Ankstesnės žiniasklaidos priemonės",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "Kraunama…",
         unknownError: "nežinoma klaida",
         unserializableError: "nenustatoma klaida",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "Bilietas {value}{fullCat}, statusas {statusLabel}, prioritetas {priLabel}",
+        cardViewCompactMobileFriendlyList: "Kortelės vaizdas - kompaktiškas, mobilus ir draugiškas sąrašas",
+        tableViewSortableColumnsWithAll: "Lentelės vaizdas - nuraminti stulpeliai su visais matomais laukais",
+        ticketValueFullCatStatusStatusLabelPriority2: "Bilietas {value}{fullCat}, statusas {statusLabel}, prioritetas {priLabel}, {value2}",
         dismissError: "Anuliavimo klaida",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "Atmesti pranešimą",
+        departmentEAIsNotAValid: "Departamentas \"{eA}\"nėra tinkamas pasirinkimas. Prašome iš naujo pasirinkti.",
+        categoryValueIsNotHandledBy: "Kategorija \"{value}\"nėra tvarkomas\"{eA}\". Prašome atnaujinti kategoriją.",
+        subcategoryValueIsNotValidFor: "Subkategorijos reikšmė negalioja \"{value}\". Prašome iš naujo pasirinkti."
       })
     }
   }

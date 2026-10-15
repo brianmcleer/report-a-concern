@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: "Tento stôl chýba z webovej mapy.",
         uiAllAuthFlowsThroughThePortal: "Všetky auth prúdi cez Portal session Ak chcete obmedziť prístup, zdieľajte aplikáciu so skupinou portálu.",
         tickets: "Lístky",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: ". Každá tabuľka by mala ukázať svoj názov"
       })
     }
   }

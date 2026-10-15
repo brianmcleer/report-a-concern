@@ -11,7 +11,7 @@ export interface CriticalAlert {
     category: string;
     /** Subcategory name (human-readable, case-insensitive). Leave blank to match ALL subcategories of the category. */
     subcategory: string;
-    /** Phone number to display. Plain text (e.g. "(970) 244-1577" or "911"). Will be rendered as a clickable tel: link. */
+    /** Phone number to display. Plain text (e.g. "(555) 555-0123" or "911"). Will be rendered as a clickable tel: link. */
     phone: string;
     /** Optional custom message. If blank, criticalAlertDefaultMessage is used. */
     message?: string;

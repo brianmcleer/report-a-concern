@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: "Ta miza manjka na spletnem zemljevidu.",
         uiAllAuthFlowsThroughThePortal: "Vsa auth teče skozi sejo Portala – brez dodatnih žetonov. Za omejitev dostopa si aplikacijo delite s skupino Portal.",
         tickets: "Vstopnice",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: ". Vsaka tabela mora pokazati svoj naslov – če kaj pravijo"
       })
     }
   }

@@ -123,9 +123,9 @@ System.register([], function (e) {
         submitReport: "Indsend rapport",
         thankYouYourConcernHasBeen: "Tak! Din bekymring er blevet forelagt.",
         forTheFastestResponsePleaseCall: "For den hurtigste reaktion, bedes du ringe til nummeret nedenfor. Du kan stadig indsende denne rapport online, men et telefonopkald sikrer nogen reagerer straks.",
-        forThisViewTheMapWidget: "for this view. The map widget selection will NOT be changed.",
-        continue: "Continue?",
-        importingNameWillOverwriteTheCurrent: "Importing \"{name}\" will overwrite the current widget settings"
+        forThisViewTheMapWidget: "for denne opfattelse. Markeringen af kortkontrol vil IKKE blive ændret.",
+        continue: "Fortsæt?",
+        importingNameWillOverwriteTheCurrent: "Import \"{name}\"vil overskrive de aktuelle kontrolindstillinger"
       })
     }
   }

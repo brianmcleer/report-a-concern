@@ -52,7 +52,7 @@ npm install --package-lock-only --no-audit --no-fund
 pnpm install --lockfile-only
 ```
 
-`package-lock.json` currently still says version 1.1.0; the first command brings it in line with `package.json`. Ship `pnpm-lock.yaml` beside it so pnpm-era installs are locked too.
+The lockfiles carry the same version as `package.json` (1.2.3 at the time of writing); bump them with it. Ship `pnpm-lock.yaml` beside `package-lock.json` so pnpm-era installs are locked too.
 
 ## Release
 

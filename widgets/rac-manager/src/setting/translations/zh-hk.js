@@ -38,7 +38,7 @@ System.register([], function (e) {
         uiThatTableIsMissingFromThe: "在網頁地圖上找不到這個表格 。",
         uiAllAuthFlowsThroughThePortal: "所有憑證都通通了通訊口通訊口- 不需要額外的代碼 。 为限制取用, 請與 Portal 群組相通 。",
         tickets: "票",
-        eachTableShouldShowItsTitle: ". Each table should show its title — if any say"
+        eachTableShouldShowItsTitle: "。每個表格都顯示它的標題,如果有的話。"
       })
     }
   }

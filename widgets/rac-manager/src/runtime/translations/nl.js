@@ -206,8 +206,6 @@ System.register([], function (e) {
         attachedToAnInternalNoteNot: "Bijgevoegd aan een interne notitie ..niet aan de indiener getoond",
         attachedToAPublicCommentVisible: "Bijgevoegd bij een publieke opmerking",
         uploadedByTheSubmitter: "Door de indiener geüpload",
-        _1pxSolidRgba255255255: "1px vaste rgba(255,255,255,0,25)",
-        background015s: "achtergrond 0,15s",
         mediaViewerAttNameLbIdxOf: "Mediaviewer: {att_name} ({lbIdx} van {total})",
         closeMediaViewer: "Mediaviewer sluiten",
         previousMedia: "Vorige media",
@@ -313,15 +311,15 @@ System.register([], function (e) {
         loading: "Bezig met laden...",
         unknownError: "onbekende fout",
         unserializableError: "onuitwisbare fout",
-        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}",
-        cardViewCompactMobileFriendlyList: "Card view — compact, mobile-friendly list",
-        tableViewSortableColumnsWithAll: "Table view — sortable columns with all fields visible",
-        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, priority {priLabel}, {value2}",
+        ticketValueFullCatStatusStatusLabelPriority: "Ticket {value}{fullCat}, status {statusLabel}, prioriteit {priLabel}",
+        cardViewCompactMobileFriendlyList: "Kaartweergave compacte, mobiele lijst",
+        tableViewSortableColumnsWithAll: "Tabelweergave",
+        ticketValueFullCatStatusStatusLabelPriority2: "Ticket {value}{fullCat}, status {statusLabel}, prioriteit {priLabel}, {value2}",
         dismissError: "Ontslagfout",
-        dismissMessage: "Dismiss message",
-        departmentEAIsNotAValid: "Department \"{eA}\" is not a valid option. Please re-select.",
-        categoryValueIsNotHandledBy: "Category \"{value}\" is not handled by \"{eA}\". Please update the category.",
-        subcategoryValueIsNotValidFor: "Subcategory value is not valid for \"{value}\". Please re-select."
+        dismissMessage: "Bericht verwerpen",
+        departmentEAIsNotAValid: "Afdeling \"{eA}\" is geen geldige optie. Selecteer alsjeblieft opnieuw.",
+        categoryValueIsNotHandledBy: "Categorie \"{value}\" wordt niet behandeld door \"{eA}\". Gelieve de categorie bij te werken.",
+        subcategoryValueIsNotValidFor: "Subcategorie waarde is niet geldig voor \"{value}Kies alstublieft opnieuw."
       })
     }
   }
